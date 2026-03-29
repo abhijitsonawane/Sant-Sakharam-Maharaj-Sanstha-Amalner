@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shri Sakharam Maharaj Bhaktniwas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --or:#E8681A;--or2:#F7891A;--or3:#FFF3E8;--or4:#FFF8F2;
+  --dk:#1A0F00;--md:#5C3A00;--lt:#9A7040;
+  --bd:#F0D8B0;--bd2:#FAE8CC;
+  --wh:#FFFFFF;--bg:#FFF9F2;
+  --gr:#16A34A;--re:#DC2626;--bl:#0284C7;--ye:#D97706;
+  --sh:0 2px 12px rgba(232,104,26,0.10);
+  --rd:12px;--rd2:8px;
+  --tr:all 0.18s ease;
+}
+.dark{
+  --or:#FF8C42;--or2:#FFB060;--or3:#2A1500;--or4:#1A0D00;
+  --dk:#FFE8CC;--md:#FFD0A0;--lt:#CC9060;
+  --bd:#3D2000;--bd2:#2E1800;--wh:#1C1007;--bg:#150B00;
+}
+html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dk);font-size:14px;min-height:100vh;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--or3);}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:99px;}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--wh);border-right:1.5px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;transition:var(--tr);overflow:hidden;}
+.sidebar.slim{width:56px;}
+.main{margin-left:220px;flex:1;transition:var(--tr);}
+.main.slim{margin-left:56px;}
+
+/* SIDEBAR */
+.sb-head{padding:14px 12px;border-bottom:1.5px solid var(--bd);display:flex;align-items:center;gap:10px;min-height:64px;}
+.sb-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--or),var(--or2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sb-txt{overflow:hidden;}
+.sb-name{font-size:0.75rem;font-weight:700;color:var(--or);line-height:1.2;white-space:nowrap;}
+.sb-sub{font-size:0.62rem;color:var(--lt);font-family:'Noto Sans Devanagari',sans-serif;white-space:nowrap;}
+.sb-nav{flex:1;padding:8px 6px;overflow-y:auto;}
+.nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:var(--tr);color:var(--md);font-size:0.82rem;font-weight:500;white-space:nowrap;margin-bottom:2px;}
+.nav-i:hover{background:var(--or3);color:var(--or);}
+.nav-i.on{background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;box-shadow:0 2px 8px rgba(232,104,26,0.3);}
+.nav-ic{font-size:1.1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-foot{padding:8px 6px;border-top:1.5px solid var(--bd);}
+.col-btn{width:100%;padding:8px;border:none;background:var(--or3);color:var(--or);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:6px;}
+.col-btn:hover{background:var(--bd);}
+
+/* TOPBAR */
+.topbar{background:var(--wh);border-bottom:1.5px solid var(--bd);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 6px rgba(0,0,0,0.05);}
+.pg-title{font-size:1rem;font-weight:700;color:var(--dk);}
+.tb-actions{display:flex;align-items:center;gap:8px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:600;border:none;cursor:pointer;transition:var(--tr);white-space:nowrap;font-family:'Inter',sans-serif;}
+.btn-pr{background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;box-shadow:0 2px 6px rgba(232,104,26,0.25);}
+.btn-pr:hover{filter:brightness(1.08);}
+.btn-sc{background:var(--or3);color:var(--or);border:1.5px solid var(--bd);}
+.btn-sc:hover{background:var(--bd);}
+.btn-gr{background:var(--gr);color:#fff;}
+.btn-gr:hover{filter:brightness(1.1);}
+.btn-re{background:var(--re);color:#fff;}
+.btn-re:hover{filter:brightness(1.1);}
+.btn-bl{background:var(--bl);color:#fff;}
+.btn-bl:hover{filter:brightness(1.1);}
+.btn-ye{background:var(--ye);color:#fff;}
+.btn-ye:hover{filter:brightness(1.1);}
+.btn-ol{background:transparent;border:1.5px solid var(--bd);color:var(--md);}
+.btn-ol:hover{background:var(--or3);color:var(--or);}
+.btn-sm{padding:5px 12px;font-size:0.74rem;border-radius:7px;}
+.btn-xs{padding:3px 8px;font-size:0.7rem;border-radius:6px;}
+.btn-ic{padding:7px;border-radius:7px;background:var(--or3);color:var(--or);border:1.5px solid var(--bd);}
+.btn-ic:hover{background:var(--bd);}
+
+/* CARDS */
+.card{background:var(--wh);border-radius:var(--rd);border:1.5px solid var(--bd);box-shadow:var(--sh);}
+.card-hd{padding:14px 18px 12px;border-bottom:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:space-between;}
+.card-ti{font-size:0.9rem;font-weight:700;color:var(--dk);}
+.card-bd{padding:18px;}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
+.sc{background:var(--wh);border-radius:var(--rd);border:1.5px solid var(--bd);padding:16px;position:relative;overflow:hidden;cursor:default;transition:var(--tr);}
+.sc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(232,104,26,0.12);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rd) var(--rd) 0 0;}
+.sc-or::before{background:linear-gradient(90deg,var(--or),var(--or2));}
+.sc-gr::before{background:linear-gradient(90deg,#16A34A,#4ADE80);}
+.sc-re::before{background:linear-gradient(90deg,#DC2626,#F87171);}
+.sc-bl::before{background:linear-gradient(90deg,#0284C7,#38BDF8);}
+.sc-pu::before{background:linear-gradient(90deg,#7C3AED,#A78BFA);}
+.sc-ye::before{background:linear-gradient(90deg,#D97706,#FCD34D);}
+.sc-ic{font-size:1.6rem;margin-bottom:8px;}
+.sc-val{font-size:1.55rem;font-weight:700;color:var(--dk);line-height:1;}
+.sc-lbl{font-size:0.7rem;color:var(--lt);font-weight:500;margin-top:4px;}
+
+/* FORMS */
+.fg{display:grid;gap:12px;}
+.fg2{grid-template-columns:1fr 1fr;}
+.fg3{grid-template-columns:1fr 1fr 1fr;}
+.fgr{display:flex;flex-direction:column;gap:4px;}
+.fgr.full{grid-column:1/-1;}
+.fl{font-size:0.75rem;font-weight:600;color:var(--md);}
+.fl span{color:var(--re);margin-left:2px;}
+.fi{padding:9px 12px;border:1.5px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--dk);font-size:0.84rem;outline:none;transition:var(--tr);width:100%;font-family:'Inter',sans-serif;}
+.fi:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(232,104,26,0.12);background:var(--wh);}
+.fi.err{border-color:var(--re);}
+.fe{font-size:0.68rem;color:var(--re);}
+.fh{font-size:0.68rem;color:var(--lt);}
+select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239A7040' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px;}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:var(--rd);border:1.5px solid var(--bd);}
+table{width:100%;border-collapse:collapse;background:var(--wh);}
+thead tr{background:var(--or3);}
+th{padding:10px 12px;text-align:left;font-size:0.72rem;font-weight:700;color:var(--or);border-bottom:1.5px solid var(--bd);white-space:nowrap;}
+td{padding:10px 12px;font-size:0.78rem;color:var(--dk);border-bottom:1px solid var(--bd2);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--or4);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:0.68rem;font-weight:700;}
+.bg-gr{background:#DCFCE7;color:#166534;}
+.bg-re{background:#FEE2E2;color:#991B1B;}
+.bg-ye{background:#FEF9C3;color:#854D0E;}
+.bg-bl{background:#DBEAFE;color:#1E40AF;}
+.bg-or{background:var(--or3);color:var(--or);}
+.bg-gy{background:#F3F4F6;color:#4B5563;}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(3px);}
+.md{background:var(--wh);border-radius:var(--rd);max-width:640px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mdin 0.2s ease;}
+.md-lg{max-width:800px;}
+.md-xl{max-width:980px;}
+@keyframes mdin{from{opacity:0;transform:scale(0.96) translateY(10px);}to{opacity:1;transform:none;}}
+.mh{padding:14px 18px;border-bottom:1.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--or3);border-radius:var(--rd) var(--rd) 0 0;position:sticky;top:0;z-index:10;}
+.mt{font-size:0.95rem;font-weight:700;color:var(--or);}
+.mb{padding:20px;}
+.mf{padding:14px 18px;border-top:1.5px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;background:var(--bg);}
+.xbtn{background:none;border:none;font-size:1.2rem;color:var(--lt);cursor:pointer;padding:3px 6px;border-radius:6px;transition:var(--tr);}
+.xbtn:hover{background:var(--bd);color:var(--re);}
+
+/* TOAST */
+.tc{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:7px;}
+.to{padding:10px 16px;border-radius:9px;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);animation:toin 0.22s ease;max-width:300px;}
+@keyframes toin{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:none;}}
+.to-s{background:#16A34A;color:#fff;}
+.to-e{background:#DC2626;color:#fff;}
+.to-w{background:#D97706;color:#fff;}
+.to-i{background:#0284C7;color:#fff;}
+
+/* PAGE */
+.pg{padding:20px;max-width:1260px;margin:0 auto;}
+.pgh{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.pgt{font-size:1.1rem;font-weight:700;color:var(--dk);}
+.sec-tt{font-size:0.72rem;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-tt::after{content:'';flex:1;height:1.5px;background:var(--bd);}
+
+/* ROOM GRID */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;}
+.rb{padding:9px 5px;border-radius:8px;border:2px solid;font-size:0.78rem;font-weight:700;text-align:center;transition:var(--tr);cursor:pointer;}
+.rb.av{background:#DCFCE7;border-color:#4ADE80;color:#15803D;}
+.rb.oc{background:#FEE2E2;border-color:#FCA5A5;color:#991B1B;cursor:not-allowed;opacity:0.7;}
+.rb.sl{background:linear-gradient(135deg,var(--or),var(--or2));border-color:var(--or);color:#fff;box-shadow:0 2px 8px rgba(232,104,26,0.3);}
+.rb-tag{font-size:0.6rem;display:block;opacity:0.8;}
+
+/* TOGGLE */
+.tog{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.tog-tr{width:38px;height:20px;background:var(--bd);border-radius:99px;position:relative;transition:var(--tr);cursor:pointer;flex-shrink:0;}
+.tog-tr.on{background:var(--or);}
+.tog-th{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:var(--tr);box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.tog-tr.on .tog-th{left:20px;}
+
+/* UPLOAD */
+.up-a{border:2px dashed var(--bd);border-radius:9px;padding:18px;text-align:center;cursor:pointer;transition:var(--tr);}
+.up-a:hover{border-color:var(--or);background:var(--or3);}
+
+/* DIVIDER */
+.dv{height:1.5px;background:var(--bd);margin:16px 0;}
+
+/* PAYMENT HISTORY */
+.ph-row{background:var(--or3);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
+
+/* TAB */
+.tabbar{display:flex;gap:3px;background:var(--or3);padding:4px;border-radius:9px;margin-bottom:18px;border:1.5px solid var(--bd);}
+.tabi{flex:1;padding:7px 10px;border-radius:6px;border:none;background:none;font-size:0.76rem;font-weight:600;color:var(--lt);cursor:pointer;transition:var(--tr);text-align:center;font-family:'Inter',sans-serif;}
+.tabi.on{background:var(--wh);color:var(--or);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+
+/* SEARCH */
+.srch{position:relative;}
+.srch input{padding-left:34px;}
+.srch::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:0.8rem;pointer-events:none;}
+
+/* CONFIRM DIALOG */
+.conf{background:var(--wh);border-radius:var(--rd);padding:24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mdin 0.2s ease;}
+.conf-ic{font-size:2.5rem;margin-bottom:12px;}
+.conf-tt{font-size:1rem;font-weight:700;color:var(--dk);margin-bottom:6px;}
+.conf-tx{font-size:0.82rem;color:var(--lt);margin-bottom:20px;}
+
+/* UTILITIES */
+.flex{display:flex;}.gap2{gap:8px;}.gap3{gap:12px;}.ic{align-items:center;}.jb{justify-content:space-between;}.fw{flex-wrap:wrap;}
+.f1{flex:1;}.tc2{text-align:center;}.tr2{text-align:right;}
+.bold{font-weight:700;}.semi{font-weight:600;}.sm{font-size:0.78rem;}.xs{font-size:0.7rem;}
+.c-or{color:var(--or);}.c-gr{color:var(--gr);}.c-re{color:var(--re);}.c-lt{color:var(--lt);}.c-dk{color:var(--dk);}
+.mb2{margin-bottom:8px;}.mb3{margin-bottom:12px;}.mb4{margin-bottom:16px;}.mb6{margin-bottom:24px;}
+.mt2{margin-top:8px;}.mt3{margin-top:12px;}.mt4{margin-top:16px;}
+.fade{animation:fd 0.25s ease;}
+@keyframes fd{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.w100{width:100%;}
+.dev{font-family:'Noto Sans Devanagari',sans-serif;}
+.info-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--bd2);font-size:0.8rem;}
+.info-k{color:var(--lt);font-weight:500;}
+.info-v{font-weight:600;color:var(--dk);text-align:right;}
+.progress{height:5px;background:var(--bd);border-radius:99px;overflow:hidden;}
+.progress-f{height:100%;background:linear-gradient(90deg,var(--or),var(--or2));border-radius:99px;transition:width 0.4s ease;}
+
+/* ===================== INVOICE PRINT STYLES ===================== */
+@media print{
+  body *{visibility:hidden;}
+  #inv-print-root,#inv-print-root *{visibility:visible;}
+  #inv-print-root{position:fixed!important;inset:0!important;z-index:99999!important;background:#fff!important;overflow:visible!important;}
+}
+.inv-preview-wrap{background:#e8e8e8;padding:20px;display:flex;justify-content:center;overflow:auto;flex:1;}
+
+/* MOBILE */
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.mob-open{transform:none;}
+  .main,.main.slim{margin-left:0;}
+  .fg2{grid-template-columns:1fr;}
+  .fg3{grid-template-columns:1fr 1fr;}
+  .sg{grid-template-columns:repeat(2,1fr);}
+  .pg{padding:12px;}
+  .inv{width:100%;min-height:auto;}
+  .inv-2col{grid-template-columns:1fr;}
+}
+@media(max-width:420px){.fg3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo}=React;
+
+// ─── CONSTANTS ───
+const AC_ROOMS=[101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116];
+const NON_AC_ROOMS=[110,111,112,113,114,115];
+const PRICE_AC=1200, PRICE_NON_AC=800;
+
+const SANSTHA={
+  name:"श्री साखराम महाराज भक्तनिवास",
+  nameEn:"Shri Sakharam Maharaj Bhaktniwas",
+  address:"Sakharam Maharaj Mandir Campus, Shirdi Road",
+  city:"Kopargaon, Ahmednagar, Maharashtra – 423601",
+  phone:"02423-222XXX | 9876543210",
+  email:"info@sakharammaharaj.org",
+  website:"www.sakharammaharaj.org",
+  pan:"AAAXX0000X",
+  regNo:"MH/1234/2001",
+  terms:[
+    "Check-in time: 12:00 PM | Check-out time: 11:00 AM",
+    "Carry your original Aadhaar card / government ID proof at the time of check-in.",
+    "Non-payment of dues may result in cancellation of booking.",
+    "Rooms must be vacated on time. Extension subject to availability.",
+    "Smoking, alcohol and non-vegetarian food strictly prohibited inside premises.",
+    "Management is not responsible for loss of valuables. Use safe locker provided.",
+    "Any damage to room property will be charged separately.",
+    "This receipt is computer-generated and valid without signature.",
+    "All disputes subject to Kopargaon / Shirdi jurisdiction only.",
+  ]
+};
+
+const T={
+  en:{
+    appName:"Bhaktniwas",dashboard:"Dashboard",bookings:"Bookings",newBooking:"New Booking",
+    rooms:"Rooms",settings:"Settings",name:"Full Name",mobile:"Mobile",altMobile:"Alt. Mobile",
+    address:"Address",city:"City / District",aadhaar:"Aadhaar Number",
+    upload:"Upload Aadhaar",roomType:"Room Type",roomNumber:"Room Number",
+    checkin:"Check-In",checkout:"Check-Out",manualPrice:"Manual Price (Bargain)",
+    originalPrice:"Original Price",manualPriceF:"Manual Price",discount:"Discount",
+    finalAmount:"Final Amount",totalAmount:"Total Amount",advancePaid:"Advance Paid",
+    remaining:"Remaining",paymentMode:"Payment Mode",cash:"Cash",upi:"UPI",online:"Online",
+    txnId:"Transaction ID",updatePayment:"Update Payment",paymentHistory:"Payment History",
+    search:"Search name / mobile / room / ID",view:"View",edit:"Edit",
+    checkoutBtn:"Check-Out",viewAadhaar:"Aadhaar",print:"Print Invoice",downloadPdf:"Download PDF",
+    bookingId:"Booking ID",stayDuration:"Stay",receipt:"Invoice",details:"Details",
+    acRoom:"AC Room",nonAcRoom:"Non-AC Room",save:"Save Booking",cancel:"Cancel",close:"Close",
+    exportExcel:"Export CSV",backup:"Backup",restore:"Restore",darkMode:"Dark Mode",
+    lang:"Language",checkedOut:"Checked Out",active:"Active",
+    saved:"Booking saved!",updated:"Booking updated!",coSuccess:"Checked out successfully!",
+    payAdded:"Payment added!",noBookings:"No bookings found.",nights:"Night(s)",
+    totalPaid:"Total Paid",balance:"Balance",acRooms:"AC Rooms",nonAcRooms:"Non-AC Rooms",
+    maleCount:"Male",femaleCount:"Female",stayDetails:"Stay Details",
+    personalDetails:"Personal Details",paymentDetails:"Payment Details",
+    totalRooms:"Total Rooms",available:"Available",occupied:"Occupied",
+    totalCollection:"Total Collection",pendingPayments:"Pending",todayCheckouts:"Today Out",
+    addPayment:"Add Payment",amount:"Amount",deleteBooking:"Delete Booking",
+    deleteConfirm:"Are you sure you want to delete this booking? This cannot be undone.",
+    perNight:"per night",manualBilling:"Manual Billing",autoBilling:"Auto Billing",
+    note:"Note",persons:"Persons",
+  },
+  mr:{
+    appName:"भक्तनिवास",dashboard:"डॅशबोर्ड",bookings:"बुकिंग",newBooking:"नवीन बुकिंग",
+    rooms:"खोल्या",settings:"सेटिंग्ज",name:"पूर्ण नाव",mobile:"मोबाइल",altMobile:"पर्यायी मोबाइल",
+    address:"पत्ता",city:"शहर / जिल्हा",aadhaar:"आधार नंबर",
+    upload:"आधार अपलोड",roomType:"खोली प्रकार",roomNumber:"खोली क्रमांक",
+    checkin:"चेक-इन",checkout:"चेक-आउट",manualPrice:"मॅन्युअल किंमत",
+    originalPrice:"मूळ किंमत",manualPriceF:"मॅन्युअल किंमत",discount:"सवलत",
+    finalAmount:"अंतिम रक्कम",totalAmount:"एकूण रक्कम",advancePaid:"आगाऊ रक्कम",
+    remaining:"बाकी रक्कम",paymentMode:"पेमेंट पद्धत",cash:"रोख",upi:"यूपीआय",online:"ऑनलाइन",
+    txnId:"व्यवहार आयडी",updatePayment:"पेमेंट अपडेट",paymentHistory:"पेमेंट इतिहास",
+    search:"नाव / मोबाइल / खोली / ID शोधा",view:"पाहा",edit:"संपादन",
+    checkoutBtn:"चेकआउट",viewAadhaar:"आधार",print:"Invoice प्रिंट",downloadPdf:"PDF डाउनलोड",
+    bookingId:"बुकिंग ID",stayDuration:"मुक्काम",receipt:"पावती",details:"तपशील",
+    acRoom:"AC खोली",nonAcRoom:"Non-AC खोली",save:"बुकिंग जतन करा",cancel:"रद्द करा",close:"बंद करा",
+    exportExcel:"CSV निर्यात",backup:"बॅकअप",restore:"पुनर्संचयित",darkMode:"डार्क मोड",
+    lang:"भाषा",checkedOut:"चेकआउट",active:"सक्रिय",
+    saved:"बुकिंग जतन झाले!",updated:"बुकिंग अपडेट झाले!",coSuccess:"चेकआउट यशस्वी!",
+    payAdded:"पेमेंट जोडले!",noBookings:"कोणतीही बुकिंग नाही.",nights:"रात्र",
+    totalPaid:"एकूण भरले",balance:"शिल्लक",acRooms:"AC खोल्या",nonAcRooms:"Non-AC खोल्या",
+    maleCount:"पुरुष",femaleCount:"महिला",stayDetails:"मुक्काम तपशील",
+    personalDetails:"वैयक्तिक तपशील",paymentDetails:"पेमेंट तपशील",
+    totalRooms:"एकूण खोल्या",available:"उपलब्ध",occupied:"व्यापलेल्या",
+    totalCollection:"एकूण संकलन",pendingPayments:"बाकी",todayCheckouts:"आजचे निर्गमन",
+    addPayment:"पेमेंट जोडा",amount:"रक्कम",deleteBooking:"बुकिंग हटवा",
+    deleteConfirm:"ही बुकिंग हटवायची आहे का? हे पूर्ववत करता येणार नाही.",
+    perNight:"प्रति रात्र",manualBilling:"मॅन्युअल बिलिंग",autoBilling:"स्वयं बिलिंग",
+    note:"नोंद",persons:"व्यक्ती",
+  }
+};
+
+// ─── STORAGE ───
+const LS={
+  bk:()=>{try{return JSON.parse(localStorage.getItem('bms_bk'))||[];}catch{return[];}},
+  sbk:(d)=>localStorage.setItem('bms_bk',JSON.stringify(d)),
+  cfg:()=>{try{return JSON.parse(localStorage.getItem('bms_cfg'))||{lang:'en',dark:false};}catch{return{lang:'en',dark:false};}},
+  scfg:(d)=>localStorage.setItem('bms_cfg',JSON.stringify(d)),
+};
+
+function genId(){return 'BK'+Date.now().toString(36).toUpperCase().slice(-7);}
+function genRcpt(bks){return 'RCP'+(bks.length+1).toString().padStart(4,'0');}
+
+function nights(ci,co){
+  if(!ci||!co)return 0;
+  const d=(new Date(co)-new Date(ci))/(86400000);
+  return Math.max(1,Math.round(d));
+}
+function fd(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function fdt(d){if(!d)return'—';return new Date(d).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function fc(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
+function todayDate(){return new Date().toISOString().split('T')[0];}
+function occupiedRooms(bks,excludeId){return bks.filter(b=>b.status==='active'&&b.id!==excludeId).map(b=>b.roomNumber);}
+
+// ─── TOAST ───
+function useToast(){
+  const[ts,setTs]=useState([]);
+  const add=useCallback((msg,type='s')=>{
+    const id=Date.now();
+    setTs(p=>[...p,{id,msg,type}]);
+    setTimeout(()=>setTs(p=>p.filter(t=>t.id!==id)),3000);
+  },[]);
+  return{ts,toast:add};
+}
+function ToastC({ts}){
+  return<div className="tc">{ts.map(t=><div key={t.id} className={`to to-${t.type}`}>
+    {t.type==='s'?'✅':t.type==='e'?'❌':t.type==='w'?'⚠️':'ℹ️'} {t.msg}
+  </div>)}</div>;
+}
+
+// ─── CONFIRM DIALOG ───
+function Confirm({msg,onYes,onNo,icon='⚠️',yesLabel='Confirm',yesClass='btn-re'}){
+  return<div className="mo"><div className="conf">
+    <div className="conf-ic">{icon}</div>
+    <div className="conf-tt">Are you sure?</div>
+    <div className="conf-tx">{msg}</div>
+    <div className="flex gap2 ic" style={{justifyContent:'center'}}>
+      <button className="btn btn-ol" onClick={onNo}>Cancel</button>
+      <button className={`btn ${yesClass}`} onClick={onYes}>{yesLabel}</button>
+    </div>
+  </div></div>;
+}
+
+// ─── QR ───
+function QR({val,sz=100}){
+  const r=useRef();
+  useEffect(()=>{
+    if(!r.current||!val)return;
+    r.current.innerHTML='';
+    try{new window.QRCode(r.current,{text:val,width:sz,height:sz,colorDark:'#CC5500',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.M});}catch(e){}
+  },[val,sz]);
+  return<div ref={r}/>;
+}
+
+// ─── DATE INPUT (Simple) ───
+function DateInput({value,onChange,label,req,error}){
+  return<div className="fgr">
+    {label&&<label className="fl">{label}{req&&<span>*</span>}</label>}
+    <input type="date" className={`fi${error?' err':''}`} value={value} onChange={e=>onChange(e.target.value)}/>
+    {error&&<span className="fe">{error}</span>}
+  </div>;
+}
+
+// ─── INVOICE HTML BUILDER (pure string, no React deps, prints perfectly) ───
+function buildInvoiceHTML(bk){
+  const paid=bk.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+  const bal=Math.max(0,Number(bk.finalAmount)-paid);
+  const isPaid=bal<=0;
+  const pricePerNight=bk.roomType==='AC'?PRICE_AC:PRICE_NON_AC;
+
+  const payRows=bk.paymentHistory.map((p,i)=>`
+    <tr style="background:${i%2===0?'#fffdf9':'#fff'}">
+      <td style="padding:7px 10px;border:1px solid #f0d8b0;font-size:8.5pt">${i+1}</td>
+      <td style="padding:7px 10px;border:1px solid #f0d8b0;font-size:8.5pt">${fdt(p.date)}</td>
+      <td style="padding:7px 10px;border:1px solid #f0d8b0;font-size:8.5pt">${p.mode}</td>
+      <td style="padding:7px 10px;border:1px solid #f0d8b0;font-size:8.5pt">${p.transactionId||'—'}</td>
+      <td style="padding:7px 10px;border:1px solid #f0d8b0;font-size:8.5pt;font-weight:700;color:#1A0F00">${fc(p.amount)}</td>
+    </tr>`).join('');
+
+  const termRows=SANSTHA.terms.map((tc,i)=>`
+    <div style="display:flex;gap:5px;margin-bottom:2px;font-size:7.5pt;color:#5C3A00;line-height:1.6">
+      <span style="color:#E8681A;font-weight:700;flex-shrink:0">${i+1}.</span><span>${tc}</span>
+    </div>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Invoice ${bk.receiptNo} — ${bk.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Inter',sans-serif;background:#fff;color:#1a1a1a;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4 portrait;margin:0;}
+  @media print{
+    html,body{margin:0!important;padding:0!important;}
+    .no-print{display:none!important;}
+    .inv-page{page-break-after:avoid;}
+  }
+  .inv-page{width:210mm;min-height:297mm;margin:0 auto;background:#fff;position:relative;overflow:hidden;}
+  .print-actions{display:flex;gap:10px;justify-content:center;padding:14px;background:#f0f0f0;border-bottom:1px solid #ddd;}
+  .print-btn{padding:8px 20px;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+  .btn-print{background:linear-gradient(135deg,#E8681A,#F7891A);color:#fff;}
+  .btn-close{background:#6b7280;color:#fff;}
+  @media print{.print-actions{display:none!important;}}
+</style>
+</head>
+<body>
+<div class="print-actions no-print">
+  <button class="print-btn btn-print" onclick="window.print()">🖨️ Print Invoice</button>
+  <button class="print-btn btn-close" onclick="window.close()">✕ Close</button>
+</div>
+
+<div class="inv-page">
+  <!-- WATERMARK -->
+  <div style="position:absolute;top:42%;left:50%;transform:translate(-50%,-50%) rotate(-32deg);font-size:72pt;font-weight:900;
+    color:${isPaid?'rgba(22,163,74,0.10)':'rgba(220,38,38,0.10)'};white-space:nowrap;pointer-events:none;z-index:0;
+    font-family:'Inter',sans-serif;letter-spacing:0.08em;user-select:none">
+    ${isPaid?'PAID':'PENDING'}
+  </div>
+
+  <!-- HEADER -->
+  <div style="background:linear-gradient(135deg,#E8681A,#F7891A);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:16px;position:relative;z-index:1">
+    <div style="width:54px;height:54px;background:rgba(255,255,255,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:26px;border:2px solid rgba(255,255,255,0.4);flex-shrink:0">🙏</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15pt;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif;line-height:1.25">${SANSTHA.name}</div>
+      <div style="font-size:9.5pt;opacity:0.92;margin-top:1px">${SANSTHA.nameEn}</div>
+      <div style="font-size:7.5pt;opacity:0.82;margin-top:3px">${SANSTHA.address} | ${SANSTHA.city}</div>
+      <div style="font-size:7.5pt;opacity:0.82;margin-top:1px">📞 ${SANSTHA.phone} &nbsp;|&nbsp; ✉ ${SANSTHA.email}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.22);border:1.5px solid rgba(255,255,255,0.5);border-radius:8px;padding:9px 14px;text-align:center;flex-shrink:0">
+      <div style="font-size:6.5pt;opacity:0.8;text-transform:uppercase;letter-spacing:0.06em">RECEIPT NO.</div>
+      <div style="font-size:14pt;font-weight:700;line-height:1.1">${bk.receiptNo}</div>
+      <div style="font-size:6.5pt;opacity:0.8;margin-top:4px;text-transform:uppercase;letter-spacing:0.04em">Booking ID</div>
+      <div style="font-size:7.5pt;font-weight:700">${bk.id}</div>
+    </div>
+  </div>
+
+  <!-- META BAR -->
+  <div style="display:flex;background:#FFF8F2;border-bottom:1.5px solid #F0D8B0">
+    ${[
+      ['Invoice Date', fd(bk.updatedAt||bk.createdAt)],
+      ['Check-In', fd(bk.checkinDate)],
+      ['Check-Out', fd(bk.checkoutDate)],
+      ['Stay', bk.nights+' Night(s)'],
+      ['Status', bk.status==='active'?'ACTIVE':'CHECKED OUT'],
+    ].map((m,i,arr)=>`
+      <div style="flex:1;padding:9px 14px;${i<arr.length-1?'border-right:1px solid #F0D8B0':''}">
+        <div style="font-size:6.5pt;color:#9A7040;text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:2px">${m[0]}</div>
+        <div style="font-size:9pt;font-weight:700;color:${m[0]==='Status'?(bk.status==='active'?'#16A34A':'#5C3A00'):'#1A0F00'}">${m[1]}</div>
+      </div>`).join('')}
+  </div>
+
+  <!-- GUEST + ROOM (2 col) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;padding:0;border-bottom:1px solid #F0D8B0">
+    <!-- Guest -->
+    <div style="padding:14px 18px;border-right:1px solid #F0D8B0">
+      <div style="font-size:7.5pt;font-weight:700;color:#E8681A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #F0D8B0;padding-bottom:5px;margin-bottom:9px">👤 Guest Details</div>
+      ${[
+        ['Guest Name', bk.name],
+        ['Mobile', bk.mobile+(bk.altMobile?' / '+bk.altMobile:'')],
+        ['Aadhaar No.', 'XXXX XXXX '+String(bk.aadhaarNo||'').slice(-4)],
+        ['Address', (bk.address||'')+(bk.city?', '+bk.city:'')],
+        bk.maleCount||bk.femaleCount?['Persons','M:'+(bk.maleCount||0)+' F:'+(bk.femaleCount||0)]:null,
+      ].filter(Boolean).map(r=>`
+        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #FAE8CC;font-size:8.5pt">
+          <span style="color:#9A7040">${r[0]}</span>
+          <span style="font-weight:600;text-align:right;max-width:55%;word-break:break-word">${r[1]||'—'}</span>
+        </div>`).join('')}
+    </div>
+    <!-- Room -->
+    <div style="padding:14px 18px">
+      <div style="font-size:7.5pt;font-weight:700;color:#E8681A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #F0D8B0;padding-bottom:5px;margin-bottom:9px">🛏️ Room Details</div>
+      ${[
+        ['Room Number', 'Room '+bk.roomNumber],
+        ['Room Type', bk.roomType==='AC'?'AC (Air Conditioned)':'Non-AC'],
+        ['Check-In', fd(bk.checkinDate)],
+        ['Check-Out', fd(bk.checkoutDate)],
+        ['Duration', bk.nights+' Night(s)'],
+      ].map(r=>`
+        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #FAE8CC;font-size:8.5pt">
+          <span style="color:#9A7040">${r[0]}</span>
+          <span style="font-weight:${r[0]==='Room Number'?'700':'600'};color:${r[0]==='Room Number'?'#E8681A':'#1A0F00'};font-size:${r[0]==='Room Number'?'10pt':'8.5pt'}">${r[1]}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- BILLING TABLE -->
+  <div style="padding:12px 18px;border-bottom:1px solid #F0D8B0">
+    <div style="font-size:7.5pt;font-weight:700;color:#E8681A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #F0D8B0;padding-bottom:5px;margin-bottom:9px">💰 Billing Details</div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="background:#FFF3E8">
+          <th style="padding:7px 10px;text-align:left;font-size:8pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0;width:5%">#</th>
+          <th style="padding:7px 10px;text-align:left;font-size:8pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">Description</th>
+          <th style="padding:7px 10px;text-align:left;font-size:8pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0;width:20%">Rate</th>
+          <th style="padding:7px 10px;text-align:center;font-size:8pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0;width:10%">Nights</th>
+          <th style="padding:7px 10px;text-align:right;font-size:8pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0;width:15%">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">1</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">${bk.roomType==='AC'?'AC Room':'Non-AC Room'} — Room ${bk.roomNumber}</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">${fc(pricePerNight)}/night</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt;text-align:center">${bk.nights}</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt;text-align:right;font-weight:700">${fc(bk.originalPrice)}</td>
+        </tr>
+        ${bk.discount>0?`<tr style="background:#f9fdf9">
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">2</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">Discount / Concession</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt">—</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt;text-align:center">—</td>
+          <td style="padding:7px 10px;border:1px solid #F0D8B0;font-size:9pt;text-align:right;font-weight:700;color:#16A34A">- ${fc(bk.discount)}</td>
+        </tr>`:''}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOTAL BANNER -->
+  <div style="background:linear-gradient(135deg,#E8681A,#F7891A);color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-size:8pt;opacity:0.85">Original Amount: ${fc(bk.originalPrice)}${bk.discount>0?' &nbsp;|&nbsp; Discount: - '+fc(bk.discount):''}</div>
+      <div style="font-size:9.5pt;font-weight:600;margin-top:2px">TOTAL PAYABLE AMOUNT</div>
+    </div>
+    <div style="font-size:18pt;font-weight:700">${fc(bk.finalAmount)}</div>
+  </div>
+
+  <!-- PAID / DUE STATUS -->
+  <div style="display:flex;gap:12px;padding:10px 18px;background:#FFF8F2;border-bottom:1px solid #F0D8B0">
+    <div style="flex:1;border-radius:8px;padding:11px 14px;text-align:center;border:1.5px solid;
+      background:${isPaid?'#DCFCE7':'#FEE2E2'};border-color:${isPaid?'#4ADE80':'#FCA5A5'};color:${isPaid?'#166534':'#991B1B'}">
+      <div style="font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">${isPaid?'✅ FULLY PAID':'⏳ BALANCE DUE'}</div>
+      <div style="font-size:14pt;font-weight:700;margin-top:2px">${isPaid?'NIL':fc(bal)}</div>
+    </div>
+    <div style="flex:1;border-radius:8px;padding:11px 14px;text-align:center;border:1.5px solid;background:#DBEAFE;border-color:#93C5FD;color:#1E40AF">
+      <div style="font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">TOTAL AMOUNT PAID</div>
+      <div style="font-size:14pt;font-weight:700;margin-top:2px">${fc(paid)}</div>
+    </div>
+  </div>
+
+  <!-- PAYMENT HISTORY -->
+  ${bk.paymentHistory.length>0?`
+  <div style="padding:10px 18px;border-bottom:1px solid #F0D8B0">
+    <div style="font-size:7.5pt;font-weight:700;color:#E8681A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #F0D8B0;padding-bottom:5px;margin-bottom:8px">📜 Payment History</div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr style="background:#FFF3E8">
+        <th style="padding:6px 9px;text-align:left;font-size:7.5pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">#</th>
+        <th style="padding:6px 9px;text-align:left;font-size:7.5pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">Date & Time</th>
+        <th style="padding:6px 9px;text-align:left;font-size:7.5pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">Mode</th>
+        <th style="padding:6px 9px;text-align:left;font-size:7.5pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">Txn ID</th>
+        <th style="padding:6px 9px;text-align:right;font-size:7.5pt;font-weight:700;color:#E8681A;border:1px solid #F0D8B0">Amount</th>
+      </tr></thead>
+      <tbody>${payRows}</tbody>
+    </table>
+  </div>`:''}
+
+  <!-- QR + NOTE ROW -->
+  <div style="padding:10px 18px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid #F0D8B0">
+    <div id="qr-placeholder" style="flex-shrink:0;text-align:center">
+      <div style="width:80px;height:80px;background:#fff;border:1px solid #F0D8B0;display:flex;align-items:center;justify-content:center;font-size:8pt;color:#9A7040">[QR]</div>
+      <div style="font-size:6.5pt;color:#9A7040;margin-top:2px;text-align:center">Scan to verify</div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:8pt;color:#9A7040">Reg No: ${SANSTHA.regNo} &nbsp;|&nbsp; PAN: ${SANSTHA.pan}</div>
+      <div style="font-size:8pt;color:#9A7040;margin-top:2px">🌐 ${SANSTHA.website}</div>
+      ${bk.note?`<div style="font-size:8pt;color:#5C3A00;margin-top:6px;background:#FFF3E8;padding:5px 9px;border-radius:6px;border-left:3px solid #E8681A"><b>Note:</b> ${bk.note}</div>`:''}
+    </div>
+  </div>
+
+  <!-- TERMS & CONDITIONS -->
+  <div style="padding:10px 18px;background:#FFF8F2;border-bottom:1px solid #F0D8B0">
+    <div style="font-size:7.5pt;font-weight:700;color:#E8681A;margin-bottom:6px">📋 Terms &amp; Conditions — नियम व अटी</div>
+    ${termRows}
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background:#1A0F00;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-family:'Noto Sans Devanagari',sans-serif;font-size:9pt;opacity:0.92">जय साखराम महाराज 🙏 | धन्यवाद</div>
+      <div style="font-size:7pt;opacity:0.65;margin-top:2px">Thank you for choosing Bhaktniwas. Have a blessed stay.</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:7pt;opacity:0.65">Generated: ${fdt(new Date().toISOString())}</div>
+      <div style="font-size:7pt;opacity:0.55">This is a computer generated invoice.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Generate QR code after page loads
+window.onload=function(){
+  var ph=document.getElementById('qr-placeholder');
+  if(ph&&typeof QRCode!=='undefined'){
+    ph.innerHTML='';
+    new QRCode(ph,{text:'${bk.id}|${bk.name}|Room${bk.roomNumber}',width:80,height:80,colorDark:'#CC5500',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    var lbl=document.createElement('div');
+    lbl.style.cssText='font-size:6.5pt;color:#9A7040;margin-top:2px;text-align:center';
+    lbl.textContent='Scan to verify';
+    ph.appendChild(lbl);
+  }
+};
+<\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+</body>
+</html>`;
+}
+
+// ─── INVOICE MODAL ───
+function InvoiceModal({bk,t,onClose}){
+  const invRef=useRef();
+  const[pdfLoading,setPdfLoading]=useState(false);
+
+  function doPrint(){
+    const html=buildInvoiceHTML(bk);
+    const w=window.open('','_blank','width=850,height=950,scrollbars=yes');
+    if(!w){alert('Please allow popups for this site.');return;}
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  }
+
+  async function doPDF(){
+    setPdfLoading(true);
+    try{
+      const el=invRef.current;
+      if(!el)return;
+      const canvas=await window.html2canvas(el,{
+        scale:3,useCORS:true,logging:false,
+        backgroundColor:'#ffffff',
+        width:794,
+        windowWidth:794,
+      });
+      const imgData=canvas.toDataURL('image/jpeg',0.97);
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      const pw=210; // A4 width mm
+      const ph=297; // A4 height mm
+      const imgH=(canvas.height/canvas.width)*pw;
+
+      if(imgH<=ph){
+        pdf.addImage(imgData,'JPEG',0,0,pw,imgH);
+      } else {
+        let pos=0;
+        while(pos<imgH){
+          if(pos>0)pdf.addPage();
+          pdf.addImage(imgData,'JPEG',0,-pos,pw,imgH);
+          pos+=ph;
+        }
+      }
+      pdf.save(`Invoice_${bk.receiptNo}_${bk.name.replace(/\s+/g,'_')}.pdf`);
+    }catch(e){
+      console.error(e);
+      alert('PDF generation failed. Please use the Print button instead.');
+    }finally{setPdfLoading(false);}
+  }
+
+  // Preview invoice styles (screen only, self-contained)
+  const previewStyle={
+    fontFamily:"'Inter',sans-serif",
+    background:'#fff',
+    width:794,
+    minWidth:794,
+    color:'#1a1a1a',
+    fontSize:13,
+    position:'relative',
+    overflow:'hidden',
+  };
+
+  const paid=bk.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+  const bal=Math.max(0,Number(bk.finalAmount)-paid);
+  const isPaid=bal<=0;
+  const pricePerNight=bk.roomType==='AC'?PRICE_AC:PRICE_NON_AC;
+  const qrRef=useRef();
+
+  useEffect(()=>{
+    if(!qrRef.current)return;
+    qrRef.current.innerHTML='';
+    try{new window.QRCode(qrRef.current,{text:bk.id+'|'+bk.name+'|Room'+bk.roomNumber,width:80,height:80,colorDark:'#CC5500',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.M});}catch(e){}
+  },[bk.id]);
+
+  return<div className="mo" onClick={onClose}>
+    <div style={{background:'var(--wh)',borderRadius:'var(--rd)',width:'min(860px,98vw)',maxHeight:'94vh',display:'flex',flexDirection:'column',boxShadow:'0 20px 60px rgba(0,0,0,0.28)',animation:'mdin 0.2s ease'}} onClick={e=>e.stopPropagation()}>
+      <div className="mh" style={{flexShrink:0}}>
+        <span className="mt">🧾 {t.receipt} — {bk.receiptNo}</span>
+        <div className="flex gap2 ic">
+          <button className="btn btn-pr btn-sm" onClick={doPrint}>🖨️ {t.print}</button>
+          <button className="btn btn-bl btn-sm" onClick={doPDF} disabled={pdfLoading}>
+            {pdfLoading?'⏳ Generating...':'📥 '+t.downloadPdf}
+          </button>
+          <button className="xbtn" onClick={onClose}>✕</button>
+        </div>
+      </div>
+
+      {/* scrollable preview */}
+      <div style={{overflow:'auto',flex:1,background:'#d0d0d0',padding:'16px',display:'flex',justifyContent:'center'}}>
+        <div ref={invRef} style={previewStyle}>
+          {/* WATERMARK */}
+          <div style={{position:'absolute',top:'42%',left:'50%',transform:'translate(-50%,-50%) rotate(-32deg)',
+            fontSize:80,fontWeight:900,color:isPaid?'rgba(22,163,74,0.10)':'rgba(220,38,38,0.10)',
+            whiteSpace:'nowrap',pointerEvents:'none',zIndex:0,letterSpacing:'0.08em',userSelect:'none'}}>
+            {isPaid?'PAID':'PENDING'}
+          </div>
+
+          {/* HEADER */}
+          <div style={{background:'linear-gradient(135deg,#E8681A,#F7891A)',color:'#fff',padding:'20px 24px',display:'flex',alignItems:'center',gap:16,position:'relative',zIndex:1}}>
+            <div style={{width:54,height:54,background:'rgba(255,255,255,0.2)',borderRadius:11,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26,border:'2px solid rgba(255,255,255,0.4)',flexShrink:0}}>🙏</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:15,fontWeight:700,fontFamily:"'Noto Sans Devanagari',sans-serif",lineHeight:1.25}}>{SANSTHA.name}</div>
+              <div style={{fontSize:11,opacity:0.92,marginTop:1}}>{SANSTHA.nameEn}</div>
+              <div style={{fontSize:9,opacity:0.82,marginTop:3}}>{SANSTHA.address} | {SANSTHA.city}</div>
+              <div style={{fontSize:9,opacity:0.82,marginTop:1}}>📞 {SANSTHA.phone} &nbsp;|&nbsp; ✉ {SANSTHA.email}</div>
+            </div>
+            <div style={{background:'rgba(255,255,255,0.22)',border:'1.5px solid rgba(255,255,255,0.5)',borderRadius:8,padding:'9px 14px',textAlign:'center',flexShrink:0}}>
+              <div style={{fontSize:8,opacity:0.8,textTransform:'uppercase',letterSpacing:'0.06em'}}>RECEIPT NO.</div>
+              <div style={{fontSize:16,fontWeight:700,lineHeight:1.1}}>{bk.receiptNo}</div>
+              <div style={{fontSize:8,opacity:0.8,marginTop:4,textTransform:'uppercase',letterSpacing:'0.04em'}}>Booking ID</div>
+              <div style={{fontSize:9,fontWeight:700}}>{bk.id}</div>
+            </div>
+          </div>
+
+          {/* META BAR */}
+          <div style={{display:'flex',background:'#FFF8F2',borderBottom:'1.5px solid #F0D8B0'}}>
+            {[['Invoice Date',fd(bk.updatedAt||bk.createdAt)],['Check-In',fd(bk.checkinDate)],['Check-Out',fd(bk.checkoutDate)],['Stay',bk.nights+' Night(s)'],['Status',bk.status==='active'?'ACTIVE':'CHECKED OUT']].map((m,i,arr)=>
+              <div key={i} style={{flex:1,padding:'8px 12px',borderRight:i<arr.length-1?'1px solid #F0D8B0':'none'}}>
+                <div style={{fontSize:8,color:'#9A7040',textTransform:'uppercase',letterSpacing:'0.07em',fontWeight:700,marginBottom:2}}>{m[0]}</div>
+                <div style={{fontSize:10,fontWeight:700,color:m[0]==='Status'?(bk.status==='active'?'#16A34A':'#5C3A00'):'#1A0F00'}}>{m[1]}</div>
+              </div>)}
+          </div>
+
+          {/* GUEST + ROOM */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{padding:'12px 16px',borderRight:'1px solid #F0D8B0'}}>
+              <div style={{fontSize:8,fontWeight:700,color:'#E8681A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #F0D8B0',paddingBottom:4,marginBottom:8}}>👤 Guest Details</div>
+              {[['Guest Name',bk.name],['Mobile',bk.mobile+(bk.altMobile?' / '+bk.altMobile:'')],['Aadhaar No.','XXXX XXXX '+String(bk.aadhaarNo||'').slice(-4)],['Address',(bk.address||'')+(bk.city?', '+bk.city:'')],bk.maleCount||bk.femaleCount?['Persons','M:'+(bk.maleCount||0)+' F:'+(bk.femaleCount||0)]:null].filter(Boolean).map((r,i)=>
+                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #FAE8CC',fontSize:9}}>
+                  <span style={{color:'#9A7040'}}>{r[0]}</span>
+                  <span style={{fontWeight:600,textAlign:'right',maxWidth:'55%',wordBreak:'break-word'}}>{r[1]||'—'}</span>
+                </div>)}
+            </div>
+            <div style={{padding:'12px 16px'}}>
+              <div style={{fontSize:8,fontWeight:700,color:'#E8681A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #F0D8B0',paddingBottom:4,marginBottom:8}}>🛏️ Room Details</div>
+              {[['Room Number','Room '+bk.roomNumber],['Room Type',bk.roomType==='AC'?'AC (Air Conditioned)':'Non-AC'],['Check-In',fd(bk.checkinDate)],['Check-Out',fd(bk.checkoutDate)],['Duration',bk.nights+' Night(s)']].map((r,i)=>
+                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #FAE8CC',fontSize:9}}>
+                  <span style={{color:'#9A7040'}}>{r[0]}</span>
+                  <span style={{fontWeight:700,color:r[0]==='Room Number'?'#E8681A':'#1A0F00',fontSize:r[0]==='Room Number'?12:9}}>{r[1]}</span>
+                </div>)}
+            </div>
+          </div>
+
+          {/* BILLING TABLE */}
+          <div style={{padding:'12px 16px',borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{fontSize:8,fontWeight:700,color:'#E8681A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #F0D8B0',paddingBottom:4,marginBottom:8}}>💰 Billing Details</div>
+            <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <thead><tr style={{background:'#FFF3E8'}}>
+                {['#','Description','Rate/Night','Nights','Amount'].map((h,i)=>
+                  <th key={i} style={{padding:'6px 9px',textAlign:i>=3?'right':'left',fontSize:8,fontWeight:700,color:'#E8681A',border:'1px solid #F0D8B0'}}>{h}</th>)}
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>1</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>{bk.roomType==='AC'?'AC Room':'Non-AC Room'} — Room {bk.roomNumber}</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>{fc(pricePerNight)}/night</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9,textAlign:'right'}}>{bk.nights}</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9,textAlign:'right',fontWeight:700}}>{fc(bk.originalPrice)}</td>
+                </tr>
+                {bk.discount>0&&<tr style={{background:'#f9fdf9'}}>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>2</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>Discount / Concession</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9}}>—</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9,textAlign:'right'}}>—</td>
+                  <td style={{padding:'6px 9px',border:'1px solid #F0D8B0',fontSize:9,textAlign:'right',fontWeight:700,color:'#16A34A'}}>- {fc(bk.discount)}</td>
+                </tr>}
+              </tbody>
+            </table>
+          </div>
+
+          {/* TOTAL */}
+          <div style={{background:'linear-gradient(135deg,#E8681A,#F7891A)',color:'#fff',padding:'11px 18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div>
+              <div style={{fontSize:9,opacity:0.85}}>Original: {fc(bk.originalPrice)}{bk.discount>0?' | Discount: - '+fc(bk.discount):''}</div>
+              <div style={{fontSize:10,fontWeight:600,marginTop:2}}>TOTAL PAYABLE AMOUNT</div>
+            </div>
+            <div style={{fontSize:20,fontWeight:700}}>{fc(bk.finalAmount)}</div>
+          </div>
+
+          {/* PAID/DUE */}
+          <div style={{display:'flex',gap:10,padding:'9px 16px',background:'#FFF8F2',borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{flex:1,borderRadius:8,padding:'10px 12px',textAlign:'center',border:'1.5px solid',background:isPaid?'#DCFCE7':'#FEE2E2',borderColor:isPaid?'#4ADE80':'#FCA5A5',color:isPaid?'#166534':'#991B1B'}}>
+              <div style={{fontSize:7,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',opacity:0.8}}>{isPaid?'✅ FULLY PAID':'⏳ BALANCE DUE'}</div>
+              <div style={{fontSize:16,fontWeight:700,marginTop:2}}>{isPaid?'NIL':fc(bal)}</div>
+            </div>
+            <div style={{flex:1,borderRadius:8,padding:'10px 12px',textAlign:'center',border:'1.5px solid',background:'#DBEAFE',borderColor:'#93C5FD',color:'#1E40AF'}}>
+              <div style={{fontSize:7,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',opacity:0.8}}>TOTAL AMOUNT PAID</div>
+              <div style={{fontSize:16,fontWeight:700,marginTop:2}}>{fc(paid)}</div>
+            </div>
+          </div>
+
+          {/* PAYMENT HISTORY */}
+          {bk.paymentHistory.length>0&&<div style={{padding:'10px 16px',borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{fontSize:8,fontWeight:700,color:'#E8681A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #F0D8B0',paddingBottom:4,marginBottom:8}}>📜 Payment History</div>
+            <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <thead><tr style={{background:'#FFF3E8'}}>
+                {['#','Date & Time','Mode','Txn ID','Amount'].map((h,i)=><th key={i} style={{padding:'5px 8px',textAlign:i===4?'right':'left',fontSize:7.5,fontWeight:700,color:'#E8681A',border:'1px solid #F0D8B0'}}>{h}</th>)}
+              </tr></thead>
+              <tbody>{bk.paymentHistory.map((p,i)=><tr key={i} style={{background:i%2===0?'#fffdf9':'#fff'}}>
+                <td style={{padding:'5px 8px',border:'1px solid #F0D8B0',fontSize:8.5}}>{i+1}</td>
+                <td style={{padding:'5px 8px',border:'1px solid #F0D8B0',fontSize:8.5}}>{fdt(p.date)}</td>
+                <td style={{padding:'5px 8px',border:'1px solid #F0D8B0',fontSize:8.5}}>{p.mode}</td>
+                <td style={{padding:'5px 8px',border:'1px solid #F0D8B0',fontSize:8.5}}>{p.transactionId||'—'}</td>
+                <td style={{padding:'5px 8px',border:'1px solid #F0D8B0',fontSize:8.5,textAlign:'right',fontWeight:700}}>{fc(p.amount)}</td>
+              </tr>)}</tbody>
+            </table>
+          </div>}
+
+          {/* QR + INFO */}
+          <div style={{padding:'10px 16px',display:'flex',alignItems:'flex-start',gap:12,borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{flexShrink:0,textAlign:'center'}}>
+              <div ref={qrRef}/>
+              <div style={{fontSize:7,color:'#9A7040',marginTop:2}}>Scan to verify</div>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:9,color:'#9A7040'}}>Reg No: {SANSTHA.regNo} &nbsp;|&nbsp; PAN: {SANSTHA.pan}</div>
+              <div style={{fontSize:9,color:'#9A7040',marginTop:2}}>🌐 {SANSTHA.website}</div>
+              {bk.note&&<div style={{fontSize:9,color:'#5C3A00',marginTop:6,background:'#FFF3E8',padding:'4px 9px',borderRadius:6,borderLeft:'3px solid #E8681A'}}><b>Note:</b> {bk.note}</div>}
+            </div>
+          </div>
+
+          {/* TERMS */}
+          <div style={{padding:'10px 16px',background:'#FFF8F2',borderBottom:'1px solid #F0D8B0'}}>
+            <div style={{fontSize:8,fontWeight:700,color:'#E8681A',marginBottom:6}}>📋 Terms &amp; Conditions — नियम व अटी</div>
+            {SANSTHA.terms.map((tc,i)=><div key={i} style={{display:'flex',gap:5,marginBottom:2,fontSize:8,color:'#5C3A00',lineHeight:1.6}}>
+              <span style={{color:'#E8681A',fontWeight:700,flexShrink:0}}>{i+1}.</span><span>{tc}</span>
+            </div>)}
+          </div>
+
+          {/* FOOTER */}
+          <div style={{background:'#1A0F00',color:'#fff',padding:'10px 18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div>
+              <div style={{fontFamily:"'Noto Sans Devanagari',sans-serif",fontSize:10,opacity:0.92}}>जय साखराम महाराज 🙏 | धन्यवाद</div>
+              <div style={{fontSize:8,opacity:0.6,marginTop:2}}>Thank you for choosing Bhaktniwas. Have a blessed stay.</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div style={{fontSize:8,opacity:0.6}}>Generated: {fdt(new Date().toISOString())}</div>
+              <div style={{fontSize:7,opacity:0.5}}>Computer generated invoice.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── BOOKING FORM ───
+function BookingForm({bookings,onSave,onCancel,editData,t}){
+  const occ=useMemo(()=>occupiedRooms(bookings,editData?.id),[bookings,editData]);
+  const emptyF={
+    name:'',mobile:'',altMobile:'',address:'',city:'',aadhaarNo:'',aadhaarFile:'',
+    roomType:'AC',roomNumber:'',maleCount:'',femaleCount:'',
+    checkinDate:todayDate(),checkoutDate:'',
+    manualEnabled:false,originalPrice:'',manualPrice:'',discount:'0',finalAmount:'',
+    totalAmount:'',advancePaid:'0',paymentMode:'Cash',txnId:'',note:'',
+    paymentHistory:[],
+  };
+  const[F,setF]=useState({...emptyF,...(editData||{})});
+  const[E,setE]=useState({});
+  const[tab,setTab]=useState(0);
+
+  function s(k,v){setF(p=>({...p,[k]:v}));setE(p=>({...p,[k]:null}));}
+
+  // Auto price
+  useEffect(()=>{
+    if(F.manualEnabled)return;
+    if(F.checkinDate&&F.checkoutDate&&F.roomType){
+      const n=nights(F.checkinDate,F.checkoutDate);
+      const pr=(F.roomType==='AC'?PRICE_AC:PRICE_NON_AC)*n;
+      setF(p=>({...p,originalPrice:pr,finalAmount:pr,totalAmount:pr}));
+    }
+  },[F.checkinDate,F.checkoutDate,F.roomType,F.manualEnabled]);
+
+  // Manual price calc
+  useEffect(()=>{
+    if(!F.manualEnabled)return;
+    const mp=Number(F.manualPrice)||0;
+    const disc=Number(F.discount)||0;
+    const final=Math.max(0,mp-disc);
+    setF(p=>({...p,finalAmount:final,totalAmount:final}));
+  },[F.manualPrice,F.discount,F.manualEnabled]);
+
+  const avRooms=(F.roomType==='AC'?AC_ROOMS:NON_AC_ROOMS).filter(r=>!occ.includes(r));
+  const n=nights(F.checkinDate,F.checkoutDate);
+  const rem=Math.max(0,(Number(F.totalAmount)||0)-(Number(F.advancePaid)||0));
+
+  function validate(){
+    const e={};
+    if(!F.name.trim())e.name='Required';
+    if(!/^\d{10}$/.test(F.mobile))e.mobile='10-digit required';
+    if(!F.aadhaarNo||!/^\d{12}$/.test(F.aadhaarNo))e.aadhaarNo='12-digit required';
+    if(!F.roomNumber)e.roomNumber='Select room';
+    if(!F.checkinDate)e.checkinDate='Required';
+    if(!F.checkoutDate)e.checkoutDate='Required';
+    if(F.checkoutDate&&F.checkinDate&&new Date(F.checkoutDate)<=new Date(F.checkinDate))e.checkoutDate='Must be after check-in';
+    setE(e);return Object.keys(e).length===0;
+  }
+
+  function handleSave(){
+    if(!validate())return;
+    const nn=nights(F.checkinDate,F.checkoutDate);
+    let ph=[...(editData?.paymentHistory||[])];
+    if(!editData&&Number(F.advancePaid)>0){
+      ph.push({amount:Number(F.advancePaid),mode:F.paymentMode,date:new Date().toISOString(),transactionId:F.txnId||''});
+    }
+    const bk={
+      ...F,id:editData?.id||genId(),
+      receiptNo:editData?.receiptNo||genRcpt(bookings),
+      nights:nn,status:editData?.status||'active',
+      createdAt:editData?.createdAt||new Date().toISOString(),
+      updatedAt:new Date().toISOString(),
+      paymentHistory:ph,
+      roomNumber:Number(F.roomNumber),
+      finalAmount:Number(F.finalAmount)||0,
+      totalAmount:Number(F.totalAmount)||0,
+      originalPrice:Number(F.originalPrice)||0,
+      discount:Number(F.discount)||0,
+      advancePaid:Number(F.advancePaid)||0,
+    };
+    onSave(bk);
+  }
+
+  function handleAadhaar(e){
+    const f=e.target.files[0];if(!f)return;
+    const rd=new FileReader();
+    rd.onload=ev=>s('aadhaarFile',ev.target.result);
+    rd.readAsDataURL(f);
+  }
+
+  const tabs=[{ic:'👤',lb:t.personalDetails},{ic:'🛏️',lb:t.stayDetails},{ic:'💳',lb:t.paymentDetails}];
+
+  return<>
+    <div className="mb" style={{paddingBottom:8}}>
+      <div className="tabbar">{tabs.map((tb,i)=><button key={i} className={`tabi${tab===i?' on':''}`} onClick={()=>setTab(i)}>{tb.ic} {tb.lb}</button>)}</div>
+
+      {tab===0&&<div className="fg fg2 fade">
+        <div className="fgr">
+          <label className="fl">{t.name}<span>*</span></label>
+          <input className={`fi${E.name?' err':''}`} value={F.name} onChange={e=>s('name',e.target.value)} placeholder="Enter full name"/>
+          {E.name&&<span className="fe">{E.name}</span>}
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.mobile}<span>*</span></label>
+          <input className={`fi${E.mobile?' err':''}`} value={F.mobile} onChange={e=>s('mobile',e.target.value)} placeholder="10-digit" maxLength={10}/>
+          {E.mobile&&<span className="fe">{E.mobile}</span>}
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.altMobile}</label>
+          <input className="fi" value={F.altMobile} onChange={e=>s('altMobile',e.target.value)} placeholder="Optional"/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.aadhaar}<span>*</span></label>
+          <input className={`fi${E.aadhaarNo?' err':''}`} value={F.aadhaarNo} onChange={e=>s('aadhaarNo',e.target.value)} placeholder="12-digit Aadhaar" maxLength={12}/>
+          {E.aadhaarNo&&<span className="fe">{E.aadhaarNo}</span>}
+        </div>
+        <div className="fgr full">
+          <label className="fl">{t.address}</label>
+          <textarea className="fi" rows={2} value={F.address} onChange={e=>s('address',e.target.value)} placeholder="Full address"/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.city}</label>
+          <input className="fi" value={F.city} onChange={e=>s('city',e.target.value)} placeholder="City / District"/>
+        </div>
+        <div className="fgr full">
+          <label className="fl">📎 {t.upload}</label>
+          <label className="up-a" style={{display:'block',cursor:'pointer'}}>
+            <input type="file" accept="image/*,application/pdf" style={{display:'none'}} onChange={handleAadhaar}/>
+            <div style={{fontSize:'1.5rem',marginBottom:4}}>📄</div>
+            <div className="sm c-lt">Click to upload image or PDF</div>
+          </label>
+          {F.aadhaarFile&&<div style={{marginTop:8,borderRadius:8,overflow:'hidden',maxHeight:120,background:'var(--or3)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {F.aadhaarFile.startsWith('data:image')?<img src={F.aadhaarFile} style={{maxHeight:120,maxWidth:'100%',borderRadius:8}} alt="aadhaar"/>:<div className="sm tc2 p-3">📄 PDF uploaded ✓</div>}
+          </div>}
+        </div>
+      </div>}
+
+      {tab===1&&<div className="fg fg2 fade">
+        <div className="fgr">
+          <label className="fl">{t.roomType}<span>*</span></label>
+          <select className="fi" value={F.roomType} onChange={e=>{s('roomType',e.target.value);s('roomNumber','');}}>
+            <option value="AC">🌬️ AC Room (₹{PRICE_AC}/night)</option>
+            <option value="Non-AC">🏠 Non-AC Room (₹{PRICE_NON_AC}/night)</option>
+          </select>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.roomNumber}<span>*</span></label>
+          <select className={`fi${E.roomNumber?' err':''}`} value={F.roomNumber} onChange={e=>s('roomNumber',Number(e.target.value))}>
+            <option value="">— Select Room —</option>
+            {avRooms.map(r=><option key={r} value={r}>Room {r}</option>)}
+          </select>
+          {E.roomNumber&&<span className="fe">{E.roomNumber}</span>}
+          <span className="fh">{avRooms.length} room(s) available</span>
+        </div>
+        <DateInput label={t.checkin} req value={F.checkinDate} onChange={v=>s('checkinDate',v)} error={E.checkinDate}/>
+        <DateInput label={t.checkout} req value={F.checkoutDate} onChange={v=>s('checkoutDate',v)} error={E.checkoutDate}/>
+        {n>0&&<div className="fgr full">
+          <div style={{background:'var(--or3)',border:'1.5px solid var(--bd)',borderRadius:8,padding:'10px 14px',display:'flex',justifyContent:'space-between'}}>
+            <span className="sm bold c-or">📅 {n} night(s) × {fc(F.roomType==='AC'?PRICE_AC:PRICE_NON_AC)}/night</span>
+            <span className="bold c-or">{fc(n*(F.roomType==='AC'?PRICE_AC:PRICE_NON_AC))}</span>
+          </div>
+        </div>}
+        <div className="fgr">
+          <label className="fl">{t.maleCount}</label>
+          <input type="number" className="fi" value={F.maleCount} onChange={e=>s('maleCount',e.target.value)} min={0} placeholder="0"/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.femaleCount}</label>
+          <input type="number" className="fi" value={F.femaleCount} onChange={e=>s('femaleCount',e.target.value)} min={0} placeholder="0"/>
+        </div>
+
+        <div className="fgr full">
+          <div className="dv"/>
+          <div className="flex ic gap2 mb3">
+            <div className={`tog-tr${F.manualEnabled?' on':''}`} onClick={()=>s('manualEnabled',!F.manualEnabled)}><div className="tog-th"/></div>
+            <span className="semi sm">{F.manualEnabled?'🟠 '+t.manualBilling:'🟢 '+t.autoBilling}</span>
+          </div>
+          <div className="fg fg3">
+            <div className="fgr">
+              <label className="fl">{t.originalPrice}</label>
+              <input type="number" className="fi" value={F.originalPrice} onChange={e=>s('originalPrice',e.target.value)} readOnly={!F.manualEnabled}/>
+            </div>
+            {F.manualEnabled&&<>
+              <div className="fgr">
+                <label className="fl">{t.manualPriceF}</label>
+                <input type="number" className="fi" value={F.manualPrice} onChange={e=>s('manualPrice',e.target.value)} placeholder="0"/>
+              </div>
+              <div className="fgr">
+                <label className="fl">{t.discount}</label>
+                <input type="number" className="fi" value={F.discount} onChange={e=>s('discount',e.target.value)} placeholder="0"/>
+              </div>
+            </>}
+            <div className="fgr">
+              <label className="fl">{t.finalAmount}</label>
+              <input type="number" className="fi" value={F.finalAmount} onChange={e=>{s('finalAmount',e.target.value);s('totalAmount',e.target.value);}} style={{fontWeight:700,color:'var(--or)'}}/>
+            </div>
+          </div>
+        </div>
+        <div className="fgr full">
+          <label className="fl">{t.note}</label>
+          <input className="fi" value={F.note} onChange={e=>s('note',e.target.value)} placeholder="Optional note"/>
+        </div>
+      </div>}
+
+      {tab===2&&<div className="fg fg2 fade">
+        <div className="fgr">
+          <label className="fl">{t.totalAmount}</label>
+          <input type="number" className="fi" value={F.totalAmount} onChange={e=>s('totalAmount',e.target.value)}/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.advancePaid}</label>
+          <input type="number" className="fi" value={F.advancePaid} onChange={e=>s('advancePaid',e.target.value)} placeholder="0"/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.paymentMode}</label>
+          <select className="fi" value={F.paymentMode} onChange={e=>s('paymentMode',e.target.value)}>
+            <option value="Cash">💵 Cash</option>
+            <option value="UPI">📱 UPI</option>
+            <option value="Online">🌐 Online</option>
+          </select>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.txnId}</label>
+          <input className="fi" value={F.txnId} onChange={e=>s('txnId',e.target.value)} placeholder="Optional"/>
+        </div>
+        <div className="fgr full">
+          <div style={{background:'var(--or3)',border:'1.5px solid var(--bd)',borderRadius:9,padding:'14px 16px'}}>
+            <div className="info-row"><span className="info-k">{t.finalAmount}</span><span className="info-v bold" style={{color:'var(--or)'}}>{fc(F.finalAmount)}</span></div>
+            <div className="info-row"><span className="info-k">{t.advancePaid}</span><span className="info-v c-gr">{fc(F.advancePaid)}</span></div>
+            <div className="info-row" style={{borderBottom:'none',marginTop:4}}>
+              <span className="info-k bold">{t.remaining}</span>
+              <span className="info-v bold" style={{color:'var(--re)',fontSize:'1.05rem'}}>{fc(rem)}</span>
+            </div>
+          </div>
+        </div>
+      </div>}
+    </div>
+
+    <div className="mf">
+      <div className="flex gap2">
+        {tab>0&&<button className="btn btn-ol btn-sm" onClick={()=>setTab(p=>p-1)}>← Back</button>}
+        {tab<2&&<button className="btn btn-pr btn-sm" onClick={()=>setTab(p=>p+1)}>Next →</button>}
+      </div>
+      <div className="flex gap2">
+        <button className="btn btn-ol btn-sm" onClick={onCancel}>{t.cancel}</button>
+        {tab===2&&<button className="btn btn-gr" onClick={handleSave}>✅ {t.save}</button>}
+      </div>
+    </div>
+  </>;
+}
+
+// ─── PAYMENT MODAL ───
+function PaymentModal({bk,onSave,onClose,t}){
+  const[amt,setAmt]=useState('');
+  const[mode,setMode]=useState('Cash');
+  const[txn,setTxn]=useState('');
+  const[adjF,setAdjF]=useState(bk.finalAmount);
+  const[disc,setDisc]=useState(bk.discount||0);
+
+  const paid=bk.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+  const bal=Math.max(0,Number(adjF)-paid);
+
+  function addPay(){
+    if(!amt||Number(amt)<=0)return;
+    const ph=[...bk.paymentHistory,{amount:Number(amt),mode,date:new Date().toISOString(),transactionId:txn}];
+    onSave({...bk,paymentHistory:ph,finalAmount:Number(adjF),discount:Number(disc)});
+    setAmt('');setTxn('');
+  }
+
+  return<div className="mb">
+    <div style={{background:'var(--or3)',border:'1.5px solid var(--bd)',borderRadius:9,padding:'12px 16px',marginBottom:16}}>
+      <div className="info-row"><span className="info-k">{t.finalAmount}</span><span className="info-v bold c-or">{fc(adjF)}</span></div>
+      <div className="info-row"><span className="info-k">{t.totalPaid}</span><span className="info-v bold c-gr">{fc(paid)}</span></div>
+      <div className="info-row" style={{borderBottom:'none'}}><span className="info-k bold">{t.balance}</span><span className="info-v bold" style={{color:bal===0?'var(--gr)':'var(--re)'}}>{fc(bal)}</span></div>
+    </div>
+
+    <div className="sec-tt">🏷️ Adjust Amount</div>
+    <div className="fg fg2 mb4">
+      <div className="fgr">
+        <label className="fl">Final Amount Override</label>
+        <input type="number" className="fi" value={adjF} onChange={e=>setAdjF(e.target.value)}/>
+      </div>
+      <div className="fgr">
+        <label className="fl">{t.discount}</label>
+        <input type="number" className="fi" value={disc} onChange={e=>{setDisc(e.target.value);setAdjF(Math.max(0,Number(bk.originalPrice||bk.finalAmount)-Number(e.target.value)));}}/>
+      </div>
+    </div>
+
+    <div className="sec-tt">💳 {t.addPayment}</div>
+    <div className="fg fg2 mb3">
+      <div className="fgr">
+        <label className="fl">{t.amount}</label>
+        <input type="number" className="fi" value={amt} onChange={e=>setAmt(e.target.value)} placeholder="₹"/>
+      </div>
+      <div className="fgr">
+        <label className="fl">{t.paymentMode}</label>
+        <select className="fi" value={mode} onChange={e=>setMode(e.target.value)}>
+          <option value="Cash">💵 Cash</option>
+          <option value="UPI">📱 UPI</option>
+          <option value="Online">🌐 Online</option>
+        </select>
+      </div>
+      <div className="fgr">
+        <label className="fl">{t.txnId}</label>
+        <input className="fi" value={txn} onChange={e=>setTxn(e.target.value)} placeholder="Optional"/>
+      </div>
+    </div>
+    <button className="btn btn-gr w100 mb4" onClick={addPay}>➕ {t.addPayment}</button>
+
+    {bk.paymentHistory.length>0&&<>
+      <div className="sec-tt">📜 {t.paymentHistory}</div>
+      {bk.paymentHistory.map((p,i)=><div key={i} className="ph-row">
+        <div><div className="bold">{fc(p.amount)}</div><div className="xs c-lt">{fdt(p.date)}</div></div>
+        <div className="flex gap2 ic">
+          <span className="badge bg-bl">{p.mode}</span>
+          {p.transactionId&&<span className="xs c-lt">{p.transactionId}</span>}
+        </div>
+      </div>)}
+    </>}
+
+    <div className="flex gap2" style={{justifyContent:'flex-end',marginTop:12}}>
+      <button className="btn btn-ol btn-sm" onClick={onClose}>{t.close}</button>
+      <button className="btn btn-pr btn-sm" onClick={()=>onSave({...bk,finalAmount:Number(adjF),discount:Number(disc)})}>💾 Save Changes</button>
+    </div>
+  </div>;
+}
+
+// ─── BOOKING DETAILS ───
+function BookingDetails({bk,t,onClose,onEdit,onUpdatePayment,onCheckout,onInvoice}){
+  const[showAd,setShowAd]=useState(false);
+  const paid=bk.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+  const bal=Math.max(0,Number(bk.finalAmount)-paid);
+
+  return<div className="mb fade">
+    <div className="flex gap2 fw mb3">
+      <span className={`badge ${bk.status==='active'?'bg-gr':'bg-gy'}`} style={{padding:'4px 12px',fontSize:'0.76rem'}}>
+        {bk.status==='active'?'🟢 Active':'⚫ Checked Out'}
+      </span>
+      <span className="badge bg-or" style={{padding:'4px 12px',fontSize:'0.74rem'}}>{bk.id}</span>
+      <span className="badge bg-bl" style={{padding:'4px 12px',fontSize:'0.74rem'}}>{bk.receiptNo}</span>
+    </div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
+      <div className="card"><div className="card-bd">
+        <div className="sec-tt">👤 {t.personalDetails}</div>
+        <div className="info-row"><span className="info-k">{t.name}</span><span className="info-v">{bk.name}</span></div>
+        <div className="info-row"><span className="info-k">{t.mobile}</span><span className="info-v">{bk.mobile}</span></div>
+        {bk.altMobile&&<div className="info-row"><span className="info-k">{t.altMobile}</span><span className="info-v">{bk.altMobile}</span></div>}
+        <div className="info-row"><span className="info-k">{t.aadhaar}</span><span className="info-v">XXXX XXXX {String(bk.aadhaarNo||'').slice(-4)}</span></div>
+        <div className="info-row"><span className="info-k">{t.city}</span><span className="info-v">{bk.city||'—'}</span></div>
+        {bk.aadhaarFile&&<button className="btn btn-sc btn-xs mt2" onClick={()=>setShowAd(true)}>📄 {t.viewAadhaar}</button>}
+      </div></div>
+
+      <div className="card"><div className="card-bd">
+        <div className="sec-tt">🛏️ {t.stayDetails}</div>
+        <div className="info-row"><span className="info-k">Room</span><span className="info-v bold c-or" style={{fontSize:'1.05rem'}}>Room {bk.roomNumber} ({bk.roomType})</span></div>
+        <div className="info-row"><span className="info-k">{t.checkin}</span><span className="info-v">{fd(bk.checkinDate)}</span></div>
+        <div className="info-row"><span className="info-k">{t.checkout}</span><span className="info-v">{fd(bk.checkoutDate)}</span></div>
+        <div className="info-row"><span className="info-k">Duration</span><span className="info-v">{bk.nights} Night(s)</span></div>
+        <div className="info-row"><span className="info-k">{t.persons}</span><span className="info-v">M:{bk.maleCount||0} F:{bk.femaleCount||0}</span></div>
+        {bk.note&&<div className="info-row"><span className="info-k">{t.note}</span><span className="info-v">{bk.note}</span></div>}
+      </div></div>
+
+      <div className="card"><div className="card-bd">
+        <div className="sec-tt">💰 {t.paymentDetails}</div>
+        <div className="info-row"><span className="info-k">{t.originalPrice}</span><span className="info-v">{fc(bk.originalPrice)}</span></div>
+        <div className="info-row"><span className="info-k">{t.discount}</span><span className="info-v c-gr">- {fc(bk.discount)}</span></div>
+        <div className="info-row"><span className="info-k">{t.finalAmount}</span><span className="info-v bold c-or" style={{fontSize:'1.05rem'}}>{fc(bk.finalAmount)}</span></div>
+        <div className="info-row"><span className="info-k">{t.totalPaid}</span><span className="info-v bold c-gr">{fc(paid)}</span></div>
+        <div className="info-row" style={{borderBottom:'none'}}><span className="info-k bold">{t.balance}</span><span className="info-v bold" style={{color:bal===0?'var(--gr)':'var(--re)',fontSize:'1.05rem'}}>{fc(bal)}</span></div>
+        <div className="progress mt2"><div className="progress-f" style={{width:`${Math.min(100,bk.finalAmount>0?(paid/bk.finalAmount)*100:0)}%`}}/></div>
+      </div></div>
+
+      <div className="card"><div className="card-bd">
+        <div className="sec-tt">📱 QR Code</div>
+        <div style={{display:'flex',justifyContent:'center',marginBottom:6}}><QR val={bk.id} sz={110}/></div>
+        <div className="xs c-lt tc2">{bk.id}</div>
+      </div></div>
+    </div>
+
+    {bk.paymentHistory.length>0&&<div className="card mb3"><div className="card-hd"><span className="card-ti">📜 {t.paymentHistory}</span></div>
+      <div className="tw"><table><thead><tr><th>#</th><th>Date</th><th>Amount</th><th>Mode</th><th>Txn ID</th></tr></thead>
+      <tbody>{bk.paymentHistory.map((p,i)=><tr key={i}>
+        <td>{i+1}</td><td className="xs">{fdt(p.date)}</td>
+        <td><b className="c-or">{fc(p.amount)}</b></td>
+        <td><span className="badge bg-bl">{p.mode}</span></td>
+        <td className="xs c-lt">{p.transactionId||'—'}</td>
+      </tr>)}</tbody></table></div>
+    </div>}
+
+    <div className="flex gap2 fw">
+      <button className="btn btn-pr btn-sm" onClick={onInvoice}>🧾 {t.receipt}</button>
+      {bk.status==='active'&&<>
+        <button className="btn btn-sc btn-sm" onClick={()=>onEdit(bk)}>✏️ {t.edit}</button>
+        <button className="btn btn-ye btn-sm" onClick={()=>onUpdatePayment(bk)}>💳 {t.updatePayment}</button>
+        <button className="btn btn-re btn-sm" onClick={()=>onCheckout(bk)}>🚪 {t.checkoutBtn}</button>
+      </>}
+      <button className="btn btn-ol btn-sm" onClick={onClose}>{t.close}</button>
+    </div>
+
+    {showAd&&<div className="mo" onClick={()=>setShowAd(false)}>
+      <div className="md" onClick={e=>e.stopPropagation()}>
+        <div className="mh"><span className="mt">📄 Aadhaar</span><button className="xbtn" onClick={()=>setShowAd(false)}>✕</button></div>
+        <div className="mb">
+          {bk.aadhaarFile?.startsWith('data:image')?<img src={bk.aadhaarFile} style={{maxWidth:'100%',maxHeight:'65vh',display:'block',margin:'0 auto',borderRadius:8}} alt="aadhaar"/>:<div className="tc2 sm" style={{padding:24}}>📄 PDF — open file to view</div>}
+        </div>
+      </div>
+    </div>}
+  </div>;
+}
+
+// ─── DASHBOARD ───
+function Dashboard({bookings,t,onNew}){
+  const today=new Date().toDateString();
+  const active=bookings.filter(b=>b.status==='active');
+  const occ=active.length;
+  const tot=AC_ROOMS.length+NON_AC_ROOMS.length-6; // 16+6 but 110-115 overlap, total unique = 22
+  const avail=tot-occ;
+  const coll=bookings.reduce((s,b)=>s+b.paymentHistory.reduce((a,p)=>a+Number(p.amount),0),0);
+  const pend=bookings.reduce((s,b)=>s+Math.max(0,Number(b.finalAmount)-b.paymentHistory.reduce((a,p)=>a+Number(p.amount),0)),0);
+  const todayCO=bookings.filter(b=>b.status==='checkedout'&&new Date(b.updatedAt).toDateString()===today).length;
+  const acOcc=active.filter(b=>b.roomType==='AC').length;
+  const nacOcc=active.filter(b=>b.roomType==='Non-AC').length;
+
+  return<div className="pg fade">
+    <div className="pgh">
+      <div>
+        <div className="pgt">📊 {t.dashboard}</div>
+        <div className="xs c-lt dev">{SANSTHA.name}</div>
+      </div>
+      <button className="btn btn-pr" onClick={onNew}>+ {t.newBooking}</button>
+    </div>
+
+    <div className="sg mb6">
+      {[
+        {ic:'🏠',v:tot,l:t.totalRooms,c:'sc-or'},
+        {ic:'✅',v:avail,l:t.available,c:'sc-gr'},
+        {ic:'🔴',v:occ,l:t.occupied,c:'sc-re'},
+        {ic:'💰',v:fc(coll),l:t.totalCollection,c:'sc-bl'},
+        {ic:'⏳',v:fc(Math.max(0,pend)),l:t.pendingPayments,c:'sc-ye'},
+        {ic:'🚪',v:todayCO,l:t.todayCheckouts,c:'sc-pu'},
+      ].map((s,i)=><div key={i} className={`sc ${s.c}`}>
+        <div className="sc-ic">{s.ic}</div>
+        <div className="sc-val">{s.v}</div>
+        <div className="sc-lbl">{s.l}</div>
+      </div>)}
+    </div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+      <div className="card">
+        <div className="card-hd"><span className="card-ti">🏠 Room Status</span></div>
+        <div className="card-bd">
+          <div className="mb3">
+            <div className="sec-tt">AC {t.rooms} (101–116)</div>
+            <div className="rg">{AC_ROOMS.map(r=>{
+              const b=active.find(x=>x.roomNumber===r);
+              return<div key={r} className={`rb ${b?'oc':'av'}`} title={b?b.name:'Available'}>
+                {r}<span className="rb-tag">{b?'🔴':'🟢'}</span>
+              </div>;
+            })}</div>
+          </div>
+          <div>
+            <div className="sec-tt">Non-AC {t.rooms} (110–115)</div>
+            <div className="rg">{NON_AC_ROOMS.map(r=>{
+              const b=active.find(x=>x.roomNumber===r);
+              return<div key={r} className={`rb ${b?'oc':'av'}`} title={b?b.name:'Available'}>
+                {r}<span className="rb-tag">{b?'🔴':'🟢'}</span>
+              </div>;
+            })}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-hd"><span className="card-ti">📋 Recent Bookings</span></div>
+        <div style={{padding:0}}>
+          {bookings.length===0?<div className="tc2 c-lt sm" style={{padding:20}}>{t.noBookings}</div>:
+          <table><thead><tr><th>ID</th><th>Name</th><th>Room</th><th>Status</th></tr></thead>
+          <tbody>{[...bookings].reverse().slice(0,8).map(b=><tr key={b.id}>
+            <td className="xs c-or bold">{b.id}</td>
+            <td><div className="semi">{b.name}</div><div className="xs c-lt">{b.city}</div></td>
+            <td><b>{b.roomNumber}</b></td>
+            <td><span className={`badge ${b.status==='active'?'bg-gr':'bg-gy'}`}>{b.status==='active'?'Active':'Out'}</span></td>
+          </tr>)}</tbody></table>}
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── BOOKING LIST ───
+function BookingList({bookings,t,onView,onEdit,onUpdatePayment,onCheckout,onNew,onDelete,onInvoice}){
+  const[q,setQ]=useState('');
+  const[fType,setFType]=useState('all');
+  const[fStat,setFStat]=useState('all');
+  const[fDate,setFDate]=useState('');
+  const[delConf,setDelConf]=useState(null);
+
+  const filtered=useMemo(()=>[...bookings].filter(b=>{
+    const sq=q.toLowerCase();
+    const ms=!sq||[b.name,b.mobile,String(b.roomNumber),b.id,b.city].some(x=>(x||'').toLowerCase().includes(sq));
+    const mt=fType==='all'||b.roomType===fType;
+    const ms2=fStat==='all'||b.status===fStat;
+    const md=!fDate||b.checkinDate?.startsWith(fDate);
+    return ms&&mt&&ms2&&md;
+  }).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),[bookings,q,fType,fStat,fDate]);
+
+  return<div className="pg fade">
+    <div className="pgh">
+      <div className="pgt">📋 {t.bookings} <span className="xs c-lt">({bookings.length} total)</span></div>
+      <button className="btn btn-pr" onClick={onNew}>+ {t.newBooking}</button>
+    </div>
+
+    <div className="flex gap2 fw mb3">
+      <div className="srch f1" style={{minWidth:200}}>
+        <input className="fi w100" placeholder={t.search} value={q} onChange={e=>setQ(e.target.value)}/>
+      </div>
+      <select className="fi" style={{width:'auto'}} value={fType} onChange={e=>setFType(e.target.value)}>
+        <option value="all">All Types</option>
+        <option value="AC">AC</option>
+        <option value="Non-AC">Non-AC</option>
+      </select>
+      <select className="fi" style={{width:'auto'}} value={fStat} onChange={e=>setFStat(e.target.value)}>
+        <option value="all">All Status</option>
+        <option value="active">Active</option>
+        <option value="checkedout">Checked Out</option>
+      </select>
+      <input type="date" className="fi" style={{width:'auto'}} value={fDate} onChange={e=>setFDate(e.target.value)}/>
+      {(q||fType!=='all'||fStat!=='all'||fDate)&&<button className="btn btn-ol btn-sm" onClick={()=>{setQ('');setFType('all');setFStat('all');setFDate('');}}>✕</button>}
+    </div>
+
+    <div className="xs c-lt mb2">{filtered.length} booking(s)</div>
+
+    {filtered.length===0?<div className="card"><div className="card-bd tc2 c-lt" style={{padding:32}}>{t.noBookings}</div></div>:
+    <div className="tw card">
+      <table><thead><tr>
+        <th>Booking ID</th><th>Name</th><th>Mobile</th><th>Room</th><th>Type</th>
+        <th>Check-In</th><th>Check-Out</th><th>Final</th><th>Balance</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>{filtered.map(b=>{
+        const paid=b.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+        const bal=Math.max(0,Number(b.finalAmount)-paid);
+        return<tr key={b.id}>
+          <td className="xs bold c-or">{b.id}</td>
+          <td><div className="semi">{b.name}</div><div className="xs c-lt">{b.city}</div></td>
+          <td className="xs">{b.mobile}</td>
+          <td><b style={{color:'var(--or)'}}>{b.roomNumber}</b></td>
+          <td><span className={`badge ${b.roomType==='AC'?'bg-bl':'bg-or'}`}>{b.roomType}</span></td>
+          <td className="xs">{fd(b.checkinDate)}</td>
+          <td className="xs">{fd(b.checkoutDate)}</td>
+          <td><b className="c-or">{fc(b.finalAmount)}</b></td>
+          <td><b style={{color:bal===0?'var(--gr)':'var(--re)'}}>{fc(bal)}</b></td>
+          <td><span className={`badge ${b.status==='active'?'bg-gr':'bg-gy'}`}>{b.status==='active'?'Active':'Out'}</span></td>
+          <td>
+            <div className="flex gap2 fw">
+              <button className="btn btn-sc btn-xs" onClick={()=>onView(b)}>👁</button>
+              <button className="btn btn-bl btn-xs" onClick={()=>onInvoice(b)}>🧾</button>
+              {b.status==='active'&&<>
+                <button className="btn btn-sc btn-xs" onClick={()=>onEdit(b)}>✏️</button>
+                <button className="btn btn-ye btn-xs" onClick={()=>onUpdatePayment(b)}>💳</button>
+                <button className="btn btn-re btn-xs" onClick={()=>onCheckout(b)}>🚪</button>
+              </>}
+              <button className="btn btn-re btn-xs" onClick={()=>setDelConf(b)} title="Delete">🗑️</button>
+            </div>
+          </td>
+        </tr>;
+      })}</tbody></table>
+    </div>}
+
+    {delConf&&<Confirm
+      msg={`Delete booking ${delConf.id} for ${delConf.name}? ${t.deleteConfirm}`}
+      icon="🗑️" yesLabel="Delete" yesClass="btn-re"
+      onYes={()=>{onDelete(delConf.id);setDelConf(null);}}
+      onNo={()=>setDelConf(null)}
+    />}
+  </div>;
+}
+
+// ─── ROOMS PAGE ───
+function RoomsPage({bookings,t}){
+  const active=bookings.filter(b=>b.status==='active');
+  const oMap={};active.forEach(b=>{oMap[b.roomNumber]=b;});
+
+  function RCard({rn,isAC}){
+    const b=oMap[rn];const occ=!!b;
+    return<div className={`sc ${occ?'sc-re':'sc-gr'}`}>
+      <div className="flex jb ic mb2">
+        <span style={{fontSize:'1.2rem'}}>🏠</span>
+        <span className={`badge ${occ?'bg-re':'bg-gr'}`}>{occ?'Occupied':'Free'}</span>
+      </div>
+      <div className="sc-val" style={{fontSize:'1.2rem'}}>Room {rn}</div>
+      <div className="sc-lbl">{isAC?'AC':'Non-AC'} · ₹{isAC?PRICE_AC:PRICE_NON_AC}/night</div>
+      {occ&&<div style={{marginTop:8,paddingTop:8,borderTop:'1px dashed var(--bd)'}}>
+        <div className="xs semi">{b.name}</div>
+        <div className="xs c-lt">{b.mobile}</div>
+        <div className="xs c-lt">Out: {fd(b.checkoutDate)}</div>
+      </div>}
+    </div>;
+  }
+
+  return<div className="pg fade">
+    <div className="pgh"><div className="pgt">🏠 {t.rooms}</div></div>
+    <div className="sec-tt">🌬️ {t.acRooms} (101–116)</div>
+    <div className="sg mb6">{AC_ROOMS.map(r=><RCard key={r} rn={r} isAC/>)}</div>
+    <div className="sec-tt">🏠 {t.nonAcRooms} (110–115)</div>
+    <div className="sg">{NON_AC_ROOMS.map(r=><RCard key={r} rn={r} isAC={false}/>)}</div>
+  </div>;
+}
+
+// ─── SETTINGS PAGE ───
+function Settings({cfg,onCfg,bookings,t}){
+  function backup(){
+    const d=JSON.stringify({bookings,cfg,at:new Date().toISOString()},null,2);
+    const b=new Blob([d],{type:'application/json'});
+    const u=URL.createObjectURL(b);
+    const a=document.createElement('a');a.href=u;a.download=`bhaktniwas_${Date.now()}.json`;a.click();
+  }
+  function restore(e){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.bookings)LS.sbk(d.bookings);if(d.cfg)LS.scfg(d.cfg);window.location.reload();}catch{alert('Invalid file');}};
+    r.readAsText(f);
+  }
+  function csv(){
+    const rows=[['Booking ID','Receipt','Name','Mobile','Room','Type','Check-In','Check-Out','Nights','Original','Discount','Final','Paid','Balance','Status']];
+    bookings.forEach(b=>{
+      const paid=b.paymentHistory.reduce((s,p)=>s+Number(p.amount),0);
+      rows.push([b.id,b.receiptNo,b.name,b.mobile,b.roomNumber,b.roomType,fd(b.checkinDate),fd(b.checkoutDate),b.nights,b.originalPrice,b.discount,b.finalAmount,paid,Math.max(0,b.finalAmount-paid),b.status]);
+    });
+    const c=rows.map(r=>r.map(x=>`"${x||''}"`).join(',')).join('\n');
+    const bl=new Blob([c],{type:'text/csv'});
+    const u=URL.createObjectURL(bl);
+    const a=document.createElement('a');a.href=u;a.download=`bookings_${Date.now()}.csv`;a.click();
+  }
+
+  return<div className="pg fade">
+    <div className="pgh"><div className="pgt">⚙️ {t.settings}</div></div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:14}}>
+      <div className="card"><div className="card-hd"><span className="card-ti">🎨 Appearance</span></div><div className="card-bd">
+        <div className="flex jb ic mb3">
+          <span className="semi sm">{t.darkMode}</span>
+          <div className={`tog-tr${cfg.dark?' on':''}`} onClick={()=>onCfg({...cfg,dark:!cfg.dark})}><div className="tog-th"/></div>
+        </div>
+        <div className="flex jb ic">
+          <span className="semi sm">{t.lang}</span>
+          <div className="flex gap2">
+            <button className={`btn btn-sm ${cfg.lang==='en'?'btn-pr':'btn-ol'}`} onClick={()=>onCfg({...cfg,lang:'en'})}>EN</button>
+            <button className={`btn btn-sm ${cfg.lang==='mr'?'btn-pr':'btn-ol'}`} onClick={()=>onCfg({...cfg,lang:'mr'})}>मराठी</button>
+          </div>
+        </div>
+      </div></div>
+
+      <div className="card"><div className="card-hd"><span className="card-ti">💾 Data</span></div><div className="card-bd">
+        <div className="flex fw gap2">
+          <button className="btn btn-gr btn-sm" onClick={csv}>📊 {t.exportExcel}</button>
+          <button className="btn btn-bl btn-sm" onClick={backup}>💾 {t.backup}</button>
+          <label className="btn btn-ye btn-sm" style={{cursor:'pointer'}}>
+            <input type="file" accept=".json" style={{display:'none'}} onChange={restore}/>📂 {t.restore}
+          </label>
+        </div>
+        <div className="mt3 xs c-lt">Total: {bookings.length} bookings</div>
+      </div></div>
+
+      <div className="card"><div className="card-hd"><span className="card-ti">🏛️ Sanstha Info</span></div><div className="card-bd">
+        <div className="info-row"><span className="info-k">Name</span><span className="info-v xs dev">{SANSTHA.name}</span></div>
+        <div className="info-row"><span className="info-k">Address</span><span className="info-v xs">{SANSTHA.city}</span></div>
+        <div className="info-row"><span className="info-k">Phone</span><span className="info-v xs">{SANSTHA.phone}</span></div>
+        <div className="info-row"><span className="info-k">AC Rooms</span><span className="info-v xs">101–116 (16)</span></div>
+        <div className="info-row"><span className="info-k">Non-AC</span><span className="info-v xs">110–115 (6)</span></div>
+        <div className="info-row" style={{borderBottom:'none'}}><span className="info-k">Reg. No.</span><span className="info-v xs">{SANSTHA.regNo}</span></div>
+      </div></div>
+
+      <div className="card"><div className="card-hd"><span className="card-ti">ℹ️ About</span></div><div className="card-bd">
+        <div className="tc2">
+          <div style={{fontSize:'2rem',marginBottom:8}}>🙏</div>
+          <div className="semi dev c-or">{SANSTHA.name}</div>
+          <div className="xs c-lt mt2">{SANSTHA.nameEn}</div>
+          <div className="xs c-lt mt2">Version 2.0 | Fully Offline</div>
+        </div>
+      </div></div>
+    </div>
+  </div>;
+}
+
+// ─── MAIN APP ───
+function App(){
+  const[cfg,setCfg]=useState(LS.cfg());
+  const[bookings,setBookings]=useState(LS.bk());
+  const[page,setPage]=useState('dashboard');
+  const[slim,setSlim]=useState(false);
+  const[mobOpen,setMobOpen]=useState(false);
+  const[modal,setModal]=useState(null);
+  const[confirm,setConfirm]=useState(null);
+  const{ts,toast}=useToast();
+
+  const t=T[cfg.lang]||T.en;
+
+  useEffect(()=>{document.documentElement.className=cfg.dark?'dark':'';LS.scfg(cfg);},[cfg]);
+  useEffect(()=>{LS.sbk(bookings);},[bookings]);
+
+  function saveBooking(bk){
+    setBookings(p=>{const i=p.findIndex(b=>b.id===bk.id);if(i>=0){const n=[...p];n[i]=bk;return n;}return[...p,bk];});
+    toast(t.saved,'s');setModal(null);
+  }
+
+  function checkout(bk){
+    setBookings(p=>p.map(b=>b.id===bk.id?{...b,status:'checkedout',updatedAt:new Date().toISOString()}:b));
+    toast(t.coSuccess,'s');setModal(null);
+  }
+
+  function doCheckout(bk){
+    setConfirm({msg:`Checkout Room ${bk.roomNumber} for ${bk.name}?`,icon:'🚪',yesLabel:'Check Out',yesClass:'btn-re',onYes:()=>{checkout(bk);setConfirm(null);}});
+  }
+
+  function updatePay(bk){
+    setBookings(p=>p.map(b=>b.id===bk.id?bk:b));
+    toast(t.payAdded,'s');setModal(null);
+  }
+
+  function deleteBooking(id){
+    setBookings(p=>p.filter(b=>b.id!==id));
+    toast('Booking deleted','w');
+  }
+
+  const nav=[
+    {id:'dashboard',ic:'📊',lb:t.dashboard},
+    {id:'bookings',ic:'📋',lb:t.bookings},
+    {id:'rooms',ic:'🏠',lb:t.rooms},
+    {id:'settings',ic:'⚙️',lb:t.settings},
+  ];
+
+  const curNav=nav.find(n=>n.id===page);
+
+  return<div className="shell">
+    <ToastC ts={ts}/>
+
+    {/* Mobile overlay */}
+    {mobOpen&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',zIndex:99}} onClick={()=>setMobOpen(false)}/>}
+
+    {/* Sidebar */}
+    <div className={`sidebar${slim?' slim':''}${mobOpen?' mob-open':''}`}>
+      <div className="sb-head">
+        <div className="sb-logo">🙏</div>
+        {!slim&&<div className="sb-txt">
+          <div className="sb-name">Bhaktniwas</div>
+          <div className="sb-sub">व्यवस्थापन</div>
+        </div>}
+      </div>
+      <nav className="sb-nav">
+        {nav.map(n=><div key={n.id} className={`nav-i${page===n.id?' on':''}`} onClick={()=>{setPage(n.id);setMobOpen(false);}}>
+          <span className="nav-ic">{n.ic}</span>
+          {!slim&&<span>{n.lb}</span>}
+        </div>)}
+      </nav>
+      <div className="sb-foot">
+        <button className="col-btn" onClick={()=>setSlim(p=>!p)}>{slim?'▶':'◀ Collapse'}</button>
+      </div>
+    </div>
+
+    {/* Main */}
+    <div className={`main${slim?' slim':''}`}>
+      <div className="topbar">
+        <div className="flex ic gap2">
+          <button style={{background:'none',border:'none',fontSize:'1.2rem',cursor:'pointer',display:'none'}} className="mob-menu" onClick={()=>setMobOpen(true)}>☰</button>
+          <span className="pg-title">{curNav?.ic} {curNav?.lb}</span>
+        </div>
+        <div className="tb-actions">
+          <button className="btn btn-sc btn-sm" onClick={()=>setCfg(c=>({...c,lang:c.lang==='en'?'mr':'en'}))}>
+            {cfg.lang==='en'?'🇮🇳 मराठी':'🇬🇧 EN'}
+          </button>
+          <button className="btn btn-ic btn-sm" onClick={()=>setCfg(c=>({...c,dark:!c.dark}))}>
+            {cfg.dark?'☀️':'🌙'}
+          </button>
+          <button className="btn btn-pr btn-sm" onClick={()=>setModal({type:'booking',data:null})}>+ {t.newBooking}</button>
+        </div>
+      </div>
+
+      {page==='dashboard'&&<Dashboard bookings={bookings} t={t} onNew={()=>setModal({type:'booking',data:null})}/>}
+      {page==='bookings'&&<BookingList bookings={bookings} t={t}
+        onView={b=>setModal({type:'details',data:b})}
+        onEdit={b=>setModal({type:'booking',data:b})}
+        onUpdatePayment={b=>setModal({type:'payment',data:b})}
+        onCheckout={doCheckout}
+        onNew={()=>setModal({type:'booking',data:null})}
+        onDelete={deleteBooking}
+        onInvoice={b=>setModal({type:'invoice',data:b})}
+      />}
+      {page==='rooms'&&<RoomsPage bookings={bookings} t={t}/>}
+      {page==='settings'&&<Settings cfg={cfg} onCfg={setCfg} bookings={bookings} t={t}/>}
+    </div>
+
+    {/* MODALS */}
+    {modal?.type==='booking'&&<div className="mo" onClick={()=>setModal(null)}>
+      <div className="md md-xl" style={{maxHeight:'94vh'}} onClick={e=>e.stopPropagation()}>
+        <div className="mh">
+          <span className="mt">{modal.data?'✏️ '+t.edit:'➕ '+t.newBooking}</span>
+          <button className="xbtn" onClick={()=>setModal(null)}>✕</button>
+        </div>
+        <BookingForm bookings={bookings} onSave={saveBooking} onCancel={()=>setModal(null)} editData={modal.data} t={t}/>
+      </div>
+    </div>}
+
+    {modal?.type==='details'&&<div className="mo" onClick={()=>setModal(null)}>
+      <div className="md md-xl" style={{maxHeight:'94vh'}} onClick={e=>e.stopPropagation()}>
+        <div className="mh">
+          <span className="mt">📋 {t.details} — {modal.data.name}</span>
+          <button className="xbtn" onClick={()=>setModal(null)}>✕</button>
+        </div>
+        <BookingDetails bk={modal.data} t={t}
+          onClose={()=>setModal(null)}
+          onEdit={b=>setModal({type:'booking',data:b})}
+          onUpdatePayment={b=>setModal({type:'payment',data:b})}
+          onCheckout={doCheckout}
+          onInvoice={()=>setModal({type:'invoice',data:modal.data})}
+        />
+      </div>
+    </div>}
+
+    {modal?.type==='payment'&&<div className="mo" onClick={()=>setModal(null)}>
+      <div className="md md-lg" onClick={e=>e.stopPropagation()}>
+        <div className="mh">
+          <span className="mt">💳 {t.updatePayment} — {modal.data.name}</span>
+          <button className="xbtn" onClick={()=>setModal(null)}>✕</button>
+        </div>
+        <PaymentModal bk={modal.data} onSave={updatePay} onClose={()=>setModal(null)} t={t}/>
+      </div>
+    </div>}
+
+    {modal?.type==='invoice'&&<InvoiceModal bk={modal.data} t={t} onClose={()=>setModal(null)}/>}
+
+    {confirm&&<Confirm {...confirm} onNo={()=>setConfirm(null)}/>}
+
+    {/* FAB */}
+    <button onClick={()=>setModal({type:'booking',data:null})} style={{position:'fixed',bottom:22,right:22,width:50,height:50,borderRadius:'50%',background:'linear-gradient(135deg,var(--or),var(--or2))',color:'#fff',border:'none',fontSize:'1.5rem',cursor:'pointer',boxShadow:'0 4px 16px rgba(232,104,26,0.4)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center',transition:'var(--tr)'}} title={t.newBooking}>+</button>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<style>
+@media(max-width:700px){
+  .mob-menu{display:block!important;}
+}
+</style>
+</body>
+</html>
