@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shree Sadguru Sakharam Maharaj Sansthan  Bhaktniwas </title>
+<title>Shree Sadguru Sakharam Maharaj Sansthan — Bhaktniwas</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -24,12 +24,6 @@
   --serif:'Crimson Pro',Georgia,serif;
   --sans:'DM Sans',system-ui,sans-serif;
   --dev:'Noto Serif Devanagari',serif;
-}
-.circle-img {
-  width: 50px;
-  height: 50px;
-  border-radius:100%;   /* 👈 main magic */
-  object-fit: cover;    /* 👈 image stretch होणार नाही */
 }
 .dark{
   --saf:#E8801A;--saf2:#F5A623;--saf3:#FFB84D;--saf4:#2A1400;--saf5:#1C0E00;
@@ -93,6 +87,22 @@ html,body{font-family:var(--sans);background:var(--bg);color:var(--dk);font-size
 .btn-sm{padding:5px 12px;font-size:0.74rem;border-radius:7px;}
 .btn-xs{padding:3px 8px;font-size:0.69rem;border-radius:6px;}
 .btn:disabled{opacity:0.55;cursor:not-allowed;transform:none!important;}
+
+
+.header-photo{
+  width:100px;
+  height:100px;
+  overflow:hidden;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.header-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
 
 /* ── CARDS ── */
 .card{background:var(--wh);border-radius:var(--rd);border:1.5px solid var(--vlt);box-shadow:var(--sh);}
@@ -321,6 +331,7 @@ const ROOMS_AC=[
   {id:'SM-06-AC',label:'SM-06',block:'SM',type:'AC',price:1100},
   {id:'SM-07-AC',label:'SM-07',block:'SM',type:'AC',price:1100},
   {id:'SM-08-AC',label:'SM-08',block:'SM',type:'AC',price:1100},
+  {id:'SM-17-AC',label:'SM-17',block:'SM',type:'AC',price:1100},
 ];
 const ROOMS_NON=[
   // GM Block
@@ -338,23 +349,21 @@ const ROOMS_NON=[
   {id:'SM-13-NON',label:'SM-13',block:'SM',type:'NON-AC',price:650},
   {id:'SM-14-NON',label:'SM-14',block:'SM',type:'NON-AC',price:650},
   {id:'SM-15-NON',label:'SM-15',block:'SM',type:'NON-AC',price:650},
-  {id:'SM-16-NON',label:'SM-16',block:'SM',type:'NON-AC',price:650},
-  {id:'SM-17-NON',label:'SM-17',block:'SM',type:'NON-AC',price:650},
 ];
 const ALL_ROOMS=[...ROOMS_AC,...ROOMS_NON];
 
 const SANSTHA={
-  name:'Shree Sadguru Govind Maharaj Bhaktniwas',
-  nameM:'श्री संत सखाराम महाराज संस्थान अमळनेर',
-  bhaktniwas:'Bhaktniwas Management System',
+  name:'श्री सदगुरु गोविंद महाराज संस्थान भक्तनिवास अमळनेर',
+  nameM:'श्री सदगुरु सखाराम महाराज संस्थान भक्तनिवास अमळनेर',
+  bhaktniwas:'श्री सदगुरु गोविंद महाराज संस्थान भक्तनिवास अमळनेर',
   bhaktniwasM:'भक्तनिवास व्यवस्थापन प्रणाली',
   address:'Shree Sadguru Sakharam Maharaj Mandir, Amalner, Jalgaon — 425401',
   city:'Amalner, Jalgaon, Maharashtra',
-  phone:'02587-222XXX | 9876543210',
-  email:'info@sakharammaharaj.org',
+  phone:'02587-226711 | 9209292056',
+  email:'sakharammaharajamalner@gmail.com',
   website:'www.sakharammaharaj.org',
-  regNo:'MH/JLG/2001/XXX',
-  pan:'AAAXX0000X',
+  regNo:'अमळनेर/पंढरपूर न्यास नोंद क्र.ए/४६५/जळगाव.',
+  pan:'AAJTS800PC',
   terms:[
     'Check-in: 12:00 PM | Check-out: 11:00 AM',
     'Original government-issued ID mandatory at check-in.',
@@ -473,11 +482,19 @@ function fc(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
 function hasOverlap(newCI,newCO,existCI,existCO){
   return new Date(newCI)<new Date(existCO) && new Date(newCO)>new Date(existCI);
 }
+// Check if a single roomId is available (works with new multi-room booking model)
+// A booking now stores roomIds[] instead of roomId
 function isRoomAvailable(roomId,checkIn,checkOut,bookings,excludeId=''){
-  return!bookings.some(b=>
-    b.roomId===roomId && b.status==='active' && b.id!==excludeId &&
-    hasOverlap(checkIn,checkOut,b.checkIn,b.checkOut)
-  );
+  return!bookings.some(b=>{
+    if(b.id===excludeId||b.status!=='active')return false;
+    const rooms=b.roomIds||[b.roomId].filter(Boolean); // backwards compat
+    if(!rooms.includes(roomId))return false;
+    return hasOverlap(checkIn,checkOut,b.checkIn,b.checkOut);
+  });
+}
+// Get booking for a room on a date (multi-room aware)
+function getBookingForRoom(roomId,bookings){
+  return bookings.find(b=>b.status==='active'&&(b.roomIds||[b.roomId]).includes(roomId))||null;
 }
 
 // ═══════════════════════════════════════════════════
@@ -527,13 +544,16 @@ function QR({val,sz=100}){
 }
 
 // ═══════════════════════════════════════════════════
-//  INVOICE BUILDER
+//  INVOICE BUILDER — MULTI-ROOM
 // ═══════════════════════════════════════════════════
 function buildInvoiceHTML(bk){
   const paid=bk.payHistory.reduce((s,p)=>s+Number(p.amount),0);
   const bal=Math.max(0,Number(bk.finalAmt)-paid);
   const isPaid=bal<=0;
-  const room=ALL_ROOMS.find(r=>r.id===bk.roomId)||{label:bk.roomId,type:'',price:0};
+  // multi-room support (backwards compatible)
+  const roomIds=bk.roomIds||(bk.roomId?[bk.roomId]:[]);
+  const rooms=roomIds.map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
+  const isMulti=rooms.length>1;
 
   const payRows=bk.payHistory.map((p,i)=>`
     <tr style="background:${i%2===0?'#fffbf5':'#fff'}">
@@ -544,10 +564,23 @@ function buildInvoiceHTML(bk){
       <td style="padding:6px 10px;border:1px solid #E8C07A;font-size:8.5pt;text-align:right;font-weight:700">${fc(p.amount)}</td>
     </tr>`).join('');
 
+  // billing rows — one per room
+  const billingRows=rooms.map((r,i)=>`
+    <tr style="background:${i%2===0?'#fff':'#fffbf5'}">
+      <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:8.5pt">${i+1}</td>
+      <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:8.5pt">${r.type} Room — <b>${r.label}</b> (${r.block} Block)</td>
+      <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:8.5pt">${fc(r.price)}/night</td>
+      <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:8.5pt;text-align:right">${bk.nights}</td>
+      <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:8.5pt;text-align:right;font-weight:700">${fc(r.price*bk.nights)}</td>
+    </tr>`).join('');
+
   const termRows=SANSTHA.terms.map((tc,i)=>`
     <div style="display:flex;gap:5px;margin-bottom:2px;font-size:7.5pt;color:#6B3A0F;line-height:1.65">
       <span style="color:#D4600A;font-weight:700;flex-shrink:0">${i+1}.</span><span>${tc}</span>
     </div>`).join('');
+
+  // room chips for multi-room display
+  const roomChips=rooms.map(r=>`<span style="display:inline-block;background:#FFF3E0;border:1px solid #E8C07A;border-radius:5px;padding:2px 8px;font-size:7.5pt;font-weight:700;color:#D4600A;margin:2px">${r.label}</span>`).join('');
 
   return `<!DOCTYPE html>
 <html>
@@ -580,132 +613,139 @@ html,body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-a
   </div>
 
   <!-- HEADER -->
-  <div style="background:linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:16px;position:relative;z-index:1">
-    <div style="font-size:38px;width:60px;height:60px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.35);flex-shrink:0"><img src="images/maharaj.jpg" alt="Maharaj" className="circle-img"/></div>
+  <div style="background:linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%);color:#fff;padding:18px 22px;display:flex;align-items:center;gap:14px;position:relative;z-index:1">
+    <div style="font-size:34px;width:56px;height:56px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.35);flex-shrink:0">🙏</div>
     <div style="flex:1">
-      <div style="font-family:'Noto Serif Devanagari',serif;font-size:14pt;font-weight:700;line-height:1.2">${SANSTHA.nameM}</div>
-      <div style="font-family:'Crimson Pro',serif;font-size:11pt;opacity:0.9;font-style:italic;margin-top:2px">${SANSTHA.name}</div>
-      <div style="font-size:7.5pt;opacity:0.8;margin-top:3px">${SANSTHA.address}</div>
-      <div style="font-size:7.5pt;opacity:0.8;margin-top:1px">📞 ${SANSTHA.phone} | ✉ ${SANSTHA.email}</div>
+      <div style="font-family:'Noto Serif Devanagari',serif;font-size:13.5pt;font-weight:700;line-height:1.2">${SANSTHA.nameM}</div>
+      <div style="font-family:'Crimson Pro',serif;font-size:10.5pt;opacity:0.9;font-style:italic;margin-top:2px">${SANSTHA.name}</div>
+      <div style="font-size:7pt;opacity:0.8;margin-top:3px">${SANSTHA.address}</div>
+      <div style="font-size:7pt;opacity:0.8;margin-top:1px">📞 ${SANSTHA.phone} | ✉ ${SANSTHA.email}</div>
     </div>
-    <div style="background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.45);border-radius:9px;padding:10px 14px;text-align:center;flex-shrink:0">
-      <div style="font-size:6.5pt;opacity:0.8;text-transform:uppercase;letter-spacing:0.07em">RECEIPT NO.</div>
-      <div style="font-size:16pt;font-weight:700;font-family:'Crimson Pro',serif;line-height:1">${bk.receiptNo}</div>
-      <div style="font-size:6.5pt;opacity:0.8;margin-top:4px;text-transform:uppercase">Booking ID</div>
-      <div style="font-size:8pt;font-weight:700">${bk.id}</div>
+    <div style="background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.45);border-radius:9px;padding:9px 13px;text-align:center;flex-shrink:0">
+      <div style="font-size:6pt;opacity:0.8;text-transform:uppercase;letter-spacing:0.07em">RECEIPT NO.</div>
+      <div style="font-size:15pt;font-weight:700;font-family:'Crimson Pro',serif;line-height:1">${bk.receiptNo}</div>
+      <div style="font-size:6pt;opacity:0.8;margin-top:4px;text-transform:uppercase">Booking ID</div>
+      <div style="font-size:7.5pt;font-weight:700">${bk.id}</div>
+      ${isMulti?`<div style="margin-top:4px;background:rgba(255,255,255,0.25);border-radius:4px;padding:2px 6px;font-size:7pt;font-weight:700">${rooms.length} ROOMS</div>`:''}
     </div>
   </div>
 
   <!-- META BAR -->
   <div style="display:flex;background:#FFF8F0;border-bottom:1.5px solid #E8C07A">
-    ${[['Invoice Date',fd(bk.updatedAt||bk.createdAt)],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Stay',bk.nights+' Night(s)'],['Status',bk.status==='active'?'ACTIVE':'CHECKED OUT']].map((m,i,a)=>`
-    <div style="flex:1;padding:9px 12px;${i<a.length-1?'border-right:1px solid #E8C07A':''}">
-      <div style="font-size:6.5pt;color:#C4862A;text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:2px">${m[0]}</div>
-      <div style="font-size:9.5pt;font-weight:700;color:${m[0]==='Status'?(bk.status==='active'?'#15803D':'#6B3A0F'):'#1C0A00'}">${m[1]}</div>
+    ${[['Invoice Date',fd(bk.updatedAt||bk.createdAt)],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Nights',bk.nights+' Night(s)'],['Rooms',rooms.length+' Room(s)'],['Status',bk.status==='active'?'ACTIVE':'CHECKED OUT']].map((m,i,a)=>`
+    <div style="flex:1;padding:8px 10px;${i<a.length-1?'border-right:1px solid #E8C07A':''}">
+      <div style="font-size:6pt;color:#C4862A;text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:2px">${m[0]}</div>
+      <div style="font-size:9pt;font-weight:700;color:${m[0]==='Status'?(bk.status==='active'?'#15803D':'#6B3A0F'):m[0]==='Rooms'?'#D4600A':'#1C0A00'}">${m[1]}</div>
     </div>`).join('')}
   </div>
 
-  <!-- GUEST + ROOM -->
+  <!-- GUEST + ROOM LIST -->
   <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #E8C07A">
-    <div style="padding:12px 16px;border-right:1px solid #E8C07A">
-      <div style="font-size:7.5pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:8px">👤 Guest Details</div>
+    <div style="padding:11px 15px;border-right:1px solid #E8C07A">
+      <div style="font-size:7pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:7px">👤 Guest Details</div>
       ${[['Name',bk.name],['Mobile',bk.mobile],['Aadhaar','XXXX XXXX '+String(bk.aadhaar||'').slice(-4)],['Address',bk.address],bk.maleCount||bk.femaleCount?['Persons','M:'+(bk.maleCount||0)+' F:'+(bk.femaleCount||0)]:null].filter(Boolean).map(r=>`
-        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #F5E0CC;font-size:8.5pt">
+        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #F5E0CC;font-size:8pt">
           <span style="color:#C4862A">${r[0]}</span>
-          <span style="font-weight:600;text-align:right;max-width:55%;word-break:break-word">${r[1]||'—'}</span>
+          <span style="font-weight:600;text-align:right;max-width:58%;word-break:break-word">${r[1]||'—'}</span>
         </div>`).join('')}
+      ${bk.note?`<div style="margin-top:6px;background:#FFF3E0;padding:4px 8px;border-radius:5px;border-left:3px solid #D4600A;font-size:7.5pt;color:#6B3A0F"><b>Note:</b> ${bk.note}</div>`:''}
     </div>
-    <div style="padding:12px 16px">
-      <div style="font-size:7.5pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:8px">🛏️ Room Details</div>
-      ${[['Room',room.label],['Type',room.type],['Block',room.block+' Block'],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Nights',bk.nights+' Night(s)']].map(r=>`
-        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #F5E0CC;font-size:8.5pt">
+    <div style="padding:11px 15px">
+      <div style="font-size:7pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:7px">🛏️ Rooms Booked (${rooms.length})</div>
+      <div style="margin-bottom:7px;line-height:1.8">${roomChips}</div>
+      ${[['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Duration',bk.nights+' Night(s)']].map(r=>`
+        <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #F5E0CC;font-size:8pt">
           <span style="color:#C4862A">${r[0]}</span>
-          <span style="font-weight:${r[0]==='Room'?'700':'600'};color:${r[0]==='Room'?'#D4600A':'#1C0A00'};font-size:${r[0]==='Room'?'10pt':'8.5pt'}">${r[1]}</span>
+          <span style="font-weight:600">${r[1]}</span>
         </div>`).join('')}
     </div>
   </div>
 
-  <!-- BILLING TABLE -->
-  <div style="padding:11px 16px;border-bottom:1px solid #E8C07A">
-    <div style="font-size:7.5pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:8px">💰 Billing Details</div>
+  <!-- BILLING TABLE — one row per room -->
+  <div style="padding:10px 15px;border-bottom:1px solid #E8C07A">
+    <div style="font-size:7pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:7px">💰 Billing Details — Room-wise Breakup</div>
     <table style="width:100%;border-collapse:collapse">
       <thead><tr style="background:#FFF3E0">
-        ${['#','Description','Rate/Night','Nights','Amount'].map((h,i)=>`<th style="padding:6px 9px;text-align:${i>=3?'right':'left'};font-size:8pt;font-weight:700;color:#D4600A;border:1px solid #E8C07A">${h}</th>`).join('')}
+        ${['#','Room Description','Rate/Night','Nights','Amount'].map((h,i)=>`<th style="padding:5px 8px;text-align:${i>=3?'right':'left'};font-size:7.5pt;font-weight:700;color:#D4600A;border:1px solid #E8C07A">${h}</th>`).join('')}
       </tr></thead>
       <tbody>
-        <tr>
-          <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">1</td>
-          <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">${room.type} Room — ${room.label} (${room.block} Block)</td>
-          <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">${fc(room.price)}/night</td>
-          <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt;text-align:right">${bk.nights}</td>
-          <td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt;text-align:right;font-weight:700">${fc(bk.origPrice)}</td>
+        ${billingRows}
+        ${bk.discount>0?`
+        <tr style="background:#f9fef9">
+          <td style="padding:5px 8px;border:1px solid #E8C07A;font-size:8.5pt">${rooms.length+1}</td>
+          <td style="padding:5px 8px;border:1px solid #E8C07A;font-size:8.5pt">Discount / Concession</td>
+          <td style="padding:5px 8px;border:1px solid #E8C07A;font-size:8.5pt">—</td>
+          <td style="padding:5px 8px;border:1px solid #E8C07A;font-size:8.5pt;text-align:right">—</td>
+          <td style="padding:5px 8px;border:1px solid #E8C07A;font-size:8.5pt;text-align:right;font-weight:700;color:#15803D">- ${fc(bk.discount)}</td>
+        </tr>`:''}
+        <tr style="background:#FFF3E0">
+          <td colspan="4" style="padding:6px 8px;border:1px solid #E8C07A;font-size:9pt;font-weight:700;text-align:right;color:#D4600A">Subtotal (${rooms.length} room${rooms.length>1?'s':''})</td>
+          <td style="padding:6px 8px;border:1px solid #E8C07A;font-size:9pt;font-weight:700;text-align:right">${fc(bk.origPrice)}</td>
         </tr>
-        ${bk.discount>0?`<tr style="background:#fffbf5"><td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">2</td><td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">Discount / Concession</td><td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt">—</td><td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt;text-align:right">—</td><td style="padding:6px 9px;border:1px solid #E8C07A;font-size:9pt;text-align:right;font-weight:700;color:#15803D">- ${fc(bk.discount)}</td></tr>`:''}
       </tbody>
     </table>
   </div>
 
   <!-- TOTAL -->
-  <div style="background:linear-gradient(135deg,#8B1A00,#D4600A,#E8801A);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center">
+  <div style="background:linear-gradient(135deg,#8B1A00,#D4600A,#E8801A);color:#fff;padding:10px 17px;display:flex;justify-content:space-between;align-items:center">
     <div>
-      <div style="font-size:8.5pt;opacity:0.85">Original: ${fc(bk.origPrice)}${bk.discount>0?' | Discount: - '+fc(bk.discount):''}</div>
-      <div style="font-size:10pt;font-weight:600;margin-top:2px">TOTAL PAYABLE AMOUNT</div>
+      <div style="font-size:8pt;opacity:0.85">Subtotal: ${fc(bk.origPrice)}${bk.discount>0?' | Discount: - '+fc(bk.discount):''}</div>
+      <div style="font-size:10pt;font-weight:600;margin-top:2px">TOTAL PAYABLE AMOUNT (${rooms.length} Room${rooms.length>1?'s':''})</div>
     </div>
     <div style="font-family:'Crimson Pro',serif;font-size:22pt;font-weight:700">${fc(bk.finalAmt)}</div>
   </div>
 
   <!-- PAID/DUE -->
-  <div style="display:flex;gap:10px;padding:9px 16px;background:#FFF8F0;border-bottom:1px solid #E8C07A">
-    <div style="flex:1;border-radius:8px;padding:11px;text-align:center;border:1.5px solid;background:${isPaid?'#DCFCE7':'#FEE2E2'};border-color:${isPaid?'#86EFAC':'#FCA5A5'};color:${isPaid?'#166534':'#991B1B'}">
-      <div style="font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">${isPaid?'✅ FULLY PAID':'⏳ BALANCE DUE'}</div>
-      <div style="font-size:15pt;font-weight:700;margin-top:2px">${isPaid?'NIL':fc(bal)}</div>
+  <div style="display:flex;gap:10px;padding:8px 15px;background:#FFF8F0;border-bottom:1px solid #E8C07A">
+    <div style="flex:1;border-radius:8px;padding:10px;text-align:center;border:1.5px solid;background:${isPaid?'#DCFCE7':'#FEE2E2'};border-color:${isPaid?'#86EFAC':'#FCA5A5'};color:${isPaid?'#166534':'#991B1B'}">
+      <div style="font-size:6.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">${isPaid?'✅ FULLY PAID':'⏳ BALANCE DUE'}</div>
+      <div style="font-size:14pt;font-weight:700;margin-top:2px">${isPaid?'NIL':fc(bal)}</div>
     </div>
-    <div style="flex:1;border-radius:8px;padding:11px;text-align:center;border:1.5px solid;background:#DBEAFE;border-color:#93C5FD;color:#1E40AF">
-      <div style="font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">TOTAL PAID</div>
-      <div style="font-size:15pt;font-weight:700;margin-top:2px">${fc(paid)}</div>
+    <div style="flex:1;border-radius:8px;padding:10px;text-align:center;border:1.5px solid;background:#DBEAFE;border-color:#93C5FD;color:#1E40AF">
+      <div style="font-size:6.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.8">TOTAL PAID</div>
+      <div style="font-size:14pt;font-weight:700;margin-top:2px">${fc(paid)}</div>
     </div>
   </div>
 
   <!-- PAYMENT HISTORY -->
   ${bk.payHistory.length>0?`
-  <div style="padding:9px 16px;border-bottom:1px solid #E8C07A">
-    <div style="font-size:7.5pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:4px;margin-bottom:7px">📜 Payment History</div>
+  <div style="padding:8px 15px;border-bottom:1px solid #E8C07A">
+    <div style="font-size:7pt;font-weight:700;color:#D4600A;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid #E8C07A;padding-bottom:3px;margin-bottom:6px">📜 Payment History</div>
     <table style="width:100%;border-collapse:collapse">
       <thead><tr style="background:#FFF3E0">
-        ${['#','Date & Time','Mode','Txn ID','Amount'].map((h,i)=>`<th style="padding:5px 8px;text-align:${i===4?'right':'left'};font-size:7.5pt;font-weight:700;color:#D4600A;border:1px solid #E8C07A">${h}</th>`).join('')}
+        ${['#','Date & Time','Mode','Txn ID','Amount'].map((h,i)=>`<th style="padding:4px 7px;text-align:${i===4?'right':'left'};font-size:7pt;font-weight:700;color:#D4600A;border:1px solid #E8C07A">${h}</th>`).join('')}
       </tr></thead>
       <tbody>${payRows}</tbody>
     </table>
   </div>`:''}
 
   <!-- QR + INFO -->
-  <div style="padding:9px 16px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid #E8C07A">
+  <div style="padding:8px 15px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid #E8C07A">
     <div style="flex-shrink:0;text-align:center" id="qr-ph">
-      <div style="width:80px;height:80px;background:#FFF3E0;border:1px solid #E8C07A;display:flex;align-items:center;justify-content:center;font-size:8pt;color:#C4862A;font-family:'DM Sans',sans-serif">QR Code</div>
-      <div style="font-size:6.5pt;color:#C4862A;margin-top:2px">Scan to verify</div>
+      <div style="width:78px;height:78px;background:#FFF3E0;border:1px solid #E8C07A;display:flex;align-items:center;justify-content:center;font-size:7.5pt;color:#C4862A;font-family:'DM Sans',sans-serif">QR Code</div>
+      <div style="font-size:6pt;color:#C4862A;margin-top:2px">Scan to verify</div>
     </div>
     <div style="flex:1">
-      <div style="font-size:8.5pt;color:#C4862A">Reg: ${SANSTHA.regNo} | PAN: ${SANSTHA.pan}</div>
-      <div style="font-size:8.5pt;color:#C4862A;margin-top:2px">🌐 ${SANSTHA.website}</div>
-      ${bk.note?`<div style="font-size:8.5pt;color:#6B3A0F;margin-top:5px;background:#FFF3E0;padding:4px 9px;border-radius:5px;border-left:3px solid #D4600A"><b>Note:</b> ${bk.note}</div>`:''}
+      <div style="font-size:8pt;color:#C4862A">Reg: ${SANSTHA.regNo} | PAN: ${SANSTHA.pan}</div>
+      <div style="font-size:8pt;color:#C4862A;margin-top:2px">🌐 ${SANSTHA.website}</div>
     </div>
   </div>
 
   <!-- TERMS -->
-  <div style="padding:9px 16px;background:#FFF8F0;border-bottom:1px solid #E8C07A">
-    <div style="font-size:8pt;font-weight:700;color:#D4600A;margin-bottom:5px">📋 Terms &amp; Conditions — नियम व अटी</div>
+  <div style="padding:8px 15px;background:#FFF8F0;border-bottom:1px solid #E8C07A">
+    <div style="font-size:7.5pt;font-weight:700;color:#D4600A;margin-bottom:4px">📋 Terms &amp; Conditions — नियम व अटी</div>
     ${termRows}
   </div>
 
   <!-- FOOTER -->
-  <div style="background:#1C0A00;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center">
+  <div style="background:#1C0A00;color:#fff;padding:9px 18px;display:flex;justify-content:space-between;align-items:center">
     <div>
-      <div style="font-family:'Noto Serif Devanagari',serif;font-size:9.5pt;opacity:0.92">श्री.संत सखाराम महाराज की जय 🙏 | धन्यवाद</div>
-      <div style="font-size:7pt;opacity:0.6;margin-top:2px">Have a blessed and peaceful stay.</div>
+      <div style="font-family:'Noto Serif Devanagari',serif;font-size:9pt;opacity:0.92">श्री.सदगुरू सखाराम महाराज की जय 🙏 | धन्यवाद</div>
+      <div style="font-size:6.5pt;opacity:0.6;margin-top:2px">Have a blessed and peaceful stay.</div>
     </div>
     <div style="text-align:right">
-      <div style="font-size:7pt;opacity:0.6">Generated: ${fdt(new Date().toISOString())}</div>
-      <div style="font-size:6.5pt;opacity:0.5">Computer generated invoice.</div>
+      <div style="font-size:6.5pt;opacity:0.6">Generated: ${fdt(new Date().toISOString())}</div>
+      <div style="font-size:6pt;opacity:0.5">Computer generated invoice.</div>
     </div>
   </div>
 </div>
@@ -715,8 +755,8 @@ window.onload=function(){
   var ph=document.getElementById('qr-ph');
   if(ph&&typeof QRCode!=='undefined'){
     ph.innerHTML='';
-    new QRCode(ph,{text:'${bk.id}|${bk.name}|${room.label}',width:80,height:80,colorDark:'#8B1A00',colorLight:'#ffffff'});
-    var l=document.createElement('div');l.style.cssText='font-size:6.5pt;color:#C4862A;margin-top:2px;text-align:center';l.textContent='Scan to verify';ph.appendChild(l);
+    new QRCode(ph,{text:'${bk.id}|${bk.name}|${rooms.map(r=>r.label).join(',')}',width:78,height:78,colorDark:'#8B1A00',colorLight:'#ffffff'});
+    var l=document.createElement('div');l.style.cssText='font-size:6pt;color:#C4862A;margin-top:2px;text-align:center';l.textContent='Scan to verify';ph.appendChild(l);
   }
 };
 <\/script>
@@ -734,7 +774,9 @@ function InvoiceModal({bk,t,onClose}){
   const paid=bk.payHistory.reduce((s,p)=>s+Number(p.amount),0);
   const bal=Math.max(0,Number(bk.finalAmt)-paid);
   const isPaid=bal<=0;
-  const room=ALL_ROOMS.find(r=>r.id===bk.roomId)||{label:bk.roomId,type:'',price:0,block:''};
+  // multi-room (backwards compat)
+  const roomIds=bk.roomIds||(bk.roomId?[bk.roomId]:[]);
+  const rooms=roomIds.map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
 
   useEffect(()=>{
     if(!qrRef.current)return;
@@ -765,13 +807,15 @@ function InvoiceModal({bk,t,onClose}){
     finally{setLoading(false);}
   }
 
-  // inline preview (794px wide, pixel-perfect)
   const S={fontFamily:"'DM Sans',sans-serif",background:'#fff',width:794,minWidth:794,color:'#1C0A00',position:'relative',overflow:'hidden'};
 
   return<div className="mo" onClick={onClose}>
     <div style={{background:'var(--wh)',borderRadius:'var(--rd)',width:'min(840px,98vw)',maxHeight:'94vh',display:'flex',flexDirection:'column',boxShadow:'0 24px 60px rgba(28,10,0,0.3)',animation:'mdin 0.2s ease'}} onClick={e=>e.stopPropagation()}>
       <div className="mh" style={{flexShrink:0}}>
-        <span className="mt">🧾 {t.receipt} — {bk.receiptNo}</span>
+        <div>
+          <span className="mt">🧾 {t.receipt} — {bk.receiptNo}</span>
+          <span className="badge b-pu" style={{marginLeft:8}}>🏠 {rooms.length} Room{rooms.length!==1?'s':''}</span>
+        </div>
         <div className="flex g2 ic">
           <button className="btn btn-pr btn-sm" onClick={doPrint}>🖨️ {t.printInv}</button>
           <button className="btn btn-bl btn-sm" onClick={doPDF} disabled={loading}>{loading?'⏳...':'📥 '+t.dlPdf}</button>
@@ -783,137 +827,142 @@ function InvoiceModal({bk,t,onClose}){
           {/* watermark */}
           <div style={{position:'absolute',top:'40%',left:'50%',transform:'translate(-50%,-50%) rotate(-30deg)',fontSize:78,fontWeight:900,color:isPaid?'rgba(21,128,61,0.09)':'rgba(185,28,28,0.09)',pointerEvents:'none',zIndex:0,letterSpacing:'0.1em',whiteSpace:'nowrap',userSelect:'none'}}>{isPaid?'PAID':'PENDING'}</div>
           {/* header */}
-          <div style={{background:'linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%)',color:'#fff',padding:'20px 24px',display:'flex',alignItems:'center',gap:16,position:'relative',zIndex:1}}>
-            <div style={{fontSize:32,width:58,height:58,background:'rgba(255,255,255,0.15)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid rgba(255,255,255,0.35)',flexShrink:0}}>🙏</div>
+          <div style={{background:'linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%)',color:'#fff',padding:'18px 22px',display:'flex',alignItems:'center',gap:14,position:'relative',zIndex:1}}>
+            <div style={{fontSize:30,width:54,height:54,background:'rgba(255,255,255,0.15)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid rgba(255,255,255,0.35)',flexShrink:0}}>🙏</div>
             <div style={{flex:1}}>
-              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:15,fontWeight:700,lineHeight:1.2}}>{SANSTHA.nameM}</div>
-              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:11,opacity:0.9,fontStyle:'italic',marginTop:2}}>{SANSTHA.name}</div>
-              <div style={{fontSize:9,opacity:0.8,marginTop:3}}>{SANSTHA.address}</div>
-              <div style={{fontSize:9,opacity:0.8,marginTop:1}}>📞 {SANSTHA.phone} | ✉ {SANSTHA.email}</div>
+              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:14,fontWeight:700,lineHeight:1.2}}>{SANSTHA.nameM}</div>
+              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10.5,opacity:0.9,fontStyle:'italic',marginTop:2}}>{SANSTHA.name}</div>
+              <div style={{fontSize:8,opacity:0.8,marginTop:3}}>{SANSTHA.address}</div>
+              <div style={{fontSize:8,opacity:0.8,marginTop:1}}>📞 {SANSTHA.phone} | ✉ {SANSTHA.email}</div>
             </div>
-            <div style={{background:'rgba(255,255,255,0.18)',border:'1.5px solid rgba(255,255,255,0.45)',borderRadius:9,padding:'10px 14px',textAlign:'center',flexShrink:0}}>
-              <div style={{fontSize:8,opacity:0.8,textTransform:'uppercase',letterSpacing:'0.07em'}}>RECEIPT NO.</div>
-              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:17,fontWeight:700,lineHeight:1}}>{bk.receiptNo}</div>
+            <div style={{background:'rgba(255,255,255,0.18)',border:'1.5px solid rgba(255,255,255,0.45)',borderRadius:9,padding:'9px 13px',textAlign:'center',flexShrink:0}}>
+              <div style={{fontSize:7,opacity:0.8,textTransform:'uppercase',letterSpacing:'0.07em'}}>RECEIPT NO.</div>
+              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:16,fontWeight:700,lineHeight:1}}>{bk.receiptNo}</div>
               <div style={{fontSize:7,opacity:0.8,marginTop:4,textTransform:'uppercase'}}>Booking ID</div>
-              <div style={{fontSize:8.5,fontWeight:700}}>{bk.id}</div>
+              <div style={{fontSize:8,fontWeight:700}}>{bk.id}</div>
+              {rooms.length>1&&<div style={{marginTop:4,background:'rgba(255,255,255,0.25)',borderRadius:4,padding:'2px 6px',fontSize:7,fontWeight:700}}>{rooms.length} ROOMS</div>}
             </div>
           </div>
           {/* meta bar */}
           <div style={{display:'flex',background:'#FFF8F0',borderBottom:'1.5px solid #E8C07A'}}>
-            {[['Invoice Date',fd(bk.updatedAt||bk.createdAt)],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Stay',bk.nights+' Night(s)'],['Status',bk.status==='active'?'ACTIVE':'CHECKED OUT']].map((m,i,a)=>
-              <div key={i} style={{flex:1,padding:'8px 11px',borderRight:i<a.length-1?'1px solid #E8C07A':'none'}}>
-                <div style={{fontSize:8,color:'#C4862A',textTransform:'uppercase',letterSpacing:'0.07em',fontWeight:700,marginBottom:2}}>{m[0]}</div>
-                <div style={{fontSize:10,fontWeight:700,color:m[0]==='Status'?(bk.status==='active'?'#15803D':'#6B3A0F'):'#1C0A00'}}>{m[1]}</div>
+            {[['Invoice Date',fd(bk.updatedAt||bk.createdAt)],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Nights',bk.nights+' Night(s)'],['Rooms',rooms.length+' Room(s)'],['Status',bk.status==='active'?'ACTIVE':'CHECKED OUT']].map((m,i,a)=>
+              <div key={i} style={{flex:1,padding:'7px 9px',borderRight:i<a.length-1?'1px solid #E8C07A':'none'}}>
+                <div style={{fontSize:7,color:'#C4862A',textTransform:'uppercase',letterSpacing:'0.07em',fontWeight:700,marginBottom:2}}>{m[0]}</div>
+                <div style={{fontSize:9,fontWeight:700,color:m[0]==='Status'?(bk.status==='active'?'#15803D':'#6B3A0F'):m[0]==='Rooms'?'#D4600A':'#1C0A00'}}>{m[1]}</div>
               </div>)}
           </div>
-          {/* guest+room 2col */}
+          {/* guest + room list */}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',borderBottom:'1px solid #E8C07A'}}>
-            <div style={{padding:'12px 16px',borderRight:'1px solid #E8C07A'}}>
-              <div style={{fontSize:8,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:4,marginBottom:8}}>👤 Guest Details</div>
+            <div style={{padding:'11px 14px',borderRight:'1px solid #E8C07A'}}>
+              <div style={{fontSize:7,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:3,marginBottom:7}}>👤 Guest Details</div>
               {[['Name',bk.name],['Mobile',bk.mobile],['Aadhaar','XXXX XXXX '+String(bk.aadhaar||'').slice(-4)],['Address',bk.address],bk.maleCount||bk.femaleCount?['Persons','M:'+(bk.maleCount||0)+' F:'+(bk.femaleCount||0)]:null].filter(Boolean).map((r,i)=>
-                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #F5E0CC',fontSize:9}}>
+                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #F5E0CC',fontSize:8.5}}>
                   <span style={{color:'#C4862A'}}>{r[0]}</span>
-                  <span style={{fontWeight:600,textAlign:'right',maxWidth:'55%',wordBreak:'break-word'}}>{r[1]||'—'}</span>
+                  <span style={{fontWeight:600,textAlign:'right',maxWidth:'56%',wordBreak:'break-word'}}>{r[1]||'—'}</span>
                 </div>)}
+              {bk.note&&<div style={{marginTop:6,background:'#FFF3E0',padding:'4px 8px',borderRadius:5,borderLeft:'3px solid #D4600A',fontSize:8,color:'#6B3A0F'}}><b>Note:</b> {bk.note}</div>}
             </div>
-            <div style={{padding:'12px 16px'}}>
-              <div style={{fontSize:8,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:4,marginBottom:8}}>🛏️ Room Details</div>
-              {[['Room',room.label],['Type',room.type],['Block',room.block+' Block'],['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Nights',bk.nights+' Night(s)']].map((r,i)=>
-                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #F5E0CC',fontSize:9}}>
+            <div style={{padding:'11px 14px'}}>
+              <div style={{fontSize:7,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:3,marginBottom:7}}>🛏️ Rooms Booked ({rooms.length})</div>
+              <div style={{marginBottom:7,lineHeight:2}}>
+                {rooms.map(r=><span key={r.id} style={{display:'inline-block',background:'#FFF3E0',border:'1px solid #E8C07A',borderRadius:4,padding:'1px 7px',fontSize:7.5,fontWeight:700,color:'#D4600A',margin:'1px 2px'}}>{r.label}</span>)}
+              </div>
+              {[['Check-In',fd(bk.checkIn)],['Check-Out',fd(bk.checkOut)],['Duration',bk.nights+' Night(s)']].map((r,i)=>
+                <div key={i} style={{display:'flex',justifyContent:'space-between',padding:'3px 0',borderBottom:'1px dashed #F5E0CC',fontSize:8.5}}>
                   <span style={{color:'#C4862A'}}>{r[0]}</span>
-                  <span style={{fontWeight:r[0]==='Room'?700:600,color:r[0]==='Room'?'#D4600A':'#1C0A00',fontSize:r[0]==='Room'?11:9}}>{r[1]}</span>
+                  <span style={{fontWeight:600}}>{r[1]}</span>
                 </div>)}
             </div>
           </div>
-          {/* billing table */}
-          <div style={{padding:'11px 16px',borderBottom:'1px solid #E8C07A'}}>
-            <div style={{fontSize:8,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:4,marginBottom:7}}>💰 Billing Details</div>
+          {/* billing — one row per room */}
+          <div style={{padding:'10px 14px',borderBottom:'1px solid #E8C07A'}}>
+            <div style={{fontSize:7,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:3,marginBottom:7}}>💰 Billing Details — Room-wise</div>
             <table style={{width:'100%',borderCollapse:'collapse'}}>
               <thead><tr style={{background:'#FFF3E0'}}>
-                {['#','Description','Rate/Night','Nights','Amount'].map((h,i)=><th key={i} style={{padding:'6px 9px',textAlign:i>=3?'right':'left',fontSize:8,fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A'}}>{h}</th>)}
+                {['#','Room Description','Rate/Night','Nights','Amount'].map((h,i)=><th key={i} style={{padding:'5px 7px',textAlign:i>=3?'right':'left',fontSize:7.5,fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A'}}>{h}</th>)}
               </tr></thead>
               <tbody>
-                <tr>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>1</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>{room.type} Room — {room.label} ({room.block} Block)</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>{fc(room.price)}/night</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9,textAlign:'right'}}>{bk.nights}</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9,textAlign:'right',fontWeight:700}}>{fc(bk.origPrice)}</td>
-                </tr>
-                {bk.discount>0&&<tr style={{background:'#fffbf5'}}>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>2</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>Discount / Concession</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9}}>—</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9,textAlign:'right'}}>—</td>
-                  <td style={{padding:'6px 9px',border:'1px solid #E8C07A',fontSize:9,textAlign:'right',fontWeight:700,color:'#15803D'}}>- {fc(bk.discount)}</td>
+                {rooms.map((r,i)=><tr key={r.id} style={{background:i%2===0?'#fff':'#fffbf5'}}>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>{i+1}</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>{r.type} — <b>{r.label}</b> ({r.block} Block)</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>{fc(r.price)}/night</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,textAlign:'right'}}>{bk.nights}</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,textAlign:'right',fontWeight:700}}>{fc(r.price*bk.nights)}</td>
+                </tr>)}
+                {bk.discount>0&&<tr style={{background:'#f9fef9'}}>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>{rooms.length+1}</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>Discount / Concession</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5}}>—</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,textAlign:'right'}}>—</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,textAlign:'right',fontWeight:700,color:'#15803D'}}>- {fc(bk.discount)}</td>
                 </tr>}
+                <tr style={{background:'#FFF3E0'}}>
+                  <td colSpan={4} style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,fontWeight:700,textAlign:'right',color:'#D4600A'}}>Subtotal ({rooms.length} rooms)</td>
+                  <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontSize:8.5,fontWeight:700,textAlign:'right'}}>{fc(bk.origPrice)}</td>
+                </tr>
               </tbody>
             </table>
           </div>
           {/* total */}
-          <div style={{background:'linear-gradient(135deg,#8B1A00,#D4600A,#E8801A)',color:'#fff',padding:'11px 18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style={{background:'linear-gradient(135deg,#8B1A00,#D4600A,#E8801A)',color:'#fff',padding:'10px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div>
-              <div style={{fontSize:9,opacity:0.85}}>Original: {fc(bk.origPrice)}{bk.discount>0?' | Discount: - '+fc(bk.discount):''}</div>
-              <div style={{fontSize:10,fontWeight:600,marginTop:2}}>TOTAL PAYABLE AMOUNT</div>
+              <div style={{fontSize:8.5,opacity:0.85}}>Subtotal: {fc(bk.origPrice)}{bk.discount>0?' | Discount: - '+fc(bk.discount):''}</div>
+              <div style={{fontSize:10,fontWeight:600,marginTop:2}}>TOTAL PAYABLE ({rooms.length} Room{rooms.length!==1?'s':''})</div>
             </div>
             <div style={{fontFamily:"'Crimson Pro',serif",fontSize:22,fontWeight:700}}>{fc(bk.finalAmt)}</div>
           </div>
           {/* paid/due */}
-          <div style={{display:'flex',gap:10,padding:'9px 16px',background:'#FFF8F0',borderBottom:'1px solid #E8C07A'}}>
-            <div style={{flex:1,borderRadius:8,padding:11,textAlign:'center',border:'1.5px solid',background:isPaid?'#DCFCE7':'#FEE2E2',borderColor:isPaid?'#86EFAC':'#FCA5A5',color:isPaid?'#166534':'#991B1B'}}>
+          <div style={{display:'flex',gap:10,padding:'8px 14px',background:'#FFF8F0',borderBottom:'1px solid #E8C07A'}}>
+            <div style={{flex:1,borderRadius:8,padding:10,textAlign:'center',border:'1.5px solid',background:isPaid?'#DCFCE7':'#FEE2E2',borderColor:isPaid?'#86EFAC':'#FCA5A5',color:isPaid?'#166534':'#991B1B'}}>
               <div style={{fontSize:7,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',opacity:0.8}}>{isPaid?'✅ FULLY PAID':'⏳ BALANCE DUE'}</div>
-              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:17,fontWeight:700,marginTop:2}}>{isPaid?'NIL':fc(bal)}</div>
+              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:16,fontWeight:700,marginTop:2}}>{isPaid?'NIL':fc(bal)}</div>
             </div>
-            <div style={{flex:1,borderRadius:8,padding:11,textAlign:'center',border:'1.5px solid',background:'#DBEAFE',borderColor:'#93C5FD',color:'#1E40AF'}}>
+            <div style={{flex:1,borderRadius:8,padding:10,textAlign:'center',border:'1.5px solid',background:'#DBEAFE',borderColor:'#93C5FD',color:'#1E40AF'}}>
               <div style={{fontSize:7,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',opacity:0.8}}>TOTAL PAID</div>
-              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:17,fontWeight:700,marginTop:2}}>{fc(paid)}</div>
+              <div style={{fontFamily:"'Crimson Pro',serif",fontSize:16,fontWeight:700,marginTop:2}}>{fc(paid)}</div>
             </div>
           </div>
           {/* payment history */}
-          {bk.payHistory.length>0&&<div style={{padding:'9px 16px',borderBottom:'1px solid #E8C07A'}}>
-            <div style={{fontSize:8,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:4,marginBottom:7}}>📜 Payment History</div>
+          {bk.payHistory.length>0&&<div style={{padding:'8px 14px',borderBottom:'1px solid #E8C07A'}}>
+            <div style={{fontSize:7,fontWeight:700,color:'#D4600A',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #E8C07A',paddingBottom:3,marginBottom:6}}>📜 Payment History</div>
             <table style={{width:'100%',borderCollapse:'collapse'}}>
               <thead><tr style={{background:'#FFF3E0'}}>
-                {['#','Date & Time','Mode','Txn ID','Amount'].map((h,i)=><th key={i} style={{padding:'5px 8px',textAlign:i===4?'right':'left',fontSize:7.5,fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A'}}>{h}</th>)}
+                {['#','Date & Time','Mode','Txn ID','Amount'].map((h,i)=><th key={i} style={{padding:'4px 6px',textAlign:i===4?'right':'left',fontSize:7,fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A'}}>{h}</th>)}
               </tr></thead>
               <tbody>{bk.payHistory.map((p,i)=><tr key={i} style={{background:i%2===0?'#fffbf5':'#fff'}}>
-                <td style={{padding:'5px 8px',border:'1px solid #E8C07A',fontSize:8.5}}>{i+1}</td>
-                <td style={{padding:'5px 8px',border:'1px solid #E8C07A',fontSize:8.5}}>{fdt(p.date)}</td>
-                <td style={{padding:'5px 8px',border:'1px solid #E8C07A',fontSize:8.5}}>{p.mode}</td>
-                <td style={{padding:'5px 8px',border:'1px solid #E8C07A',fontSize:8.5}}>{p.transactionId||'—'}</td>
-                <td style={{padding:'5px 8px',border:'1px solid #E8C07A',fontSize:8.5,textAlign:'right',fontWeight:700}}>{fc(p.amount)}</td>
+                <td style={{padding:'4px 6px',border:'1px solid #E8C07A',fontSize:8}}>{i+1}</td>
+                <td style={{padding:'4px 6px',border:'1px solid #E8C07A',fontSize:8}}>{fdt(p.date)}</td>
+                <td style={{padding:'4px 6px',border:'1px solid #E8C07A',fontSize:8}}>{p.mode}</td>
+                <td style={{padding:'4px 6px',border:'1px solid #E8C07A',fontSize:8}}>{p.transactionId||'—'}</td>
+                <td style={{padding:'4px 6px',border:'1px solid #E8C07A',fontSize:8,textAlign:'right',fontWeight:700}}>{fc(p.amount)}</td>
               </tr>)}</tbody>
             </table>
           </div>}
           {/* qr+info */}
-          <div style={{padding:'9px 16px',display:'flex',alignItems:'flex-start',gap:12,borderBottom:'1px solid #E8C07A'}}>
-            <div style={{flexShrink:0,textAlign:'center'}}>
-              <div ref={qrRef}/>
-              <div style={{fontSize:7,color:'#C4862A',marginTop:2}}>Scan to verify</div>
-            </div>
+          <div style={{padding:'8px 14px',display:'flex',alignItems:'flex-start',gap:12,borderBottom:'1px solid #E8C07A'}}>
+            <div style={{flexShrink:0,textAlign:'center'}}><div ref={qrRef}/><div style={{fontSize:7,color:'#C4862A',marginTop:2}}>Scan to verify</div></div>
             <div style={{flex:1}}>
-              <div style={{fontSize:9,color:'#C4862A'}}>Reg: {SANSTHA.regNo} | PAN: {SANSTHA.pan}</div>
-              <div style={{fontSize:9,color:'#C4862A',marginTop:2}}>🌐 {SANSTHA.website}</div>
-              {bk.note&&<div style={{fontSize:9,color:'#6B3A0F',marginTop:5,background:'#FFF3E0',padding:'4px 8px',borderRadius:5,borderLeft:'3px solid #D4600A'}}><b>Note:</b> {bk.note}</div>}
+              <div style={{fontSize:8.5,color:'#C4862A'}}>Reg: {SANSTHA.regNo} | PAN: {SANSTHA.pan}</div>
+              <div style={{fontSize:8.5,color:'#C4862A',marginTop:2}}>🌐 {SANSTHA.website}</div>
+              {bk.note&&<div style={{fontSize:8,color:'#6B3A0F',marginTop:5,background:'#FFF3E0',padding:'4px 8px',borderRadius:5,borderLeft:'3px solid #D4600A'}}><b>Note:</b> {bk.note}</div>}
             </div>
           </div>
           {/* terms */}
-          <div style={{padding:'9px 16px',background:'#FFF8F0',borderBottom:'1px solid #E8C07A'}}>
-            <div style={{fontSize:8,fontWeight:700,color:'#D4600A',marginBottom:5}}>📋 Terms &amp; Conditions — नियम व अटी</div>
-            {SANSTHA.terms.map((tc,i)=><div key={i} style={{display:'flex',gap:5,marginBottom:2,fontSize:8,color:'#6B3A0F',lineHeight:1.65}}>
+          <div style={{padding:'8px 14px',background:'#FFF8F0',borderBottom:'1px solid #E8C07A'}}>
+            <div style={{fontSize:7.5,fontWeight:700,color:'#D4600A',marginBottom:4}}>📋 Terms &amp; Conditions — नियम व अटी</div>
+            {SANSTHA.terms.map((tc,i)=><div key={i} style={{display:'flex',gap:4,marginBottom:2,fontSize:7.5,color:'#6B3A0F',lineHeight:1.6}}>
               <span style={{color:'#D4600A',fontWeight:700,flexShrink:0}}>{i+1}.</span><span>{tc}</span>
             </div>)}
           </div>
           {/* footer */}
-          <div style={{background:'#1C0A00',color:'#fff',padding:'10px 18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style={{background:'#1C0A00',color:'#fff',padding:'9px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div>
-              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:10,opacity:0.92}}>श्री.संत सखाराम महाराज की जय
-                🙏 | धन्यवाद</div>
-              <div style={{fontSize:7.5,opacity:0.6,marginTop:2}}>Have a blessed and peaceful stay.</div>
+              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:9.5,opacity:0.92}}>जय साखराम महाराज 🙏 | धन्यवाद</div>
+              <div style={{fontSize:7,opacity:0.6,marginTop:2}}>Have a blessed and peaceful stay.</div>
             </div>
             <div style={{textAlign:'right'}}>
-              <div style={{fontSize:7.5,opacity:0.6}}>Generated: {fdt(new Date().toISOString())}</div>
-              <div style={{fontSize:7,opacity:0.5}}>Computer generated invoice.</div>
+              <div style={{fontSize:7,opacity:0.6}}>Generated: {fdt(new Date().toISOString())}</div>
+              <div style={{fontSize:6.5,opacity:0.5}}>Computer generated invoice.</div>
             </div>
           </div>
         </div>
@@ -922,80 +971,136 @@ function InvoiceModal({bk,t,onClose}){
   </div>;
 }
 
+
 // ═══════════════════════════════════════════════════
-//  BOOKING FORM
+//  BOOKING FORM — MULTI-ROOM (1 BOOKING = N ROOMS)
 // ═══════════════════════════════════════════════════
 function BookingForm({bookings,onSave,onCancel,editData,t}){
   const empty={
     name:'',mobile:'',address:'',aadhaar:'',aadhaarFile:'',
-    roomType:'AC',roomId:'',maleCount:'',femaleCount:'',
+    roomIds:[],
+    maleCount:'',femaleCount:'',
     checkIn:todayStr(),checkOut:'',
-    manualEnabled:false,origPrice:'',manualPrice:'',discount:'0',finalAmt:'',
-    totalAmt:'',advPaid:'0',payMode:'Cash',txnId:'',note:'',payHistory:[],
+    manualEnabled:false,origPrice:0,manualPrice:0,discount:0,finalAmt:0,
+    totalAmt:0,advPaid:0,payMode:'Cash',txnId:'',note:'',payHistory:[],
   };
-  const[F,setF]=useState({...empty,...(editData||{})});
+  const[F,setF]=useState(()=>{
+    if(!editData) return {...empty};
+    return {...empty,...editData,
+      roomIds:editData.roomIds||(editData.roomId?[editData.roomId]:[]),
+      origPrice:Number(editData.origPrice)||0,
+      finalAmt:Number(editData.finalAmt)||0,
+      totalAmt:Number(editData.totalAmt)||0,
+      discount:Number(editData.discount)||0,
+      advPaid:Number(editData.advPaid)||0,
+    };
+  });
   const[E,setE]=useState({});
   const[tab,setTab]=useState(0);
+  const[blockFilter,setBlockFilter]=useState('all');
+  const[typeFilter,setTypeFilter]=useState('all');
 
   function s(k,v){setF(p=>({...p,[k]:v}));setE(p=>({...p,[k]:null}));}
 
-  // auto price
-  useEffect(()=>{
-    if(F.manualEnabled)return;
-    if(F.checkIn&&F.checkOut&&F.roomId){
-      const room=ALL_ROOMS.find(r=>r.id===F.roomId);
-      if(!room)return;
-      const n=nights(F.checkIn,F.checkOut);
-      const p=n*room.price;
-      setF(pr=>({...pr,origPrice:p,finalAmt:p,totalAmt:p}));
-    }
-  },[F.checkIn,F.checkOut,F.roomId,F.manualEnabled]);
+  // Available rooms for selected dates
+  const availableRooms=useMemo(()=>{
+    if(!F.checkIn||!F.checkOut) return ALL_ROOMS;
+    return ALL_ROOMS.filter(r=>isRoomAvailable(r.id,F.checkIn,F.checkOut,bookings,editData?.id||''));
+  },[F.checkIn,F.checkOut,bookings]);
 
-  // manual price
+  // Selected room objects
+  const selectedRooms=useMemo(()=>ALL_ROOMS.filter(r=>F.roomIds.includes(r.id)),[F.roomIds.join(',')]);
+
+  // Auto price recalc whenever dates or rooms change
   useEffect(()=>{
-    if(!F.manualEnabled)return;
+    if(F.manualEnabled) return;
+    const n=nights(F.checkIn,F.checkOut);
+    if(!F.checkIn||!F.checkOut||F.roomIds.length===0||n<=0){
+      setF(p=>({...p,origPrice:0,finalAmt:0,totalAmt:0}));
+      return;
+    }
+    const total=selectedRooms.reduce((s,r)=>s+n*r.price,0);
+    setF(p=>({...p,origPrice:total,finalAmt:total,totalAmt:total}));
+  },[F.checkIn,F.checkOut,F.roomIds.join(','),F.manualEnabled]);
+
+  // Manual price recalc
+  useEffect(()=>{
+    if(!F.manualEnabled) return;
     const mp=Number(F.manualPrice)||0;
     const d=Number(F.discount)||0;
     const final=Math.max(0,mp-d);
     setF(p=>({...p,finalAmt:final,totalAmt:final}));
   },[F.manualPrice,F.discount,F.manualEnabled]);
 
-  const typeRooms=ALL_ROOMS.filter(r=>r.type===(F.roomType==='AC'?'AC':'NON-AC'));
-  const avRooms=typeRooms.filter(r=>
-    !F.checkIn||!F.checkOut||isRoomAvailable(r.id,F.checkIn,F.checkOut,bookings,editData?.id||'')
-  );
+  function toggleRoom(roomId){
+    const av=availableRooms.find(r=>r.id===roomId);
+    if(!av&&!F.roomIds.includes(roomId)) return;
+    setF(p=>{
+      const ids=p.roomIds.includes(roomId)?p.roomIds.filter(x=>x!==roomId):[...p.roomIds,roomId];
+      return{...p,roomIds:ids};
+    });
+    setE(p=>({...p,roomIds:null}));
+  }
+
+  function selectAllSec(rooms){
+    const ids=rooms.filter(r=>availableRooms.find(a=>a.id===r.id)).map(r=>r.id);
+    setF(p=>({...p,roomIds:[...new Set([...p.roomIds,...ids])]}));
+  }
+  function clearAll(){setF(p=>({...p,roomIds:[]}));}
+
   const n=nights(F.checkIn,F.checkOut);
   const rem=Math.max(0,(Number(F.totalAmt)||0)-(Number(F.advPaid)||0));
 
+  const displayRooms=useMemo(()=>{
+    let rs=ALL_ROOMS;
+    if(typeFilter!=='all') rs=rs.filter(r=>r.type===typeFilter);
+    if(blockFilter!=='all') rs=rs.filter(r=>r.block===blockFilter);
+    return rs;
+  },[typeFilter,blockFilter]);
+
   function validate(){
     const e={};
-    if(!F.name.trim())e.name='Required';
-    if(!/^\d{10}$/.test(F.mobile))e.mobile='10-digit required';
-    if(!F.aadhaar||!/^\d{12}$/.test(F.aadhaar))e.aadhaar='12-digit required';
-    if(!F.roomId)e.roomId='Select room';
-    if(!F.checkIn)e.checkIn='Required';
-    if(!F.checkOut)e.checkOut='Required';
-    if(F.checkIn&&F.checkOut&&new Date(F.checkOut)<=new Date(F.checkIn))e.checkOut='Must be after check-in';
-    if(F.roomId&&F.checkIn&&F.checkOut&&!isRoomAvailable(F.roomId,F.checkIn,F.checkOut,bookings,editData?.id||''))
-      e.roomId=t.overlap;
-    setE(e);return Object.keys(e).length===0;
+    if(!F.name.trim()) e.name='Required';
+    if(!/^\d{10}$/.test(F.mobile)) e.mobile='10-digit required';
+    if(!F.aadhaar||!/^\d{12}$/.test(F.aadhaar)) e.aadhaar='12-digit required';
+    if(!F.checkIn) e.checkIn='Required';
+    if(!F.checkOut) e.checkOut='Required';
+    if(F.checkIn&&F.checkOut&&new Date(F.checkOut)<=new Date(F.checkIn)) e.checkOut='Must be after check-in';
+    if(F.roomIds.length===0) e.roomIds='Select at least one room';
+    if(F.roomIds.length>0&&F.checkIn&&F.checkOut){
+      const blocked=F.roomIds.filter(rid=>!isRoomAvailable(rid,F.checkIn,F.checkOut,bookings,editData?.id||''));
+      if(blocked.length>0) e.roomIds=t.overlap+' ('+blocked.map(rid=>ALL_ROOMS.find(r=>r.id===rid)?.label||rid).join(', ')+')';
+    }
+    if(!F.finalAmt||Number(F.finalAmt)<=0) e.finalAmt='Enter amount';
+    setE(e);
+    // Show tab with first error
+    if(e.name||e.mobile||e.aadhaar) setTab(0);
+    else if(e.roomIds||e.checkIn||e.checkOut) setTab(1);
+    else if(e.finalAmt) setTab(2);
+    return Object.keys(e).length===0;
   }
 
   function handleSave(){
-    if(!validate())return;
+    if(!validate()) return;
     const n2=nights(F.checkIn,F.checkOut);
     let ph=[...(editData?.payHistory||[])];
     if(!editData&&Number(F.advPaid)>0)
       ph.push({amount:Number(F.advPaid),mode:F.payMode,date:new Date().toISOString(),transactionId:F.txnId||''});
     onSave({
-      ...F,id:editData?.id||genId(),
+      ...F,
+      id:editData?.id||genId(),
       receiptNo:editData?.receiptNo||genRcpt(bookings),
-      nights:n2,status:editData?.status||'active',
+      nights:n2,
+      status:editData?.status||'active',
       createdAt:editData?.createdAt||new Date().toISOString(),
       updatedAt:new Date().toISOString(),
       payHistory:ph,
-      finalAmt:Number(F.finalAmt)||0,totalAmt:Number(F.totalAmt)||0,
-      origPrice:Number(F.origPrice)||0,discount:Number(F.discount)||0,
+      roomIds:F.roomIds,
+      roomId:F.roomIds[0]||'',
+      finalAmt:Number(F.finalAmt)||0,
+      totalAmt:Number(F.totalAmt)||0,
+      origPrice:Number(F.origPrice)||0,
+      discount:Number(F.discount)||0,
       advPaid:Number(F.advPaid)||0,
     });
   }
@@ -1005,16 +1110,24 @@ function BookingForm({bookings,onSave,onCancel,editData,t}){
     const rd=new FileReader();rd.onload=ev=>s('aadhaarFile',ev.target.result);rd.readAsDataURL(f);
   }
 
-  const tabs=[{ic:'👤',lb:t.personalDetails},{ic:'🛏️',lb:t.stayDetails},{ic:'💳',lb:t.payDetails}];
+  const tabs=[{ic:'👤',lb:t.personalDetails},{ic:'🛏️',lb:'Select Rooms'},{ic:'💰',lb:t.stayDetails},{ic:'💳',lb:t.payDetails}];
+
+  const roomSections=[
+    {label:'🌬️ GM Block — AC',rooms:displayRooms.filter(r=>r.block==='GM'&&r.type==='AC')},
+    {label:'🌬️ SM Block — AC',rooms:displayRooms.filter(r=>r.block==='SM'&&r.type==='AC')},
+    {label:'🏠 GM Block — Non-AC',rooms:displayRooms.filter(r=>r.block==='GM'&&r.type==='NON-AC')},
+    {label:'🏠 SM Block — Non-AC',rooms:displayRooms.filter(r=>r.block==='SM'&&r.type==='NON-AC')},
+  ].filter(s=>s.rooms.length>0);
 
   return<>
     <div className="mb" style={{paddingBottom:8}}>
       <div className="tabbar">{tabs.map((tb,i)=><button key={i} className={`tabi${tab===i?' on':''}`} onClick={()=>setTab(i)}>{tb.ic} {tb.lb}</button>)}</div>
 
+      {/* ── TAB 0: PERSONAL ── */}
       {tab===0&&<div className="fg fg2 fade">
         <div className="fgr">
           <label className="fl">{t.name}<span>*</span></label>
-          <input className={`fi${E.name?' err':''}`} value={F.name} onChange={e=>s('name',e.target.value)} placeholder="Enter full name"/>
+          <input className={`fi${E.name?' err':''}`} value={F.name} onChange={e=>s('name',e.target.value)} placeholder="Customer / Group / Organisation name"/>
           {E.name&&<span className="fe">{E.name}</span>}
         </div>
         <div className="fgr">
@@ -1027,56 +1140,6 @@ function BookingForm({bookings,onSave,onCancel,editData,t}){
           <input className={`fi${E.aadhaar?' err':''}`} value={F.aadhaar} onChange={e=>s('aadhaar',e.target.value)} placeholder="12-digit" maxLength={12}/>
           {E.aadhaar&&<span className="fe">{E.aadhaar}</span>}
         </div>
-        <div className="fgr full">
-          <label className="fl">{t.address}</label>
-          <textarea className="fi" rows={2} value={F.address} onChange={e=>s('address',e.target.value)} placeholder="Full address"/>
-        </div>
-        <div className="fgr full">
-          <label className="fl">📎 {t.upload}</label>
-          <label className="up-a" style={{display:'block',cursor:'pointer'}}>
-            <input type="file" accept="image/*,application/pdf" style={{display:'none'}} onChange={handleAadh}/>
-            <div style={{fontSize:'1.6rem',marginBottom:4}}>📄</div>
-            <div className="sm clt">Click to upload image or PDF</div>
-          </label>
-          {F.aadhaarFile&&<div style={{marginTop:8,borderRadius:8,overflow:'hidden',maxHeight:110,background:'var(--saf4)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-            {F.aadhaarFile.startsWith('data:image')?<img src={F.aadhaarFile} style={{maxHeight:110,maxWidth:'100%',borderRadius:8}} alt="aadhaar"/>:<div className="sm tc2" style={{padding:12}}>📄 PDF uploaded ✓</div>}
-          </div>}
-        </div>
-      </div>}
-
-      {tab===1&&<div className="fg fg2 fade">
-        <div className="fgr">
-          <label className="fl">{t.roomType}<span>*</span></label>
-          <select className="fi" value={F.roomType} onChange={e=>{s('roomType',e.target.value);s('roomId','');}}>
-            <option value="AC">🌬️ AC Room</option>
-            <option value="NON-AC">🏠 Non-AC Room</option>
-          </select>
-        </div>
-        <div className="fgr">
-          <label className="fl">{t.roomNo}<span>*</span></label>
-          <select className={`fi${E.roomId?' err':''}`} value={F.roomId} onChange={e=>s('roomId',e.target.value)}>
-            <option value="">— Select Room —</option>
-            {avRooms.map(r=><option key={r.id} value={r.id}>{r.label} ({r.block} Block) — {fc(r.price)}/night</option>)}
-          </select>
-          {E.roomId&&<span className="fe">{E.roomId}</span>}
-          <span className="fh">{avRooms.length} available</span>
-        </div>
-        <div className="fgr">
-          <label className="fl">{t.checkin}<span>*</span></label>
-          <input type="date" className={`fi${E.checkIn?' err':''}`} value={F.checkIn} onChange={e=>s('checkIn',e.target.value)}/>
-          {E.checkIn&&<span className="fe">{E.checkIn}</span>}
-        </div>
-        <div className="fgr">
-          <label className="fl">{t.checkout}<span>*</span></label>
-          <input type="date" className={`fi${E.checkOut?' err':''}`} value={F.checkOut} onChange={e=>s('checkOut',e.target.value)}/>
-          {E.checkOut&&<span className="fe">{E.checkOut}</span>}
-        </div>
-        {n>0&&<div className="fgr full">
-          <div style={{background:'var(--saf4)',border:'1.5px solid var(--vlt)',borderRadius:8,padding:'9px 14px',display:'flex',justifyContent:'space-between'}}>
-            <span className="sm bold cor">📅 {n} night(s) × {fc(F.roomId&&ALL_ROOMS.find(r=>r.id===F.roomId)?.price||0)}/night</span>
-            <span className="bold cor">{fc(n*(ALL_ROOMS.find(r=>r.id===F.roomId)?.price||0))}</span>
-          </div>
-        </div>}
         <div className="fgr">
           <label className="fl">{t.maleCount}</label>
           <input type="number" className="fi" value={F.maleCount} onChange={e=>s('maleCount',e.target.value)} min={0} placeholder="0"/>
@@ -1086,46 +1149,202 @@ function BookingForm({bookings,onSave,onCancel,editData,t}){
           <input type="number" className="fi" value={F.femaleCount} onChange={e=>s('femaleCount',e.target.value)} min={0} placeholder="0"/>
         </div>
         <div className="fgr full">
-          <div className="divider"/>
-          <div className="flex ic g2 mb3">
-            <div className={`tog-tr${F.manualEnabled?' on':''}`} onClick={()=>s('manualEnabled',!F.manualEnabled)}><div className="tog-th"/></div>
-            <span className="semi sm">{F.manualEnabled?'🟠 Manual Billing':'🟢 Auto Billing'}</span>
-          </div>
-          <div className="fg fg3">
-            <div className="fgr"><label className="fl">{t.origPrice}</label><input type="number" className="fi" value={F.origPrice} onChange={e=>s('origPrice',e.target.value)} readOnly={!F.manualEnabled}/></div>
-            {F.manualEnabled&&<>
-              <div className="fgr"><label className="fl">{t.manualPriceF}</label><input type="number" className="fi" value={F.manualPrice} onChange={e=>s('manualPrice',e.target.value)} placeholder="0"/></div>
-              <div className="fgr"><label className="fl">{t.discount}</label><input type="number" className="fi" value={F.discount} onChange={e=>s('discount',e.target.value)} placeholder="0"/></div>
-            </>}
-            <div className="fgr"><label className="fl">{t.finalAmt}</label><input type="number" className="fi" value={F.finalAmt} onChange={e=>{s('finalAmt',e.target.value);s('totalAmt',e.target.value);}} style={{fontWeight:700,color:'var(--saf)'}}/></div>
-          </div>
+          <label className="fl">{t.address}</label>
+          <textarea className="fi" rows={2} value={F.address} onChange={e=>s('address',e.target.value)} placeholder="Full address"/>
         </div>
-        <div className="fgr full"><label className="fl">{t.note}</label><input className="fi" value={F.note} onChange={e=>s('note',e.target.value)} placeholder="Optional"/></div>
+        <div className="fgr full">
+          <label className="fl">📎 {t.upload}</label>
+          <label className="up-a" style={{display:'block',cursor:'pointer'}}>
+            <input type="file" accept="image/*,application/pdf" style={{display:'none'}} onChange={handleAadh}/>
+            <div style={{fontSize:'1.5rem',marginBottom:4}}>📄</div>
+            <div className="sm clt">Click to upload ID / Aadhaar (image or PDF)</div>
+          </label>
+          {F.aadhaarFile&&<div style={{marginTop:8,borderRadius:8,overflow:'hidden',maxHeight:100,background:'var(--saf4)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {F.aadhaarFile.startsWith('data:image')?<img src={F.aadhaarFile} style={{maxHeight:100,maxWidth:'100%',borderRadius:8}} alt="id"/>:<div className="sm tc2" style={{padding:10}}>📄 PDF uploaded ✓</div>}
+          </div>}
+        </div>
       </div>}
 
+      {/* ── TAB 1: ROOM SELECTION ── */}
+      {tab===1&&<div className="fade">
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10,marginBottom:12}}>
+          <div className="fgr">
+            <label className="fl">{t.checkin}<span>*</span></label>
+            <input type="date" className={`fi${E.checkIn?' err':''}`} value={F.checkIn} onChange={e=>s('checkIn',e.target.value)}/>
+            {E.checkIn&&<span className="fe">{E.checkIn}</span>}
+          </div>
+          <div className="fgr">
+            <label className="fl">{t.checkout}<span>*</span></label>
+            <input type="date" className={`fi${E.checkOut?' err':''}`} value={F.checkOut} onChange={e=>s('checkOut',e.target.value)}/>
+            {E.checkOut&&<span className="fe">{E.checkOut}</span>}
+          </div>
+          <div className="fgr">
+            <label className="fl">Filter Type</label>
+            <select className="fi" value={typeFilter} onChange={e=>setTypeFilter(e.target.value)}>
+              <option value="all">All Types</option>
+              <option value="AC">AC Only</option>
+              <option value="NON-AC">Non-AC Only</option>
+            </select>
+          </div>
+          <div className="fgr">
+            <label className="fl">Filter Block</label>
+            <select className="fi" value={blockFilter} onChange={e=>setBlockFilter(e.target.value)}>
+              <option value="all">All Blocks</option>
+              <option value="GM">GM Block</option>
+              <option value="SM">SM Block</option>
+            </select>
+          </div>
+        </div>
+
+        {n>0&&<div style={{background:'var(--saf4)',border:'1.5px solid var(--vlt)',borderRadius:8,padding:'8px 14px',marginBottom:10,display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
+          <span className="sm bold cor">📅 {n} night(s) · {fd(F.checkIn)} → {fd(F.checkOut)}</span>
+          <span className="sm clt">{availableRooms.length}/{ALL_ROOMS.length} rooms available</span>
+        </div>}
+
+        {/* Selection summary bar */}
+        <div style={{background:F.roomIds.length>0?'linear-gradient(135deg,var(--saf),var(--saf2))':'var(--saf4)',border:'2px solid var(--vlt)',borderRadius:9,padding:'10px 14px',marginBottom:10,display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8,transition:'all 0.2s'}}>
+          <div style={{color:F.roomIds.length>0?'#fff':'var(--lt)'}}>
+            {F.roomIds.length>0
+              ?<><span style={{fontWeight:700,fontSize:'1.1rem'}}>{F.roomIds.length}</span><span style={{fontSize:'0.82rem',marginLeft:6}}>room(s): {selectedRooms.map(r=>r.label).join(', ')}</span></>
+              :<span className="sm">👆 Click rooms below to select (multiple allowed)</span>}
+          </div>
+          {F.roomIds.length>0&&<button className="btn btn-sm" style={{background:'rgba(255,255,255,0.25)',color:'#fff',border:'1.5px solid rgba(255,255,255,0.4)'}} onClick={clearAll}>✕ Clear All</button>}
+        </div>
+
+        {E.roomIds&&<div className="fe mb2" style={{fontSize:'0.76rem',fontWeight:600}}>⚠️ {E.roomIds}</div>}
+
+        <div className="flex g3 ic fw mb3" style={{fontSize:'0.7rem'}}>
+          <div className="flex g2 ic"><div style={{width:12,height:12,borderRadius:3,background:'#F0FDF4',border:'2px solid #86EFAC'}}/> Available</div>
+          <div className="flex g2 ic"><div style={{width:12,height:12,borderRadius:3,background:'linear-gradient(135deg,#D4600A,#E8801A)',border:'2px solid #D4600A'}}/> Selected ✓</div>
+          <div className="flex g2 ic"><div style={{width:12,height:12,borderRadius:3,background:'#FEE2E2',border:'2px solid #FCA5A5',opacity:0.5}}/> Booked</div>
+        </div>
+
+        {roomSections.map(sec=>{
+          const secAvail=sec.rooms.filter(r=>availableRooms.find(a=>a.id===r.id));
+          return<div key={sec.label} style={{marginBottom:14}}>
+            <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',marginBottom:7,display:'flex',alignItems:'center',gap:8}}>
+              {sec.label}
+              <span style={{fontWeight:400,color:'var(--lt)'}}>({secAvail.length} free)</span>
+              <div style={{flex:1,height:'1px',background:'var(--vlt)'}}/>
+              <button className="btn btn-sm btn-sc" style={{padding:'2px 10px',fontSize:'0.68rem'}} onClick={()=>selectAllSec(sec.rooms)}>Select All</button>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:7}}>
+              {sec.rooms.map(r=>{
+                const isAv=!!availableRooms.find(a=>a.id===r.id);
+                const isSel=F.roomIds.includes(r.id);
+                return<div key={r.id}
+                  onClick={()=>isAv&&toggleRoom(r.id)}
+                  style={{
+                    padding:'8px 5px',borderRadius:8,border:'2px solid',
+                    textAlign:'center',cursor:isAv?'pointer':'not-allowed',
+                    fontSize:'0.74rem',fontWeight:700,transition:'all 0.15s',userSelect:'none',
+                    background:isSel?'linear-gradient(135deg,#D4600A,#E8801A)':isAv?'#F0FDF4':'#FEF2F2',
+                    borderColor:isSel?'#D4600A':isAv?'#86EFAC':'#FCA5A5',
+                    color:isSel?'#fff':isAv?'#15803D':'#991B1B',
+                    opacity:isAv?1:0.55,
+                    transform:isSel?'scale(1.04)':'scale(1)',
+                    boxShadow:isSel?'0 2px 8px rgba(212,96,10,0.35)':'none',
+                  }}>
+                  {r.label}
+                  <span style={{display:'block',fontSize:'0.58rem',marginTop:1,opacity:0.85}}>
+                    {isSel?'✓ Selected':isAv?fc(r.price)+'/n':'Booked'}
+                  </span>
+                </div>;
+              })}
+            </div>
+          </div>;
+        })}
+
+        {selectedRooms.length>0&&n>0&&<div style={{background:'var(--saf4)',border:'1.5px solid var(--vlt)',borderRadius:9,padding:'12px 14px',marginTop:4}}>
+          <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',marginBottom:8}}>💰 Price Breakdown ({n} night{n>1?'s':''})</div>
+          {selectedRooms.map(r=><div key={r.id} style={{display:'flex',justifyContent:'space-between',fontSize:'0.78rem',padding:'3px 0',borderBottom:'1px dashed rgba(232,192,122,0.5)'}}>
+            <span>{r.label} · {r.block} · {r.type}</span>
+            <span>{fc(r.price)} × {n} = <b style={{color:'var(--saf)'}}>{fc(r.price*n)}</b></span>
+          </div>)}
+          <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.92rem',fontWeight:700,marginTop:8,paddingTop:6,borderTop:'2px solid var(--vlt)',color:'var(--saf)'}}>
+            <span>Grand Total ({selectedRooms.length} rooms × {n} nights)</span>
+            <span>{fc(selectedRooms.reduce((s,r)=>s+r.price*n,0))}</span>
+          </div>
+        </div>}
+      </div>}
+
+      {/* ── TAB 2: BILLING ── */}
       {tab===2&&<div className="fg fg2 fade">
-        <div className="fgr"><label className="fl">{t.totalAmt}</label><input type="number" className="fi" value={F.totalAmt} onChange={e=>s('totalAmt',e.target.value)}/></div>
-        <div className="fgr"><label className="fl">{t.advPaid}</label><input type="number" className="fi" value={F.advPaid} onChange={e=>s('advPaid',e.target.value)} placeholder="0"/></div>
-        <div className="fgr"><label className="fl">{t.payMode}</label>
+        <div className="fgr full">
+          <div style={{background:'var(--saf4)',border:'1.5px solid var(--vlt)',borderRadius:9,padding:'12px 14px',marginBottom:8}}>
+            <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',marginBottom:8}}>📋 Booking Summary</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:4}}>
+              <div className="ir"><span className="ik">Rooms ({selectedRooms.length})</span><span className="iv" style={{fontSize:'0.72rem'}}>{selectedRooms.map(r=>r.label).join(', ')||'—'}</span></div>
+              <div className="ir"><span className="ik">Nights</span><span className="iv">{n||'—'}</span></div>
+              <div className="ir"><span className="ik">Check-In</span><span className="iv">{fd(F.checkIn)}</span></div>
+              <div className="ir"><span className="ik">Check-Out</span><span className="iv">{fd(F.checkOut)}</span></div>
+              <div className="ir"><span className="ik">Persons</span><span className="iv">M:{F.maleCount||0} F:{F.femaleCount||0}</span></div>
+              <div className="ir" style={{borderBottom:'none'}}><span className="ik">Auto Price</span><span className="iv bold cor">{fc(F.origPrice)}</span></div>
+            </div>
+          </div>
+        </div>
+        <div className="fgr full">
+          <div className="flex ic g2 mb3">
+            <div className={`tog-tr${F.manualEnabled?' on':''}`} onClick={()=>s('manualEnabled',!F.manualEnabled)}><div className="tog-th"/></div>
+            <span className="semi sm">{F.manualEnabled?'🟠 Manual / Bargain Price':'🟢 Auto Price (room rate × nights)'}</span>
+          </div>
+          <div className="fg fg3">
+            <div className="fgr">
+              <label className="fl">Original / Auto Amount</label>
+              <input type="number" className="fi" value={F.origPrice} readOnly={!F.manualEnabled} style={{background:F.manualEnabled?undefined:'var(--saf4)',fontWeight:600}} onChange={e=>s('origPrice',e.target.value)}/>
+            </div>
+            {F.manualEnabled&&<>
+              <div className="fgr"><label className="fl">{t.manualPriceF} (After Bargain)</label><input type="number" className="fi" value={F.manualPrice} onChange={e=>s('manualPrice',e.target.value)} placeholder="Enter negotiated price"/></div>
+              <div className="fgr"><label className="fl">{t.discount}</label><input type="number" className="fi" value={F.discount} onChange={e=>s('discount',e.target.value)} placeholder="0"/></div>
+            </>}
+            <div className="fgr">
+              <label className="fl">{t.finalAmt}<span>*</span></label>
+              <input type="number" className={`fi${E.finalAmt?' err':''}`} value={F.finalAmt}
+                onChange={e=>{s('finalAmt',Number(e.target.value));s('totalAmt',Number(e.target.value));}}
+                style={{fontWeight:700,color:'var(--saf)',fontSize:'1rem'}}/>
+              {E.finalAmt&&<span className="fe">{E.finalAmt}</span>}
+            </div>
+          </div>
+        </div>
+        <div className="fgr full"><label className="fl">{t.note}</label><input className="fi" value={F.note} onChange={e=>s('note',e.target.value)} placeholder="Group name, purpose of visit, special note"/></div>
+      </div>}
+
+      {/* ── TAB 3: PAYMENT ── */}
+      {tab===3&&<div className="fg fg2 fade">
+        <div className="fgr full">
+          <div style={{background:'linear-gradient(135deg,var(--saf4),#FFF8F0)',border:'2px solid var(--vlt)',borderRadius:10,padding:'14px 16px',marginBottom:8}}>
+            <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.06em'}}>💰 Amount Summary</div>
+            <div className="ir"><span className="ik">Rooms</span><span className="iv" style={{fontSize:'0.72rem'}}>{selectedRooms.map(r=>r.label).join(', ')||'—'}</span></div>
+            <div className="ir"><span className="ik">Original Amount</span><span className="iv">{fc(F.origPrice)}</span></div>
+            {F.discount>0&&<div className="ir"><span className="ik">Discount</span><span className="iv cgr">- {fc(F.discount)}</span></div>}
+            <div className="ir" style={{borderBottom:'2px solid var(--vlt)',paddingBottom:8,marginBottom:8}}><span className="ik bold" style={{fontSize:'0.85rem'}}>FINAL AMOUNT</span><span className="iv bold cor" style={{fontSize:'1.1rem'}}>{fc(F.finalAmt)}</span></div>
+            <div className="ir" style={{borderBottom:'none'}}><span className="ik bold">Balance After Advance</span><span className="iv bold" style={{color:'var(--re)',fontSize:'1rem'}}>{fc(rem)}</span></div>
+          </div>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.advPaid} (Now)</label>
+          <input type="number" className="fi" value={F.advPaid} onChange={e=>s('advPaid',Number(e.target.value)||0)} placeholder="0"/>
+        </div>
+        <div className="fgr">
+          <label className="fl">{t.payMode}</label>
           <select className="fi" value={F.payMode} onChange={e=>s('payMode',e.target.value)}>
             <option value="Cash">💵 Cash</option>
             <option value="UPI">📱 UPI</option>
             <option value="Online">🌐 Online</option>
           </select>
         </div>
-        <div className="fgr"><label className="fl">{t.txnId}</label><input className="fi" value={F.txnId} onChange={e=>s('txnId',e.target.value)} placeholder="Optional"/></div>
         <div className="fgr full">
-          <div style={{background:'var(--saf4)',border:'1.5px solid var(--vlt)',borderRadius:9,padding:'14px 16px'}}>
-            <div className="ir"><span className="ik">{t.finalAmt}</span><span className="iv bold cor">{fc(F.finalAmt)}</span></div>
-            <div className="ir"><span className="ik">{t.advPaid}</span><span className="iv bold cgr">{fc(F.advPaid)}</span></div>
-            <div className="ir" style={{borderBottom:'none',marginTop:4}}><span className="ik bold">{t.remaining}</span><span className="iv bold" style={{color:'var(--re)',fontSize:'1.05rem'}}>{fc(rem)}</span></div>
-          </div>
+          <label className="fl">{t.txnId}</label>
+          <input className="fi" value={F.txnId} onChange={e=>s('txnId',e.target.value)} placeholder="UPI / Transaction ID (optional)"/>
         </div>
       </div>}
     </div>
     <div className="mf">
-      <div className="flex g2">{tab>0&&<button className="btn btn-ol btn-sm" onClick={()=>setTab(p=>p-1)}>← Back</button>}{tab<2&&<button className="btn btn-pr btn-sm" onClick={()=>setTab(p=>p+1)}>Next →</button>}</div>
-      <div className="flex g2"><button className="btn btn-ol btn-sm" onClick={onCancel}>{t.cancel}</button>{tab===2&&<button className="btn btn-gr" onClick={handleSave}>✅ {t.save}</button>}</div>
+      <div className="flex g2">{tab>0&&<button className="btn btn-ol btn-sm" onClick={()=>setTab(p=>p-1)}>← Back</button>}{tab<3&&<button className="btn btn-pr btn-sm" onClick={()=>setTab(p=>p+1)}>Next →</button>}</div>
+      <div className="flex g2">
+        <button className="btn btn-ol btn-sm" onClick={onCancel}>{t.cancel}</button>
+        {tab===3&&<button className="btn btn-gr" style={{minWidth:120}} onClick={handleSave}>✅ {t.save}</button>}
+      </div>
     </div>
   </>;
 }
@@ -1181,14 +1400,16 @@ function PaymentModal({bk,onSave,onClose,t}){
   </div>;
 }
 
+
 // ═══════════════════════════════════════════════════
-//  BOOKING DETAILS
+//  BOOKING DETAILS (multi-room aware)
 // ═══════════════════════════════════════════════════
 function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
   const[showAd,setShowAd]=useState(false);
   const paid=bk.payHistory.reduce((s,p)=>s+Number(p.amount),0);
   const bal=Math.max(0,Number(bk.finalAmt)-paid);
-  const room=ALL_ROOMS.find(r=>r.id===bk.roomId)||{label:bk.roomId,type:'',block:''};
+  const roomIds=bk.roomIds||(bk.roomId?[bk.roomId]:[]);
+  const rooms=roomIds.map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
   const qrRef=useRef();
   useEffect(()=>{
     if(!qrRef.current)return;
@@ -1201,6 +1422,27 @@ function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
       <span className={`badge ${bk.status==='active'?'b-gr':'b-gy'}`} style={{padding:'4px 12px',fontSize:'0.76rem'}}>{bk.status==='active'?'🟢 Active':'⚫ Out'}</span>
       <span className="badge b-or" style={{padding:'4px 12px'}}>{bk.id}</span>
       <span className="badge b-bl" style={{padding:'4px 12px'}}>{bk.receiptNo}</span>
+      <span className="badge b-pu" style={{padding:'4px 12px'}}>🏠 {rooms.length} Room{rooms.length!==1?'s':''}</span>
+    </div>
+    <div className="card mb3">
+      <div className="card-hd">
+        <span className="card-ti serif">🛏️ Rooms Booked ({rooms.length})</span>
+        <span style={{fontSize:'0.72rem',color:'var(--lt)'}}>{fd(bk.checkIn)} → {fd(bk.checkOut)} · {bk.nights} night(s)</span>
+      </div>
+      <div className="card-bd">
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(120px,1fr))',gap:7,marginBottom:10}}>
+          {rooms.map(r=><div key={r.id} style={{background:'linear-gradient(135deg,var(--saf4),#FFF8F0)',border:'2px solid var(--vlt)',borderRadius:8,padding:'8px',textAlign:'center'}}>
+            <div style={{fontWeight:700,fontSize:'0.85rem',color:'var(--saf)'}}>{r.label}</div>
+            <div style={{fontSize:'0.62rem',color:'var(--lt)',marginTop:1}}>{r.block} · {r.type}</div>
+            <div style={{fontSize:'0.65rem',fontWeight:600,color:'var(--saf)',marginTop:2}}>{fc(r.price*bk.nights)}</div>
+          </div>)}
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}}>
+          <div className="ir"><span className="ik">Check-In</span><span className="iv">{fd(bk.checkIn)}</span></div>
+          <div className="ir"><span className="ik">Check-Out</span><span className="iv">{fd(bk.checkOut)}</span></div>
+          <div className="ir"><span className="ik">Nights</span><span className="iv">{bk.nights}</span></div>
+        </div>
+      </div>
     </div>
     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
       <div className="card"><div className="card-bd">
@@ -1209,16 +1451,8 @@ function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
         <div className="ir"><span className="ik">{t.mobile}</span><span className="iv">{bk.mobile}</span></div>
         <div className="ir"><span className="ik">{t.aadhaar}</span><span className="iv">XXXX {String(bk.aadhaar||'').slice(-4)}</span></div>
         <div className="ir"><span className="ik">{t.address}</span><span className="iv xs">{bk.address||'—'}</span></div>
-        {bk.aadhaarFile&&<button className="btn btn-sc btn-xs mt2" onClick={()=>setShowAd(true)}>📄 {t.viewAadh}</button>}
-      </div></div>
-      <div className="card"><div className="card-bd">
-        <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>🛏️ Room</div>
-        <div className="ir"><span className="ik">Room</span><span className="iv bold cor" style={{fontSize:'1.05rem'}}>{room.label}</span></div>
-        <div className="ir"><span className="ik">Type</span><span className="iv">{room.type} — {room.block} Block</span></div>
-        <div className="ir"><span className="ik">{t.checkin}</span><span className="iv">{fd(bk.checkIn)}</span></div>
-        <div className="ir"><span className="ik">{t.checkout}</span><span className="iv">{fd(bk.checkOut)}</span></div>
-        <div className="ir"><span className="ik">Nights</span><span className="iv">{bk.nights}</span></div>
         <div className="ir"><span className="ik">Persons</span><span className="iv">M:{bk.maleCount||0} F:{bk.femaleCount||0}</span></div>
+        {bk.aadhaarFile&&<button className="btn btn-sc btn-xs mt2" onClick={()=>setShowAd(true)}>📄 {t.viewAadh}</button>}
       </div></div>
       <div className="card"><div className="card-bd">
         <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>💰 Payment</div>
@@ -1229,13 +1463,8 @@ function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
         <div className="ir" style={{borderBottom:'none'}}><span className="ik bold">Balance</span><span className="iv bold" style={{color:bal===0?'var(--gr)':'var(--re)',fontSize:'1.05rem'}}>{fc(bal)}</span></div>
         <div className="prog mt2"><div className="prog-f" style={{width:`${bk.finalAmt>0?Math.min(100,(paid/bk.finalAmt)*100):0}%`}}/></div>
       </div></div>
-      <div className="card"><div className="card-bd">
-        <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>📱 QR Code</div>
-        <div style={{display:'flex',justifyContent:'center',marginBottom:6}}><div ref={qrRef}/></div>
-        <div className="xs clt tc2">{bk.id}</div>
-      </div></div>
     </div>
-    {bk.payHistory.length>0&&<div className="card mb3"><div className="card-hd"><span className="card-ti">📜 {t.payHistory}</span></div>
+    {bk.payHistory.length>0&&<div className="card mb3"><div className="card-hd"><span className="card-ti serif">📜 {t.payHistory}</span></div>
       <div className="tw"><table><thead><tr><th>#</th><th>Date</th><th>Amount</th><th>Mode</th><th>Txn ID</th></tr></thead>
       <tbody>{bk.payHistory.map((p,i)=><tr key={i}>
         <td>{i+1}</td><td className="xs">{fdt(p.date)}</td>
@@ -1244,6 +1473,11 @@ function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
         <td className="xs clt">{p.transactionId||'—'}</td>
       </tr>)}</tbody></table></div>
     </div>}
+    <div className="card mb3"><div className="card-bd tc2">
+      <div style={{fontSize:'0.72rem',fontWeight:700,color:'var(--saf)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:8}}>📱 QR Code</div>
+      <div style={{display:'flex',justifyContent:'center',marginBottom:5}}><div ref={qrRef}/></div>
+      <div className="xs clt">{bk.id}</div>
+    </div></div>
     <div className="flex g2 fw">
       <button className="btn btn-pr btn-sm" onClick={onInvoice}>🧾 {t.receipt}</button>
       {bk.status==='active'&&<>
@@ -1254,8 +1488,8 @@ function BookingDetails({bk,t,onClose,onEdit,onUpdatePay,onCheckout,onInvoice}){
       <button className="btn btn-ol btn-sm" onClick={onClose}>{t.close}</button>
     </div>
     {showAd&&<div className="mo" onClick={()=>setShowAd(false)}><div className="md" onClick={e=>e.stopPropagation()}>
-      <div className="mh"><span className="mt">📄 Aadhaar</span><button className="xb" onClick={()=>setShowAd(false)}>✕</button></div>
-      <div className="mb">{bk.aadhaarFile?.startsWith('data:image')?<img src={bk.aadhaarFile} style={{maxWidth:'100%',maxHeight:'65vh',display:'block',margin:'0 auto',borderRadius:8}} alt="aadh"/>:<div className="tc2 sm" style={{padding:24}}>📄 PDF uploaded</div>}</div>
+      <div className="mh"><span className="mt">📄 ID Proof</span><button className="xb" onClick={()=>setShowAd(false)}>✕</button></div>
+      <div className="mb">{bk.aadhaarFile?.startsWith('data:image')?<img src={bk.aadhaarFile} style={{maxWidth:'100%',maxHeight:'65vh',display:'block',margin:'0 auto',borderRadius:8}} alt="id"/>:<div className="tc2 sm" style={{padding:24}}>📄 PDF uploaded</div>}</div>
     </div></div>}
   </div>;
 }
@@ -1287,7 +1521,8 @@ function RoomCalendar({bookings,t,onBkClick}){
     const dateStr=`${yr}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     const cellDate=new Date(dateStr+'T00:00:00');
     // find active bookings for this room
-    const roomBks=bookings.filter(b=>b.roomId===roomId&&b.status==='active');
+    const roomIds2=b=>b.roomIds||(b.roomId?[b.roomId]:[]);
+    const roomBks=bookings.filter(b=>roomIds2(b).includes(roomId)&&b.status==='active');
     for(const b of roomBks){
       const ci=new Date(b.checkIn+'T00:00:00');
       const co=new Date(b.checkOut+'T00:00:00');
@@ -1513,14 +1748,13 @@ function getRoomStatusForDate(roomId, dateStr, bookings) {
   // Returns: 'available' | 'occupied' | 'checkin' | 'checkout'
   const date = new Date(dateStr + 'T00:00:00');
   for (const b of bookings) {
-    if (b.roomId !== roomId || b.status !== 'active') continue;
+    if (b.status !== 'active') continue;
+    const rooms = b.roomIds || [b.roomId].filter(Boolean); // backwards compat
+    if (!rooms.includes(roomId)) continue;
     const ci = new Date(b.checkIn + 'T00:00:00');
     const co = new Date(b.checkOut + 'T00:00:00');
-    // Check-in day (arrives today)
     if (date.getTime() === ci.getTime()) return { status: 'checkin', booking: b };
-    // Check-out day (leaves today)
     if (date.getTime() === co.getTime()) return { status: 'checkout', booking: b };
-    // Fully occupied (between check-in and check-out exclusive)
     if (date > ci && date < co) return { status: 'occupied', booking: b };
   }
   return { status: 'available', booking: null };
@@ -1699,13 +1933,18 @@ function Dashboard({bookings,t,onNew,roomStatus,onViewBooking}){
       <div className="card-hd"><span className="card-ti serif">📋 Recent Bookings</span></div>
       <div style={{padding:0}}>
         {bookings.length===0?<div className="tc2 clt sm" style={{padding:20}}>{t.noBookings}</div>:
-        <table><thead><tr><th>ID</th><th>Name</th><th>Room</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead>
+        <table><thead><tr><th>ID</th><th>Name</th><th>Rooms</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead>
         <tbody>{[...bookings].reverse().slice(0,8).map(b=>{
-          const room=ALL_ROOMS.find(r=>r.id===b.roomId);
+          const bRooms=(b.roomIds||(b.roomId?[b.roomId]:[])).map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
           return<tr key={b.id} style={{cursor:'pointer'}} onClick={()=>onViewBooking(b)}>
             <td className="xs bold cor">{b.id}</td>
             <td><div className="semi">{b.name}</div><div className="xs clt">{b.mobile}</div></td>
-            <td><b style={{color:'var(--saf)'}}>{room?.label||b.roomId}</b><div className="xs clt">{room?.block} Blk</div></td>
+            <td>
+              <div style={{display:'flex',flexWrap:'wrap',gap:2}}>
+                {bRooms.slice(0,3).map(r=><span key={r.id} style={{background:'var(--saf4)',border:'1px solid var(--vlt)',borderRadius:3,padding:'0px 5px',fontSize:'0.62rem',fontWeight:700,color:'var(--saf)'}}>{r.label}</span>)}
+                {bRooms.length>3&&<span style={{fontSize:'0.62rem',color:'var(--lt)'}}>+{bRooms.length-3}</span>}
+              </div>
+            </td>
             <td className="xs">{fd(b.checkIn)}</td>
             <td className="xs">{fd(b.checkOut)}</td>
             <td><span className={`badge ${b.status==='active'?'b-gr':'b-gy'}`}>{b.status==='active'?'Active':'Out'}</span></td>
@@ -1728,9 +1967,11 @@ function BookingList({bookings,t,onView,onEdit,onUpdatePay,onCheckout,onNew,onDe
 
   const filtered=useMemo(()=>[...bookings].filter(b=>{
     const sq=q.toLowerCase();
-    const ms=!sq||[b.name,b.mobile,b.roomId,b.id].some(x=>(x||'').toLowerCase().includes(sq));
-    const room=ALL_ROOMS.find(r=>r.id===b.roomId);
-    const mt=fType==='all'||(room&&room.type===(fType==='AC'?'AC':'NON-AC'));
+    const bRoomIds=b.roomIds||(b.roomId?[b.roomId]:[]);
+    const bRooms=bRoomIds.map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
+    const roomLabels=bRooms.map(r=>r.label).join(' ');
+    const ms=!sq||[b.name,b.mobile,roomLabels,b.id].some(x=>(x||'').toLowerCase().includes(sq));
+    const mt=fType==='all'||bRooms.some(r=>r.type===(fType==='AC'?'AC':'NON-AC'));
     const ms2=fStat==='all'||b.status===fStat;
     const md=!fDate||b.checkIn?.startsWith(fDate);
     return ms&&mt&&ms2&&md;
@@ -1758,13 +1999,21 @@ function BookingList({bookings,t,onView,onEdit,onUpdatePay,onCheckout,onNew,onDe
       <tbody>{filtered.map(b=>{
         const paid=b.payHistory.reduce((s,p)=>s+Number(p.amount),0);
         const bal=Math.max(0,Number(b.finalAmt)-paid);
-        const room=ALL_ROOMS.find(r=>r.id===b.roomId);
+        const roomIds=b.roomIds||(b.roomId?[b.roomId]:[]);
+        const rooms=roomIds.map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
+        const roomType=rooms.length>0?rooms[0].type:'—';
         return<tr key={b.id}>
           <td className="xs bold cor">{b.id}</td>
-          <td><div className="semi">{b.name}</div></td>
+          <td><div className="semi">{b.name}</div><div className="xs clt">{b.mobile}</div></td>
           <td className="xs">{b.mobile}</td>
-          <td><b style={{color:'var(--saf)'}}>{room?.label||b.roomId}</b><div className="xs clt">{room?.block} Block</div></td>
-          <td><span className={`badge ${room?.type==='AC'?'b-bl':'b-or'}`}>{room?.type}</span></td>
+          <td>
+            <div style={{display:'flex',flexWrap:'wrap',gap:3}}>
+              {rooms.map(r=><span key={r.id} style={{background:'var(--saf4)',border:'1px solid var(--vlt)',borderRadius:4,padding:'1px 6px',fontSize:'0.64rem',fontWeight:700,color:'var(--saf)',whiteSpace:'nowrap'}}>{r.label}</span>)}
+              {rooms.length===0&&<span className="xs clt">—</span>}
+            </div>
+            <div className="xs clt" style={{marginTop:2}}>{rooms.length} room{rooms.length!==1?'s':''}</div>
+          </td>
+          <td><span className={`badge ${roomType==='AC'?'b-bl':'b-or'}`}>{roomType}</span></td>
           <td className="xs">{fd(b.checkIn)}</td>
           <td className="xs">{fd(b.checkOut)}</td>
           <td><b className="cor">{fc(b.finalAmt)}</b></td>
@@ -1949,8 +2198,8 @@ function SettingsPage({cfg,onCfg,bookings,t}){
     const rows=[['Booking ID','Receipt','Name','Mobile','Aadhaar','Room','Type','Block','Check-In','Check-Out','Nights','Original','Discount','Final','Paid','Balance','Status']];
     bookings.forEach(b=>{
       const paid=b.payHistory.reduce((s,p)=>s+Number(p.amount),0);
-      const room=ALL_ROOMS.find(r=>r.id===b.roomId)||{};
-      rows.push([b.id,b.receiptNo,b.name,b.mobile,b.aadhaar,room.label||b.roomId,room.type||'',room.block||'',fd(b.checkIn),fd(b.checkOut),b.nights,b.origPrice,b.discount,b.finalAmt,paid,Math.max(0,b.finalAmt-paid),b.status]);
+      const roomIds2=b.roomIds||(b.roomId?[b.roomId]:[]);const room=ALL_ROOMS.find(r=>r.id===roomIds2[0])||{};
+      rows.push([b.id,b.receiptNo,b.name,b.mobile,b.aadhaar,(b.roomIds||[b.roomId]).map(rid=>ALL_ROOMS.find(r=>r.id===rid)?.label||rid).join(';'),room.type||'',room.block||'',fd(b.checkIn),fd(b.checkOut),b.nights,b.origPrice,b.discount,b.finalAmt,paid,Math.max(0,b.finalAmt-paid),b.status]);
     });
     const c=rows.map(r=>r.map(x=>`"${x||''}"`).join(',')).join('\n');
     const bl=new Blob([c],{type:'text/csv'});
@@ -1990,7 +2239,7 @@ function SettingsPage({cfg,onCfg,bookings,t}){
       </div></div>
 
       <div className="card"><div className="card-hd"><span className="card-ti serif">ℹ️ About</span></div><div className="card-bd tc2">
-        <div style={{fontSize:'2.5rem',marginBottom:10}}></div>
+        <div style={{fontSize:'2.5rem',marginBottom:10}}>🙏</div>
         <div className="bold dev cor">{SANSTHA.nameM}</div>
         <div className="xs clt mt2">{SANSTHA.bhaktniwas}</div>
         <div className="xs clt mt2">Version 2.0 | Fully Offline</div>
@@ -2026,7 +2275,8 @@ function App(){
   }
 
   function doCheckout(bk){
-    setConfirm({msg:`Checkout Room ${ALL_ROOMS.find(r=>r.id===bk.roomId)?.label||bk.roomId} for ${bk.name}?`,
+    const coRooms=(bk.roomIds||(bk.roomId?[bk.roomId]:[])).map(rid=>ALL_ROOMS.find(r=>r.id===rid)?.label||rid).join(', ');
+    setConfirm({msg:`Checkout Rooms: ${coRooms} for ${bk.name}?`,
       icon:'🚪',yesLabel:'Check Out',yesClass:'btn-re',
       onYes:()=>{
         setBookings(p=>p.map(b=>b.id===bk.id?{...b,status:'checkedout',updatedAt:new Date().toISOString()}:b));
@@ -2064,9 +2314,18 @@ function App(){
     {/* SIDEBAR */}
     <div className={`sidebar${slim?' slim':''}${mobOpen?' mob-open':''}`}>
       <div className="sb-logo">
-        <div className="sb-icon"><img src="images/maharaj.jpg" alt="Maharaj" className="circle-img"/></div>
-        {!slim&&<div className="sb-t"><div>Shri Govind Maharaj</div><div style={{fontSize:'0.6rem',color:'var(--lt)'}}>Bhaktniwas Management
-        </div></div>}
+        <div className="sb-icon"><div className="header-photo">
+  <img src="images/Photo.png"
+    alt="Sadguru Sakharam Maharaj"
+    style={{
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      objectFit: "cover"
+    }}
+  />
+</div></div>
+        {!slim&&<div className="sb-t"><div>श्री सदगुरु सखाराम महाराज संस्थान </div><div style={{fontSize:'0.6rem',color:'var(--lt)'}}>अमळनेर,जळगाव — भक्तनिवास</div></div>}
       </div>
       <nav className="sb-nav">
         {nav.map(n=><div key={n.id} className={`nav-item${page===n.id?' act':''}`} onClick={()=>{setPage(n.id);setMobOpen(false);}}>
@@ -2082,10 +2341,11 @@ function App(){
       <div className="app-header">
         <div className="app-header-inner">
           <button style={{background:'none',border:'none',color:'rgba(255,255,255,0.8)',fontSize:'1.2rem',cursor:'pointer',display:'none'}} id="mob-menu-btn" onClick={()=>setMobOpen(true)}>☰</button>
-          <div className="header-photo"><img src="images/maharaj.jpg" alt="Maharaj" className="circle-img"/></div>
+          <div className="header-photo">
+  <img src="images/Photo.png" alt="Sadguru Sakharam Maharaj"/></div>
           <div className="header-titles">
-            <div className="header-main">श्री संत सखाराम महाराज संस्थान अमळनेर </div>
-            <div className="header-sub"><b>श्री.गोविंद महाराज भक्तनिवास अमळनेर</b></div>
+            <div className="header-main">श्री सदगुरु सखाराम महाराज संस्थान अमळनेर,जळगाव — भक्तनिवास</div>
+            <div className="header-sub">श्री.गोविंद महाराज भक्तनिवास अमळनेर— भक्तनिवास</div>
           </div>
           <div className="header-acts">
             <button className="btn btn-sm" style={{background:'rgba(255,255,255,0.2)',color:'#fff',border:'1.5px solid rgba(255,255,255,0.35)'}}
