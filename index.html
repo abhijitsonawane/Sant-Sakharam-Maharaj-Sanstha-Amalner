@@ -357,7 +357,7 @@ const SANSTHA={
   nameM:'श्री सदगुरु सखाराम महाराज संस्थान भक्तनिवास अमळनेर',
   bhaktniwas:'श्री सदगुरु गोविंद महाराज संस्थान भक्तनिवास अमळनेर',
   bhaktniwasM:'भक्तनिवास व्यवस्थापन प्रणाली',
-  address:'Shree Sadguru Sakharam Maharaj Mandir, Amalner, Jalgaon — 425401',
+  address:'Shree Sadguru Sakharam Maharaj Mandir, Wadi Chowk Amalner, Jalgaon — 425401',
   city:'Amalner, Jalgaon, Maharashtra',
   phone:'02587-226711 | 9209292056',
   email:'sakharammaharajamalner@gmail.com',
@@ -614,7 +614,13 @@ html,body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-a
 
   <!-- HEADER -->
   <div style="background:linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%);color:#fff;padding:18px 22px;display:flex;align-items:center;gap:14px;position:relative;z-index:1">
-    <div style="font-size:34px;width:56px;height:56px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.35);flex-shrink:0">🙏</div>
+<div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,0.35);flex-shrink:0;">
+    <img
+        src="images/Photo-small.jpg"
+        alt="Profile"
+        style="width:100%;height:100%;object-fit:cover;"
+    >
+</div>
     <div style="flex:1">
       <div style="font-family:'Noto Serif Devanagari',serif;font-size:13.5pt;font-weight:700;line-height:1.2">${SANSTHA.nameM}</div>
       <div style="font-family:'Crimson Pro',serif;font-size:10.5pt;opacity:0.9;font-style:italic;margin-top:2px">${SANSTHA.name}</div>
@@ -828,7 +834,25 @@ function InvoiceModal({bk,t,onClose}){
           <div style={{position:'absolute',top:'40%',left:'50%',transform:'translate(-50%,-50%) rotate(-30deg)',fontSize:78,fontWeight:900,color:isPaid?'rgba(21,128,61,0.09)':'rgba(185,28,28,0.09)',pointerEvents:'none',zIndex:0,letterSpacing:'0.1em',whiteSpace:'nowrap',userSelect:'none'}}>{isPaid?'PAID':'PENDING'}</div>
           {/* header */}
           <div style={{background:'linear-gradient(135deg,#8B1A00 0%,#C4400A 40%,#D4600A 65%,#E8801A 100%)',color:'#fff',padding:'18px 22px',display:'flex',alignItems:'center',gap:14,position:'relative',zIndex:1}}>
-            <div style={{fontSize:30,width:54,height:54,background:'rgba(255,255,255,0.15)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid rgba(255,255,255,0.35)',flexShrink:0}}>🙏</div>
+<div
+  style={{
+    width:100,
+    height:100,
+    borderRadius:'50%',
+    overflow:'hidden',
+    border:'2px solid rgba(255,255,255,0.35)',
+    flexShrink:0
+  }}
+>
+  <img src="images/Photo-small.jpg"
+    alt="Profile"
+    style={{
+      width:'100%',
+      height:'100%',
+      objectFit:'cover'
+    }}
+  />
+</div>
             <div style={{flex:1}}>
               <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:14,fontWeight:700,lineHeight:1.2}}>{SANSTHA.nameM}</div>
               <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10.5,opacity:0.9,fontStyle:'italic',marginTop:2}}>{SANSTHA.name}</div>
@@ -2239,7 +2263,27 @@ function SettingsPage({cfg,onCfg,bookings,t}){
       </div></div>
 
       <div className="card"><div className="card-hd"><span className="card-ti serif">ℹ️ About</span></div><div className="card-bd tc2">
-        <div style={{fontSize:'2.5rem',marginBottom:10}}>🙏</div>
+<div
+  style={{
+    width:70,
+    height:70,
+    margin:'0 auto 15px',
+    borderRadius:'50%',
+    overflow:'hidden',
+    border:'3px solid #fff',
+    boxShadow:'0 8px 20px rgba(0,0,0,0.2)'
+  }}
+>
+  <img
+    src="images/Photo-small.jpg"   // तुमचा फोटो
+    alt="Profile"
+    style={{
+      width:'100%',
+      height:'100%',
+      objectFit:'cover'
+    }}
+  />
+</div>
         <div className="bold dev cor">{SANSTHA.nameM}</div>
         <div className="xs clt mt2">{SANSTHA.bhaktniwas}</div>
         <div className="xs clt mt2">Version 2.0 | Fully Offline</div>
