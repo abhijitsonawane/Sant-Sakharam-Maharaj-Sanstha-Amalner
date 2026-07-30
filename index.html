@@ -353,9 +353,9 @@ const ROOMS_NON=[
 const ALL_ROOMS=[...ROOMS_AC,...ROOMS_NON];
 
 const SANSTHA={
-  name:'श्री सदगुरु गोविंद महाराज संस्थान भक्तनिवास अमळनेर',
-  nameM:'श्री सदगुरु सखाराम महाराज संस्थान भक्तनिवास अमळनेर',
-  bhaktniwas:'श्री सदगुरु गोविंद महाराज संस्थान भक्तनिवास अमळनेर',
+  name:'श्री सदगुरु गोविंद महाराज भक्तनिवास अमळनेर जि.जळगाव',
+  nameM:'श्री सदगुरु सखाराम महाराज संस्थान अमळनेर जि.जळगाव',
+  bhaktniwas:'श्री.सदगुरु गोविंद महाराज भक्तनिवास अमळनेर',
   bhaktniwasM:'भक्तनिवास व्यवस्थापन प्रणाली',
   address:'Shree Sadguru Sakharam Maharaj Mandir, Wadi Chowk Amalner, Jalgaon — 425401',
   city:'Amalner, Jalgaon, Maharashtra',
@@ -2369,7 +2369,7 @@ function App(){
     }}
   />
 </div></div>
-        {!slim&&<div className="sb-t"><div>श्री सदगुरु सखाराम महाराज संस्थान </div><div style={{fontSize:'0.6rem',color:'var(--lt)'}}>अमळनेर,जळगाव — भक्तनिवास</div></div>}
+        {!slim&&<div className="sb-t"><div>श्री सदगुरु सखाराम महाराज संस्थान </div><div style={{fontSize:'0.6rem',color:'var(--lt)'}}>अमळनेर,जळगाव</div></div>}
       </div>
       <nav className="sb-nav">
         {nav.map(n=><div key={n.id} className={`nav-item${page===n.id?' act':''}`} onClick={()=>{setPage(n.id);setMobOpen(false);}}>
@@ -2388,8 +2388,8 @@ function App(){
           <div className="header-photo">
   <img src="images/Photo.png" alt="Sadguru Sakharam Maharaj"/></div>
           <div className="header-titles">
-            <div className="header-main">श्री सदगुरु सखाराम महाराज संस्थान अमळनेर,जळगाव — भक्तनिवास</div>
-            <div className="header-sub">श्री.गोविंद महाराज भक्तनिवास अमळनेर— भक्तनिवास</div>
+            <div className="header-main">श्री सदगुरु सखाराम महाराज संस्थान अमळनेर,जळगाव</div>
+            <div className="header-sub">श्री.गोविंद महाराज भक्तनिवास अमळनेर</div>
           </div>
           <div className="header-acts">
             <button className="btn btn-sm" style={{background:'rgba(255,255,255,0.2)',color:'#fff',border:'1.5px solid rgba(255,255,255,0.35)'}}
