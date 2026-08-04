@@ -10,6 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -284,7 +285,61 @@ tr:hover td{background:var(--saf5);}
 .rb.sl{background:linear-gradient(135deg,var(--saf),var(--saf2));border-color:var(--saf);color:#fff;box-shadow:0 2px 8px rgba(212,96,10,0.3);}
 .rb-type{font-size:0.58rem;display:block;opacity:0.75;margin-top:1px;}
 
-/* ── MOBILE ── */
+/* ── REPORTS ── */
+.rpt-pg{padding:22px;max-width:1300px;margin:0 auto;}
+.rpt-pg .pg-title{font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--dk);}
+.rpt-filter-bar{background:var(--wh);border:1.5px solid var(--vlt);border-radius:var(--rd2);padding:16px 18px;margin-bottom:18px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;box-shadow:var(--sh);}
+.rpt-filter-group{display:flex;flex-direction:column;gap:4px;}
+.rpt-filter-group label{font-size:0.72rem;font-weight:700;color:var(--md);}
+.rpt-filter-group select,.rpt-filter-group input{padding:8px 11px;border:1.5px solid var(--vlt);border-radius:8px;background:var(--bg);color:var(--dk);font-size:0.83rem;outline:none;font-family:var(--sans);}
+.rpt-filter-group select:focus,.rpt-filter-group input:focus{border-color:var(--saf);box-shadow:0 0 0 3px rgba(212,96,10,0.12);}
+.rpt-summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:18px;}
+.rpt-summary-card{background:var(--wh);border:1.5px solid var(--vlt);border-radius:var(--rd2);padding:15px 14px;position:relative;overflow:hidden;box-shadow:var(--sh);}
+.rpt-summary-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rd2) var(--rd2) 0 0;}
+.rpt-sc-or::before{background:linear-gradient(90deg,var(--saf),var(--saf3));}
+.rpt-sc-gr::before{background:linear-gradient(90deg,#15803D,#4ADE80);}
+.rpt-sc-re::before{background:linear-gradient(90deg,#B91C1C,#F87171);}
+.rpt-sc-bl::before{background:linear-gradient(90deg,#1D4ED8,#60A5FA);}
+.rpt-sc-pu::before{background:linear-gradient(90deg,#6D28D9,#A78BFA);}
+.rpt-sc-ye::before{background:linear-gradient(90deg,#B45309,#FCD34D);}
+.rpt-sc-teal::before{background:linear-gradient(90deg,#0D9488,#2DD4BF);}
+.rpt-sc-pk::before{background:linear-gradient(90deg,#BE185D,#F472B6);}
+.rpt-sc-ic{font-size:1.5rem;margin-bottom:6px;}
+.rpt-sc-v{font-size:1.45rem;font-weight:700;color:var(--dk);font-family:var(--serif);line-height:1.1;}
+.rpt-sc-l{font-size:0.68rem;color:var(--lt);margin-top:3px;font-weight:500;}
+.rpt-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.rpt-chart-card{background:var(--wh);border:1.5px solid var(--vlt);border-radius:var(--rd2);padding:16px;box-shadow:var(--sh);}
+.rpt-chart-card.full{grid-column:1/-1;}
+.rpt-chart-title{font-family:var(--serif);font-size:0.92rem;font-weight:700;color:var(--dk);margin-bottom:12px;}
+.rpt-table-wrap{background:var(--wh);border:1.5px solid var(--vlt);border-radius:var(--rd2);overflow:hidden;box-shadow:var(--sh);margin-bottom:18px;}
+.rpt-table-hd{padding:13px 16px;border-bottom:1.5px solid var(--vlt);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.rpt-table-title{font-family:var(--serif);font-size:0.96rem;font-weight:700;color:var(--dk);}
+.rpt-tbl{width:100%;border-collapse:collapse;}
+.rpt-tbl th{padding:9px 11px;text-align:left;font-size:0.71rem;font-weight:700;color:var(--saf);background:var(--saf4);border-bottom:1.5px solid var(--vlt);white-space:nowrap;}
+.rpt-tbl td{padding:9px 11px;font-size:0.78rem;color:var(--dk);border-bottom:1px solid rgba(232,192,122,0.3);vertical-align:middle;}
+.rpt-tbl tr:last-child td{border-bottom:none;}
+.rpt-tbl tr:hover td{background:var(--saf5);}
+.rpt-tbl .total-row td{background:var(--saf4);font-weight:700;border-top:2px solid var(--vlt);}
+.rpt-yearly-tbl th{padding:9px 11px;text-align:left;font-size:0.71rem;font-weight:700;color:var(--saf);background:var(--saf4);border-bottom:1.5px solid var(--vlt);}
+.rpt-yearly-tbl td{padding:9px 11px;font-size:0.78rem;color:var(--dk);border-bottom:1px solid rgba(232,192,122,0.3);}
+.rpt-yearly-tbl tr:last-child td{border-bottom:none;}
+.rpt-yearly-tbl tr:hover td{background:var(--saf5);}
+.rpt-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:0.68rem;font-weight:700;}
+.rpt-badge-gr{background:#DCFCE7;color:#166534;}
+.rpt-badge-re{background:#FEE2E2;color:#991B1B;}
+.rpt-badge-ye{background:#FEF3C7;color:#92400E;}
+.rpt-badge-bl{background:#DBEAFE;color:#1E40AF;}
+.rpt-badge-or{background:var(--saf4);color:var(--saf);}
+.rpt-export-bar{display:flex;gap:10px;flex-wrap:wrap;}
+.rpt-month-best{background:linear-gradient(135deg,var(--saf4),#FFF8F0);border:1.5px solid var(--vlt);border-radius:var(--rd2);padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.rpt-prog-bar{height:7px;background:var(--vlt);border-radius:99px;overflow:hidden;margin-top:4px;}
+.rpt-prog-fill{height:100%;background:linear-gradient(90deg,var(--saf),var(--saf3));border-radius:99px;}
+/* sub-nav for reports */
+.sb-sub-nav{padding:0 6px 6px;}
+.sb-sub-item{display:flex;align-items:center;gap:9px;padding:7px 10px 7px 26px;border-radius:8px;cursor:pointer;transition:var(--tr);color:var(--md);font-size:0.78rem;font-weight:500;white-space:nowrap;margin-bottom:1px;}
+.sb-sub-item:hover{background:var(--saf4);color:var(--saf);}
+.sb-sub-item.act{background:var(--saf4);color:var(--saf);font-weight:700;}
+/* MOBILE ── */
 @media(max-width:700px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.mob-open{transform:none;}
@@ -2295,6 +2350,814 @@ function SettingsPage({cfg,onCfg,bookings,t}){
 // ═══════════════════════════════════════════════════
 //  APP ROOT
 // ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  REPORT HELPER FUNCTIONS
+// ═══════════════════════════════════════════════════
+function getRooms(bk){
+  return(bk.roomIds||(bk.roomId?[bk.roomId]:[])).map(rid=>ALL_ROOMS.find(r=>r.id===rid)).filter(Boolean);
+}
+function fcR(n){return'₹'+Number(n||0).toLocaleString('en-IN');}
+function fdR(d){if(!d)return'—';return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function fdtR(d){if(!d)return'—';return new Date(d).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_NAMES_MR=['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
+
+function calcBookingRevenue(bk){
+  const paid=bk.payHistory.reduce((s,p)=>s+Number(p.amount),0);
+  const advance=bk.payHistory.filter(p=>p.isAdvance).reduce((s,p)=>s+Number(p.amount),0);
+  const balance=paid-advance;
+  return{
+    totalAmount:Number(bk.finalAmt)||0,
+    discount:Number(bk.discount)||0,
+    origPrice:Number(bk.origPrice)||0,
+    totalPaid:paid,
+    advance:Number(bk.advPaid)||0,
+    balanceReceived:Math.max(0,paid-(Number(bk.advPaid)||0)),
+    pendingBalance:Math.max(0,(Number(bk.finalAmt)||0)-paid),
+  };
+}
+
+function getMonthlyBookings(bookings,year,month){
+  return bookings.filter(b=>{
+    if(!b.checkIn)return false;
+    const d=new Date(b.checkIn+'T00:00:00');
+    return d.getFullYear()===year&&d.getMonth()===month;
+  });
+}
+
+function calcMonthStats(bks){
+  const active=bks.filter(b=>b.status!=='deleted');
+  const completed=active.filter(b=>b.status==='checkedout');
+  const pending=active.filter(b=>b.status==='active');
+  const cancelled=bks.filter(b=>b.status==='cancelled');
+
+  let totalRev=0,totalDisc=0,totalAdv=0,totalBalRec=0,totalPending=0;
+  active.forEach(b=>{
+    const r=calcBookingRevenue(b);
+    totalRev+=r.totalAmount;
+    totalDisc+=r.discount;
+    totalAdv+=r.advance;
+    totalBalRec+=r.balanceReceived;
+    totalPending+=r.pendingBalance;
+  });
+
+  const netCollection=active.reduce((s,b)=>s+b.payHistory.reduce((a,p)=>a+Number(p.amount),0),0);
+
+  return{
+    totalBookings:active.length,
+    completedBookings:completed.length,
+    pendingBookings:pending.length,
+    cancelledBookings:cancelled.length,
+    totalRoomRevenue:totalRev,
+    totalDiscount:totalDisc,
+    advanceReceived:totalAdv,
+    balanceReceived:totalBalRec,
+    pendingPayments:totalPending,
+    netCollection,
+    refundAmount:0,
+  };
+}
+
+function getDailyRevenue(bks,year,month){
+  const dim=new Date(year,month+1,0).getDate();
+  const daily=Array(dim).fill(0);
+  bks.filter(b=>b.status!=='deleted'&&b.status!=='cancelled').forEach(b=>{
+    if(!b.checkIn)return;
+    const d=new Date(b.checkIn+'T00:00:00');
+    if(d.getFullYear()===year&&d.getMonth()===month){
+      const day=d.getDate()-1;
+      const rev=b.payHistory.reduce((s,p)=>s+Number(p.amount),0);
+      daily[day]+=rev;
+    }
+  });
+  return daily;
+}
+
+function getPayModeDistribution(bks){
+  const dist={Cash:0,UPI:0,Online:0,Other:0};
+  bks.filter(b=>b.status!=='deleted'&&b.status!=='cancelled').forEach(b=>{
+    b.payHistory.forEach(p=>{
+      const m=p.mode||'Other';
+      dist[m]=(dist[m]||0)+Number(p.amount);
+    });
+  });
+  return dist;
+}
+
+function exportCSVMonthly(rows,year,month){
+  const headers=['Date','Booking ID','Customer Name','Rooms','Room Count','Check-In','Check-Out','Nights','Total Amount','Discount','Advance','Balance Received','Pending Balance','Payment Mode','Status'];
+  const csv=[headers.join(','),...rows.map(r=>[
+    fdR(r.checkIn),r.id,'"'+r.name+'"',
+    '"'+(getRooms(r).map(x=>x.label).join(';'))+'"',
+    getRooms(r).length,
+    fdR(r.checkIn),fdR(r.checkOut),r.nights,
+    r.finalAmt,r.discount,r.advPaid,
+    calcBookingRevenue(r).balanceReceived,
+    calcBookingRevenue(r).pendingBalance,
+    r.payHistory.map(p=>p.mode).filter((v,i,a)=>a.indexOf(v)===i).join(';'),
+    r.status
+  ].join(','))].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`Monthly_Report_${MONTH_NAMES[month]}_${year}.csv`;a.click();
+}
+
+function exportCSVYearly(monthStats,year){
+  const headers=['Month','Bookings','Revenue','Discount','Net Collection','Cancelled','Pending'];
+  const csv=[headers.join(','),...monthStats.map((m,i)=>[
+    MONTH_NAMES[i],m.totalBookings,m.totalRoomRevenue,m.totalDiscount,m.netCollection,m.cancelledBookings,m.pendingPayments
+  ].join(','))].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`Yearly_Report_${year}.csv`;a.click();
+}
+
+// ── CHART WRAPPER ──
+function ChartCanvas({id,type,data,options,height}){
+  const ref=useRef();
+  const chartRef=useRef();
+  useEffect(()=>{
+    if(!ref.current||!window.Chart)return;
+    if(chartRef.current){chartRef.current.destroy();}
+    chartRef.current=new window.Chart(ref.current,{type,data,options});
+    return()=>{if(chartRef.current){chartRef.current.destroy();}};
+  },[JSON.stringify(data)]);
+  return<canvas ref={ref} style={{height:height||220,maxHeight:height||220}}/>;
+}
+
+// ═══════════════════════════════════════════════════
+//  MONTHLY EARNING REPORT
+// ═══════════════════════════════════════════════════
+function MonthlyReport({bookings}){
+  const now=new Date();
+  const[selYear,setSelYear]=useState(now.getFullYear());
+  const[selMonth,setSelMonth]=useState(now.getMonth());
+  const[filterMode,setFilterMode]=useState('all');
+  const[filterStatus,setFilterStatus]=useState('all');
+  const[filterRoomType,setFilterRoomType]=useState('all');
+  const[generated,setGenerated]=useState(false);
+  const[loading,setLoading]=useState(false);
+  const printRef=useRef();
+
+  const years=useMemo(()=>{
+    const ys=new Set([now.getFullYear()]);
+    bookings.forEach(b=>{if(b.checkIn)ys.add(new Date(b.checkIn).getFullYear());});
+    return [...ys].sort((a,b)=>b-a);
+  },[bookings]);
+
+  const filteredBks=useMemo(()=>{
+    if(!generated)return[];
+    return getMonthlyBookings(bookings,selYear,selMonth).filter(b=>{
+      if(filterMode!=='all'&&!b.payHistory.some(p=>p.mode===filterMode))return false;
+      if(filterStatus!=='all'&&b.status!==filterStatus)return false;
+      if(filterRoomType!=='all'){
+        const rooms=getRooms(b);
+        if(!rooms.some(r=>r.type===filterRoomType))return false;
+      }
+      return true;
+    });
+  },[bookings,selYear,selMonth,filterMode,filterStatus,filterRoomType,generated]);
+
+  const stats=useMemo(()=>calcMonthStats(filteredBks),[filteredBks]);
+  const dailyRev=useMemo(()=>getDailyRevenue(filteredBks,selYear,selMonth),[filteredBks,selYear,selMonth]);
+  const payDist=useMemo(()=>getPayModeDistribution(filteredBks),[filteredBks]);
+
+  const dim=new Date(selYear,selMonth+1,0).getDate();
+  const dayLabels=Array.from({length:dim},(_,i)=>i+1);
+
+  const barData={
+    labels:dayLabels,
+    datasets:[{label:'Daily Revenue (₹)',data:dailyRev,backgroundColor:'rgba(212,96,10,0.7)',borderColor:'rgba(212,96,10,1)',borderWidth:1,borderRadius:4}]
+  };
+  const barOpts={responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'₹'+ctx.raw.toLocaleString('en-IN')}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')}}}};
+
+  const pieData={
+    labels:Object.keys(payDist).filter(k=>payDist[k]>0),
+    datasets:[{data:Object.values(payDist).filter(v=>v>0),backgroundColor:['#D4600A','#1D4ED8','#15803D','#6D28D9'],borderWidth:2,borderColor:'#fff'}]
+  };
+  const pieOpts={responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ₹${ctx.raw.toLocaleString('en-IN')}`}}}};
+
+  function handleGenerate(){
+    setLoading(true);
+    setTimeout(()=>{setGenerated(true);setLoading(false);},200);
+  }
+
+  async function handlePDF(){
+    const el=printRef.current;
+    if(!el||!window.html2canvas||!window.jspdf)return;
+    try{
+      const canvas=await window.html2canvas(el,{scale:2,useCORS:true,logging:false,backgroundColor:'#fff',width:794,windowWidth:794});
+      const img=canvas.toDataURL('image/jpeg',0.95);
+      const{jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      const iH=(canvas.height/canvas.width)*210;
+      if(iH<=297){pdf.addImage(img,'JPEG',0,0,210,iH);}
+      else{let y=0;while(y<iH){if(y>0)pdf.addPage();pdf.addImage(img,'JPEG',0,-y,210,iH);y+=297;}}
+      pdf.save(`Monthly_Report_${MONTH_NAMES[selMonth]}_${selYear}.pdf`);
+    }catch(e){alert('PDF error.');}
+  }
+
+  function handlePrint(){
+    const el=printRef.current;
+    if(!el)return;
+    const w=window.open('','_blank','width=860,height=960,scrollbars=yes');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Monthly Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}@page{size:A4;margin:0;}.no-print{display:none!important;}</style>
+    </head><body>${el.outerHTML}</body></html>`);
+    w.document.close();setTimeout(()=>w.print(),600);
+  }
+
+  const summaryCards=[
+    {ic:'📋',v:stats.totalBookings,l:'Total Bookings',c:'rpt-sc-bl'},
+    {ic:'✅',v:stats.completedBookings,l:'Completed',c:'rpt-sc-gr'},
+    {ic:'🏨',v:stats.pendingBookings,l:'Active / Pending',c:'rpt-sc-ye'},
+    {ic:'💰',v:fcR(stats.totalRoomRevenue),l:'Room Revenue',c:'rpt-sc-or'},
+    {ic:'🎯',v:fcR(stats.totalDiscount),l:'Discount Given',c:'rpt-sc-re'},
+    {ic:'⬆️',v:fcR(stats.advanceReceived),l:'Advance Received',c:'rpt-sc-pu'},
+    {ic:'⬇️',v:fcR(stats.balanceReceived),l:'Balance Received',c:'rpt-sc-teal'},
+    {ic:'⏳',v:fcR(stats.pendingPayments),l:'Pending Payments',c:'rpt-sc-pk'},
+    {ic:'🏦',v:fcR(stats.netCollection),l:'Net Collection',c:'rpt-sc-gr'},
+  ];
+
+  return(
+    <div className="rpt-pg">
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16,flexWrap:'wrap',gap:10}}>
+        <div>
+          <div className="pg-title" style={{fontFamily:'var(--serif)',fontSize:'1.3rem',fontWeight:700}}>📊 Monthly Earning Statement</div>
+          <div style={{fontSize:'0.75rem',color:'var(--lt)',marginTop:2}}>Generate detailed monthly revenue report with charts and export options</div>
+        </div>
+        {generated&&<div className="rpt-export-bar">
+          <button className="btn btn-primary btn-sm" onClick={handlePDF}>📥 Download PDF</button>
+          <button className="btn btn-info btn-sm" onClick={()=>exportCSVMonthly(filteredBks,selYear,selMonth)}>📊 Export CSV</button>
+          <button className="btn btn-secondary btn-sm" onClick={handlePrint}>🖨️ Print</button>
+        </div>}
+      </div>
+
+      {/* Filter Bar */}
+      <div className="rpt-filter-bar">
+        <div className="rpt-filter-group">
+          <label>Month</label>
+          <select value={selMonth} onChange={e=>{setSelMonth(Number(e.target.value));setGenerated(false);}}>
+            {MONTH_NAMES.map((m,i)=><option key={i} value={i}>{m}</option>)}
+          </select>
+        </div>
+        <div className="rpt-filter-group">
+          <label>Year</label>
+          <select value={selYear} onChange={e=>{setSelYear(Number(e.target.value));setGenerated(false);}}>
+            {years.map(y=><option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
+        <div className="rpt-filter-group">
+          <label>Payment Mode</label>
+          <select value={filterMode} onChange={e=>setFilterMode(e.target.value)}>
+            <option value="all">All Modes</option>
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Online">Online</option>
+          </select>
+        </div>
+        <div className="rpt-filter-group">
+          <label>Status</label>
+          <select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)}>
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="checkedout">Checked Out</option>
+          </select>
+        </div>
+        <div className="rpt-filter-group">
+          <label>Room Type</label>
+          <select value={filterRoomType} onChange={e=>setFilterRoomType(e.target.value)}>
+            <option value="all">All Types</option>
+            <option value="AC">AC</option>
+            <option value="NON-AC">Non-AC</option>
+          </select>
+        </div>
+        <button className="btn btn-primary" onClick={handleGenerate} disabled={loading} style={{alignSelf:'flex-end'}}>
+          {loading?'⏳ Generating...':'🔍 Generate Report'}
+        </button>
+      </div>
+
+      {!generated&&<div style={{background:'var(--wh)',border:'1.5px solid var(--vlt)',borderRadius:'var(--rd2)',padding:48,textAlign:'center',color:'var(--lt)'}}>
+        <div style={{fontSize:'3rem',marginBottom:12}}>📊</div>
+        <div style={{fontFamily:'var(--serif)',fontSize:'1.1rem',fontWeight:700,marginBottom:6}}>Select filters and click Generate Report</div>
+        <div style={{fontSize:'0.82rem'}}>Choose month, year and other filters to view the earning statement</div>
+      </div>}
+
+      {generated&&<>
+        {/* Summary Cards */}
+        <div className="rpt-summary-grid">
+          {summaryCards.map((s,i)=>(
+            <div key={i} className={`rpt-summary-card ${s.c}`}>
+              <div className="rpt-sc-ic">{s.ic}</div>
+              <div className="rpt-sc-v">{s.v}</div>
+              <div className="rpt-sc-l">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="rpt-chart-grid">
+          <div className="rpt-chart-card full">
+            <div className="rpt-chart-title">📈 Daily Revenue — {MONTH_NAMES[selMonth]} {selYear}</div>
+            <ChartCanvas id="monthly-bar" type="bar" data={barData} options={barOpts} height={200}/>
+          </div>
+          <div className="rpt-chart-card">
+            <div className="rpt-chart-title">💳 Payment Mode Distribution</div>
+            <ChartCanvas id="monthly-pie" type="pie" data={pieData} options={pieOpts} height={220}/>
+          </div>
+          <div className="rpt-chart-card">
+            <div className="rpt-chart-title">📋 Booking Summary</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginTop:8}}>
+              {[
+                {l:'Total Bookings',v:stats.totalBookings,c:'#1D4ED8'},
+                {l:'Completed',v:stats.completedBookings,c:'#15803D'},
+                {l:'Active / Pending',v:stats.pendingBookings,c:'#D97706'},
+                {l:'Cancelled',v:stats.cancelledBookings,c:'#B91C1C'},
+              ].map((item,i)=>(
+                <div key={i} style={{background:'var(--saf4)',borderRadius:8,padding:'12px 14px',textAlign:'center',border:'1.5px solid var(--vlt)'}}>
+                  <div style={{fontSize:'1.6rem',fontWeight:700,color:item.c,fontFamily:'var(--serif)'}}>{item.v}</div>
+                  <div style={{fontSize:'0.72rem',color:'var(--lt)',marginTop:2}}>{item.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Table */}
+        <div className="rpt-table-wrap">
+          <div className="rpt-table-hd">
+            <span className="rpt-table-title">📋 Booking Details — {MONTH_NAMES[selMonth]} {selYear}</span>
+            <span style={{fontSize:'0.78rem',color:'var(--lt)'}}>{filteredBks.length} booking(s)</span>
+          </div>
+          <div style={{overflowX:'auto'}}>
+            <table className="rpt-tbl">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Booking ID</th><th>Customer</th><th>Rooms</th>
+                  <th>Rooms#</th><th>Check-In</th><th>Check-Out</th><th>Nights</th>
+                  <th>Total Amt</th><th>Discount</th><th>Advance</th>
+                  <th>Bal. Received</th><th>Pending</th><th>Mode</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBks.length===0&&<tr><td colSpan={15} style={{textAlign:'center',padding:24,color:'var(--lt)'}}>No bookings found for this month</td></tr>}
+                {filteredBks.map(b=>{
+                  const rooms=getRooms(b);
+                  const rev=calcBookingRevenue(b);
+                  const modes=[...new Set(b.payHistory.map(p=>p.mode))].join(', ')||'—';
+                  return(
+                    <tr key={b.id}>
+                      <td style={{whiteSpace:'nowrap'}}>{fdR(b.checkIn)}</td>
+                      <td style={{fontWeight:700,color:'var(--saf)',fontSize:'0.72rem'}}>{b.id}</td>
+                      <td><div style={{fontWeight:600}}>{b.name}</div><div style={{fontSize:'0.68rem',color:'var(--lt)'}}>{b.mobile}</div></td>
+                      <td><div style={{display:'flex',flexWrap:'wrap',gap:2}}>{rooms.slice(0,3).map(r=><span key={r.id} style={{background:'var(--saf4)',border:'1px solid var(--vlt)',borderRadius:3,padding:'0 5px',fontSize:'0.63rem',fontWeight:700,color:'var(--saf)'}}>{r.label}</span>)}{rooms.length>3&&<span style={{fontSize:'0.63rem',color:'var(--lt)'}}>+{rooms.length-3}</span>}</div></td>
+                      <td style={{textAlign:'center'}}>{rooms.length}</td>
+                      <td style={{whiteSpace:'nowrap'}}>{fdR(b.checkIn)}</td>
+                      <td style={{whiteSpace:'nowrap'}}>{fdR(b.checkOut)}</td>
+                      <td style={{textAlign:'center'}}>{b.nights}</td>
+                      <td style={{fontWeight:600,color:'var(--saf)'}}>{fcR(rev.totalAmount)}</td>
+                      <td style={{color:'#15803D'}}>{fcR(rev.discount)}</td>
+                      <td>{fcR(rev.advance)}</td>
+                      <td style={{color:'#15803D'}}>{fcR(rev.balanceReceived)}</td>
+                      <td style={{color:rev.pendingBalance>0?'#B91C1C':'#15803D',fontWeight:600}}>{fcR(rev.pendingBalance)}</td>
+                      <td><span className={`rpt-badge rpt-badge-${modes.includes('Cash')?'or':modes.includes('UPI')?'bl':'gr'}`}>{modes}</span></td>
+                      <td><span className={`rpt-badge rpt-badge-${b.status==='checkedout'?'gr':b.status==='active'?'ye':'re'}`}>{b.status==='checkedout'?'Out':b.status==='active'?'Active':'—'}</span></td>
+                    </tr>
+                  );
+                })}
+                {filteredBks.length>0&&<tr className="total-row">
+                  <td colSpan={8} style={{fontWeight:700}}>GRAND TOTAL ({filteredBks.length} bookings)</td>
+                  <td style={{fontWeight:700,color:'var(--saf)'}}>{fcR(stats.totalRoomRevenue)}</td>
+                  <td style={{fontWeight:700,color:'#15803D'}}>{fcR(stats.totalDiscount)}</td>
+                  <td style={{fontWeight:700}}>{fcR(stats.advanceReceived)}</td>
+                  <td style={{fontWeight:700,color:'#15803D'}}>{fcR(stats.balanceReceived)}</td>
+                  <td style={{fontWeight:700,color:'#B91C1C'}}>{fcR(stats.pendingPayments)}</td>
+                  <td colSpan={2}/>
+                </tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Printable PDF content (hidden) */}
+        <div ref={printRef} style={{display:'none'}}>
+          <div style={{width:794,background:'#fff',fontFamily:"'DM Sans',sans-serif",color:'#1C0A00',padding:0}}>
+            {/* PDF Header */}
+            <div style={{background:'linear-gradient(135deg,#8B1A00,#D4600A,#E8801A)',color:'#fff',padding:'20px 28px',display:'flex',alignItems:'center',gap:16}}>
+              <div style={{fontSize:32,width:54,height:54,background:'rgba(255,255,255,0.15)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid rgba(255,255,255,0.35)',flexShrink:0}}>🙏</div>
+              <div style={{flex:1}}>
+                <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:14,fontWeight:700,lineHeight:1.2}}>{SANSTHA.nameM}</div>
+                <div style={{fontSize:9,opacity:0.9,marginTop:2}}>{SANSTHA.address}</div>
+                <div style={{fontSize:9,opacity:0.85,marginTop:2}}>📞 {SANSTHA.phone} | ✉ {SANSTHA.email}</div>
+              </div>
+              <div style={{textAlign:'right',background:'rgba(255,255,255,0.15)',borderRadius:9,padding:'10px 14px',border:'1.5px solid rgba(255,255,255,0.35)'}}>
+                <div style={{fontSize:8,opacity:0.8,textTransform:'uppercase',letterSpacing:'0.07em'}}>REPORT TYPE</div>
+                <div style={{fontSize:14,fontWeight:700,fontFamily:"'Crimson Pro',serif"}}>Monthly Statement</div>
+                <div style={{fontSize:8,opacity:0.8,marginTop:4}}>{MONTH_NAMES[selMonth]} {selYear}</div>
+                <div style={{fontSize:8,opacity:0.8}}>Generated: {fdtR(new Date().toISOString())}</div>
+              </div>
+            </div>
+            {/* Summary cards in PDF */}
+            <div style={{padding:'14px 20px 10px',borderBottom:'1px solid #E8C07A',background:'#FFF8F0'}}>
+              <div style={{fontSize:10,fontWeight:700,color:'#D4600A',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.06em'}}>Summary — {MONTH_NAMES[selMonth]} {selYear}</div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8}}>
+                {[
+                  {l:'Total Bookings',v:stats.totalBookings},
+                  {l:'Room Revenue',v:fcR(stats.totalRoomRevenue)},
+                  {l:'Net Collection',v:fcR(stats.netCollection)},
+                  {l:'Pending',v:fcR(stats.pendingPayments)},
+                  {l:'Completed',v:stats.completedBookings},
+                  {l:'Advance',v:fcR(stats.advanceReceived)},
+                  {l:'Discount Given',v:fcR(stats.totalDiscount)},
+                  {l:'Balance Received',v:fcR(stats.balanceReceived)},
+                ].map((s,i)=>(
+                  <div key={i} style={{background:'#fff',border:'1px solid #E8C07A',borderRadius:7,padding:'9px 10px'}}>
+                    <div style={{fontSize:8,color:'#C4862A',marginBottom:3,textTransform:'uppercase',letterSpacing:'0.05em'}}>{s.l}</div>
+                    <div style={{fontSize:13,fontWeight:700,color:'#1C0A00'}}>{s.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* PDF Table */}
+            <div style={{padding:'12px 20px'}}>
+              <div style={{fontSize:10,fontWeight:700,color:'#D4600A',marginBottom:8,textTransform:'uppercase',letterSpacing:'0.06em'}}>Detailed Booking Records</div>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:8}}>
+                <thead>
+                  <tr style={{background:'#FFF3E0'}}>
+                    {['Date','Booking ID','Customer','Rooms','Total Amt','Discount','Advance','Bal.Recv','Pending','Mode','Status'].map((h,i)=>(
+                      <th key={i} style={{padding:'6px 7px',textAlign:'left',fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A',fontSize:7.5}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBks.map((b,bi)=>{
+                    const rooms=getRooms(b);
+                    const rev=calcBookingRevenue(b);
+                    const modes=[...new Set(b.payHistory.map(p=>p.mode))].join(', ')||'—';
+                    return(
+                      <tr key={b.id} style={{background:bi%2===0?'#fff':'#fffbf5'}}>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',whiteSpace:'nowrap'}}>{fdR(b.checkIn)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',fontWeight:700,color:'#D4600A'}}>{b.id}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A'}}>{b.name}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A'}}>{rooms.map(r=>r.label).join(', ')}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:600}}>{fcR(rev.totalAmount)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',textAlign:'right',color:'#15803D'}}>{fcR(rev.discount)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',textAlign:'right'}}>{fcR(rev.advance)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',textAlign:'right',color:'#15803D'}}>{fcR(rev.balanceReceived)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A',textAlign:'right',color:rev.pendingBalance>0?'#B91C1C':'#15803D',fontWeight:600}}>{fcR(rev.pendingBalance)}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A'}}>{modes}</td>
+                        <td style={{padding:'5px 6px',border:'1px solid #E8C07A'}}>{b.status==='checkedout'?'Completed':b.status==='active'?'Active':'—'}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr style={{background:'#FFF3E0',fontWeight:700}}>
+                    <td colSpan={4} style={{padding:'6px 7px',border:'1px solid #E8C07A',fontWeight:700,color:'#D4600A'}}>GRAND TOTAL ({filteredBks.length} bookings)</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#D4600A'}}>{fcR(stats.totalRoomRevenue)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#15803D'}}>{fcR(stats.totalDiscount)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700}}>{fcR(stats.advanceReceived)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#15803D'}}>{fcR(stats.balanceReceived)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#B91C1C'}}>{fcR(stats.pendingPayments)}</td>
+                    <td colSpan={2} style={{border:'1px solid #E8C07A'}}/>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {/* Signature */}
+            <div style={{padding:'16px 28px',borderTop:'1px solid #E8C07A',display:'flex',justifyContent:'space-between',marginTop:12}}>
+              <div style={{textAlign:'center'}}>
+                <div style={{width:120,height:1,background:'#1C0A00',marginBottom:5}}/>
+                <div style={{fontSize:8,color:'#6B3A0F'}}>Accountant Signature</div>
+              </div>
+              <div style={{textAlign:'center'}}>
+                <div style={{width:120,height:1,background:'#1C0A00',marginBottom:5}}/>
+                <div style={{fontSize:8,color:'#6B3A0F'}}>Manager / Trustee Signature</div>
+              </div>
+            </div>
+            <div style={{background:'#1C0A00',color:'#fff',padding:'8px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:9,opacity:0.9}}>जय साखराम महाराज 🙏</div>
+              <div style={{fontSize:7,opacity:0.7}}>Generated by Bhaktniwas Booking Software | {fdtR(new Date().toISOString())}</div>
+            </div>
+          </div>
+        </div>
+      </>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+//  YEARLY EARNING REPORT
+// ═══════════════════════════════════════════════════
+function YearlyReport({bookings}){
+  const now=new Date();
+  const[selYear,setSelYear]=useState(now.getFullYear());
+  const[generated,setGenerated]=useState(false);
+  const[loading,setLoading]=useState(false);
+  const printRef=useRef();
+
+  const years=useMemo(()=>{
+    const ys=new Set([now.getFullYear()]);
+    bookings.forEach(b=>{if(b.checkIn)ys.add(new Date(b.checkIn).getFullYear());});
+    return [...ys].sort((a,b)=>b-a);
+  },[bookings]);
+
+  const monthlyStats=useMemo(()=>{
+    if(!generated)return Array(12).fill(null).map(()=>({totalBookings:0,totalRoomRevenue:0,totalDiscount:0,netCollection:0,cancelledBookings:0,pendingPayments:0,completedBookings:0}));
+    return MONTH_NAMES.map((_,mo)=>{
+      const bks=getMonthlyBookings(bookings,selYear,mo);
+      return calcMonthStats(bks);
+    });
+  },[bookings,selYear,generated]);
+
+  const yearTotals=useMemo(()=>{
+    const t={totalBookings:0,totalRoomRevenue:0,totalDiscount:0,netCollection:0,cancelledBookings:0,pendingPayments:0,completedBookings:0};
+    monthlyStats.forEach(m=>{Object.keys(t).forEach(k=>{t[k]+=m[k]||0;});});
+    t.avgMonthly=monthlyStats.filter(m=>m.totalBookings>0).length>0?t.netCollection/Math.max(1,monthlyStats.filter(m=>m.totalBookings>0).length):0;
+    return t;
+  },[monthlyStats]);
+
+  const highestMonth=useMemo(()=>monthlyStats.reduce((best,m,i)=>m.netCollection>monthlyStats[best].netCollection?i:best,0),[monthlyStats]);
+  const lowestMonth=useMemo(()=>{
+    const nonZero=monthlyStats.map((m,i)=>({m,i})).filter(x=>x.m.totalBookings>0);
+    if(!nonZero.length)return 0;
+    return nonZero.reduce((best,x)=>x.m.netCollection<nonZero[best].m.netCollection?nonZero.indexOf(x):best,0);
+  },[monthlyStats]);
+  const lowestMonthIdx=useMemo(()=>{
+    const nonZero=monthlyStats.map((m,i)=>({m,i})).filter(x=>x.m.totalBookings>0);
+    if(!nonZero.length)return 0;
+    return nonZero.reduce((best,x)=>x.m.netCollection<monthlyStats[best].netCollection?x.i:best,0);
+  },[monthlyStats]);
+
+  const lineData={
+    labels:MONTH_NAMES.map(m=>m.slice(0,3)),
+    datasets:[
+      {label:'Net Collection (₹)',data:monthlyStats.map(m=>m.netCollection),borderColor:'#D4600A',backgroundColor:'rgba(212,96,10,0.1)',fill:true,tension:0.4,pointBackgroundColor:'#D4600A',pointRadius:5},
+      {label:'Revenue (₹)',data:monthlyStats.map(m=>m.totalRoomRevenue),borderColor:'#1D4ED8',backgroundColor:'rgba(29,78,216,0.05)',fill:false,tension:0.4,pointBackgroundColor:'#1D4ED8',pointRadius:4,borderDash:[5,5]},
+    ]
+  };
+  const lineOpts={responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ₹${ctx.raw.toLocaleString('en-IN')}`}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')}}}};
+
+  const maxRev=Math.max(...monthlyStats.map(m=>m.netCollection),1);
+
+  function handleGenerate(){setLoading(true);setTimeout(()=>{setGenerated(true);setLoading(false);},200);}
+
+  async function handlePDF(){
+    const el=printRef.current;
+    if(!el)return;
+    try{
+      const canvas=await window.html2canvas(el,{scale:2,useCORS:true,logging:false,backgroundColor:'#fff',width:794,windowWidth:794});
+      const img=canvas.toDataURL('image/jpeg',0.95);
+      const{jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      const iH=(canvas.height/canvas.width)*210;
+      if(iH<=297){pdf.addImage(img,'JPEG',0,0,210,iH);}
+      else{let y=0;while(y<iH){if(y>0)pdf.addPage();pdf.addImage(img,'JPEG',0,-y,210,iH);y+=297;}}
+      pdf.save(`Yearly_Report_${selYear}.pdf`);
+    }catch(e){alert('PDF error.');}
+  }
+
+  function handlePrint(){
+    const el=printRef.current;
+    if(!el)return;
+    const w=window.open('','_blank','width=860,height=960,scrollbars=yes');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Yearly Report ${selYear}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}@page{size:A4;margin:0;}</style>
+    </head><body>${el.outerHTML}</body></html>`);
+    w.document.close();setTimeout(()=>w.print(),600);
+  }
+
+  return(
+    <div className="rpt-pg">
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16,flexWrap:'wrap',gap:10}}>
+        <div>
+          <div className="pg-title" style={{fontFamily:'var(--serif)',fontSize:'1.3rem',fontWeight:700}}>📅 Yearly Earning Statement</div>
+          <div style={{fontSize:'0.75rem',color:'var(--lt)',marginTop:2}}>Month-wise revenue analysis with annual totals and performance metrics</div>
+        </div>
+        {generated&&<div className="rpt-export-bar">
+          <button className="btn btn-primary btn-sm" onClick={handlePDF}>📥 Download PDF</button>
+          <button className="btn btn-info btn-sm" onClick={()=>exportCSVYearly(monthlyStats,selYear)}>📊 Export CSV</button>
+          <button className="btn btn-secondary btn-sm" onClick={handlePrint}>🖨️ Print</button>
+        </div>}
+      </div>
+
+      <div className="rpt-filter-bar">
+        <div className="rpt-filter-group">
+          <label>Year</label>
+          <select value={selYear} onChange={e=>{setSelYear(Number(e.target.value));setGenerated(false);}}>
+            {years.map(y=><option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
+        <button className="btn btn-primary" onClick={handleGenerate} disabled={loading} style={{alignSelf:'flex-end'}}>
+          {loading?'⏳ Generating...':'🔍 Generate Yearly Report'}
+        </button>
+      </div>
+
+      {!generated&&<div style={{background:'var(--wh)',border:'1.5px solid var(--vlt)',borderRadius:'var(--rd2)',padding:48,textAlign:'center',color:'var(--lt)'}}>
+        <div style={{fontSize:'3rem',marginBottom:12}}>📅</div>
+        <div style={{fontFamily:'var(--serif)',fontSize:'1.1rem',fontWeight:700,marginBottom:6}}>Select year and click Generate Yearly Report</div>
+        <div style={{fontSize:'0.82rem'}}>View complete annual revenue analysis with month-wise breakdown</div>
+      </div>}
+
+      {generated&&<>
+        {/* Year Summary Cards */}
+        <div className="rpt-summary-grid">
+          {[
+            {ic:'📋',v:yearTotals.totalBookings,l:'Total Bookings',c:'rpt-sc-bl'},
+            {ic:'✅',v:yearTotals.completedBookings,l:'Completed',c:'rpt-sc-gr'},
+            {ic:'💰',v:fcR(yearTotals.totalRoomRevenue),l:'Total Revenue',c:'rpt-sc-or'},
+            {ic:'🏦',v:fcR(yearTotals.netCollection),l:'Net Collection',c:'rpt-sc-gr'},
+            {ic:'🎯',v:fcR(yearTotals.totalDiscount),l:'Total Discount',c:'rpt-sc-re'},
+            {ic:'⏳',v:fcR(yearTotals.pendingPayments),l:'Pending Payments',c:'rpt-sc-ye'},
+            {ic:'📊',v:fcR(Math.round(yearTotals.avgMonthly)),l:'Avg Monthly Revenue',c:'rpt-sc-pu'},
+            {ic:'🏆',v:MONTH_NAMES[highestMonth].slice(0,3),l:'Highest Revenue Month',c:'rpt-sc-teal'},
+          ].map((s,i)=>(
+            <div key={i} className={`rpt-summary-card ${s.c}`}>
+              <div className="rpt-sc-ic">{s.ic}</div>
+              <div className="rpt-sc-v">{s.v}</div>
+              <div className="rpt-sc-l">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Line Chart */}
+        <div className="rpt-chart-card" style={{marginBottom:14}}>
+          <div className="rpt-chart-title">📈 Monthly Revenue Trend — {selYear}</div>
+          <ChartCanvas id="yearly-line" type="line" data={lineData} options={lineOpts} height={220}/>
+        </div>
+
+        {/* Month-wise progress bars */}
+        <div className="rpt-table-wrap" style={{marginBottom:14}}>
+          <div className="rpt-table-hd"><span className="rpt-table-title">📊 Month-wise Revenue Overview</span></div>
+          <div style={{padding:'14px 18px'}}>
+            {monthlyStats.map((m,i)=>(
+              <div key={i} style={{marginBottom:12}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                  <span style={{fontSize:'0.82rem',fontWeight:600,minWidth:100}}>{MONTH_NAMES[i]}</span>
+                  <div style={{display:'flex',gap:16,fontSize:'0.75rem',color:'var(--lt)'}}>
+                    <span>{m.totalBookings} bookings</span>
+                    <span style={{color:'var(--saf)',fontWeight:700}}>{fcR(m.netCollection)}</span>
+                  </div>
+                </div>
+                <div className="rpt-prog-bar">
+                  <div className="rpt-prog-fill" style={{width:`${(m.netCollection/maxRev)*100}%`,background:i===highestMonth?'linear-gradient(90deg,#15803D,#4ADE80)':'linear-gradient(90deg,var(--saf),var(--saf3))'}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Yearly Detail Table */}
+        <div className="rpt-table-wrap">
+          <div className="rpt-table-hd"><span className="rpt-table-title">📋 Month-wise Detailed Breakdown — {selYear}</span></div>
+          <div style={{overflowX:'auto'}}>
+            <table className="rpt-tbl" style={{width:'100%',borderCollapse:'collapse'}}>
+              <thead>
+                <tr>
+                  <th>Month</th><th>Bookings</th><th>Completed</th><th>Revenue</th>
+                  <th>Discount</th><th>Net Collection</th><th>Cancelled</th><th>Pending</th>
+                </tr>
+              </thead>
+              <tbody>
+                {monthlyStats.map((m,i)=>(
+                  <tr key={i} style={{background:i===highestMonth?'#F0FDF4':undefined}}>
+                    <td style={{fontWeight:600}}>{MONTH_NAMES[i]}{i===highestMonth&&<span style={{marginLeft:6,fontSize:'0.65rem',background:'#DCFCE7',color:'#166534',padding:'1px 6px',borderRadius:99,fontWeight:700}}>🏆 Highest</span>}</td>
+                    <td style={{textAlign:'center'}}>{m.totalBookings}</td>
+                    <td style={{textAlign:'center',color:'#15803D',fontWeight:600}}>{m.completedBookings}</td>
+                    <td style={{fontWeight:600,color:'var(--saf)'}}>{fcR(m.totalRoomRevenue)}</td>
+                    <td style={{color:'#B91C1C'}}>{fcR(m.totalDiscount)}</td>
+                    <td style={{fontWeight:700,color:i===highestMonth?'#15803D':'var(--dk)'}}>{fcR(m.netCollection)}</td>
+                    <td style={{textAlign:'center',color:'#B91C1C'}}>{m.cancelledBookings}</td>
+                    <td style={{color:'#D97706',fontWeight:600}}>{fcR(m.pendingPayments)}</td>
+                  </tr>
+                ))}
+                <tr className="total-row">
+                  <td style={{fontWeight:700}}>TOTAL — {selYear}</td>
+                  <td style={{textAlign:'center',fontWeight:700}}>{yearTotals.totalBookings}</td>
+                  <td style={{textAlign:'center',fontWeight:700,color:'#15803D'}}>{yearTotals.completedBookings}</td>
+                  <td style={{fontWeight:700,color:'var(--saf)'}}>{fcR(yearTotals.totalRoomRevenue)}</td>
+                  <td style={{fontWeight:700,color:'#B91C1C'}}>{fcR(yearTotals.totalDiscount)}</td>
+                  <td style={{fontWeight:700,color:'var(--saf)',fontSize:'1rem'}}>{fcR(yearTotals.netCollection)}</td>
+                  <td style={{textAlign:'center',fontWeight:700,color:'#B91C1C'}}>{yearTotals.cancelledBookings}</td>
+                  <td style={{fontWeight:700,color:'#D97706'}}>{fcR(yearTotals.pendingPayments)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Metrics row */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:18}}>
+          {[
+            {ic:'🏆',title:'Highest Revenue Month',val:MONTH_NAMES[highestMonth],sub:fcR(monthlyStats[highestMonth].netCollection),bg:'#F0FDF4',bc:'#86EFAC',tc:'#166534'},
+            {ic:'📊',title:'Average Monthly Revenue',val:fcR(Math.round(yearTotals.avgMonthly)),sub:`Based on ${monthlyStats.filter(m=>m.totalBookings>0).length} active months`,bg:'#DBEAFE',bc:'#93C5FD',tc:'#1E40AF'},
+            {ic:'📉',title:'Lowest Revenue Month',val:MONTH_NAMES[lowestMonthIdx],sub:fcR(monthlyStats[lowestMonthIdx]?.netCollection||0),bg:'#FEF3C7',bc:'#FCD34D',tc:'#92400E'},
+          ].map((m,i)=>(
+            <div key={i} style={{background:m.bg,border:`1.5px solid ${m.bc}`,borderRadius:'var(--rd2)',padding:'16px'}}>
+              <div style={{fontSize:'1.6rem',marginBottom:6}}>{m.ic}</div>
+              <div style={{fontSize:'0.72rem',color:m.tc,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:4}}>{m.title}</div>
+              <div style={{fontFamily:'var(--serif)',fontSize:'1.3rem',fontWeight:700,color:m.tc}}>{m.val}</div>
+              <div style={{fontSize:'0.73rem',color:m.tc,opacity:0.75,marginTop:3}}>{m.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Printable PDF content */}
+        <div ref={printRef} style={{display:'none'}}>
+          <div style={{width:794,background:'#fff',fontFamily:"'DM Sans',sans-serif",color:'#1C0A00'}}>
+            <div style={{background:'linear-gradient(135deg,#8B1A00,#D4600A,#E8801A)',color:'#fff',padding:'20px 28px',display:'flex',alignItems:'center',gap:16}}>
+              <div style={{fontSize:30,width:52,height:52,background:'rgba(255,255,255,0.15)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid rgba(255,255,255,0.35)',flexShrink:0}}>🙏</div>
+              <div style={{flex:1}}>
+                <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:13,fontWeight:700}}>{SANSTHA.nameM}</div>
+                <div style={{fontSize:8.5,opacity:0.9,marginTop:2}}>{SANSTHA.address}</div>
+                <div style={{fontSize:8.5,opacity:0.85,marginTop:1}}>📞 {SANSTHA.phone}</div>
+              </div>
+              <div style={{textAlign:'right',background:'rgba(255,255,255,0.15)',borderRadius:9,padding:'9px 13px',border:'1.5px solid rgba(255,255,255,0.35)'}}>
+                <div style={{fontSize:7,opacity:0.8,textTransform:'uppercase'}}>YEARLY REPORT</div>
+                <div style={{fontSize:18,fontWeight:700,fontFamily:"'Crimson Pro',serif"}}>{selYear}</div>
+                <div style={{fontSize:7,opacity:0.8,marginTop:3}}>Generated: {fdtR(new Date().toISOString())}</div>
+              </div>
+            </div>
+            <div style={{padding:'12px 20px 8px',borderBottom:'1px solid #E8C07A',background:'#FFF8F0'}}>
+              <div style={{fontSize:9,fontWeight:700,color:'#D4600A',marginBottom:8,textTransform:'uppercase'}}>Annual Summary — {selYear}</div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:7}}>
+                {[
+                  {l:'Total Bookings',v:yearTotals.totalBookings},
+                  {l:'Total Revenue',v:fcR(yearTotals.totalRoomRevenue)},
+                  {l:'Net Collection',v:fcR(yearTotals.netCollection)},
+                  {l:'Avg Monthly',v:fcR(Math.round(yearTotals.avgMonthly))},
+                  {l:'Total Discount',v:fcR(yearTotals.totalDiscount)},
+                  {l:'Pending Payments',v:fcR(yearTotals.pendingPayments)},
+                  {l:'Highest Month',v:MONTH_NAMES[highestMonth]},
+                  {l:'Completed',v:yearTotals.completedBookings},
+                ].map((s,i)=>(
+                  <div key={i} style={{background:'#fff',border:'1px solid #E8C07A',borderRadius:6,padding:'8px 9px'}}>
+                    <div style={{fontSize:7,color:'#C4862A',marginBottom:2,textTransform:'uppercase'}}>{s.l}</div>
+                    <div style={{fontSize:12,fontWeight:700,color:'#1C0A00'}}>{s.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{padding:'12px 20px'}}>
+              <div style={{fontSize:9,fontWeight:700,color:'#D4600A',marginBottom:8,textTransform:'uppercase'}}>Month-wise Breakdown</div>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:8.5}}>
+                <thead>
+                  <tr style={{background:'#FFF3E0'}}>
+                    {['Month','Bookings','Completed','Revenue','Discount','Net Collection','Cancelled','Pending'].map((h,i)=>(
+                      <th key={i} style={{padding:'6px 8px',textAlign:i>=2?'right':'left',fontWeight:700,color:'#D4600A',border:'1px solid #E8C07A'}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthlyStats.map((m,i)=>(
+                    <tr key={i} style={{background:i%2===0?'#fff':'#fffbf5'}}>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',fontWeight:600}}>{MONTH_NAMES[i]}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right'}}>{m.totalBookings}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',color:'#15803D'}}>{m.completedBookings}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',color:'#D4600A',fontWeight:600}}>{fcR(m.totalRoomRevenue)}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',color:'#B91C1C'}}>{fcR(m.totalDiscount)}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:i===highestMonth?'#15803D':'#1C0A00'}}>{fcR(m.netCollection)}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',color:'#B91C1C'}}>{m.cancelledBookings}</td>
+                      <td style={{padding:'5px 7px',border:'1px solid #E8C07A',textAlign:'right',color:'#D97706'}}>{fcR(m.pendingPayments)}</td>
+                    </tr>
+                  ))}
+                  <tr style={{background:'#FFF3E0',fontWeight:700}}>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',fontWeight:700,color:'#D4600A'}}>TOTAL</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700}}>{yearTotals.totalBookings}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#15803D'}}>{yearTotals.completedBookings}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#D4600A'}}>{fcR(yearTotals.totalRoomRevenue)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#B91C1C'}}>{fcR(yearTotals.totalDiscount)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#D4600A',fontSize:11}}>{fcR(yearTotals.netCollection)}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#B91C1C'}}>{yearTotals.cancelledBookings}</td>
+                    <td style={{padding:'6px 7px',border:'1px solid #E8C07A',textAlign:'right',fontWeight:700,color:'#D97706'}}>{fcR(yearTotals.pendingPayments)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style={{padding:'10px 20px',borderTop:'1px solid #E8C07A',display:'flex',justifyContent:'space-between'}}>
+              <div style={{textAlign:'center'}}>
+                <div style={{width:120,height:1,background:'#1C0A00',marginBottom:4}}/>
+                <div style={{fontSize:8,color:'#6B3A0F'}}>Accountant Signature</div>
+              </div>
+              <div style={{textAlign:'center'}}>
+                <div style={{width:120,height:1,background:'#1C0A00',marginBottom:4}}/>
+                <div style={{fontSize:8,color:'#6B3A0F'}}>Manager / Trustee Signature</div>
+              </div>
+            </div>
+            <div style={{background:'#1C0A00',color:'#fff',padding:'8px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div style={{fontFamily:"'Noto Serif Devanagari',serif",fontSize:9,opacity:0.9}}>जय साखराम महाराज 🙏</div>
+              <div style={{fontSize:7,opacity:0.7}}>Generated by Bhaktniwas Booking Software | Page 1</div>
+            </div>
+          </div>
+        </div>
+      </>}
+    </div>
+  );
+}
+
 function App(){
   const[cfg,setCfg]=useState(LS.cfg());
   const[bookings,setBookings]=useState(LS.bk());
@@ -2342,6 +3205,7 @@ function App(){
     setRoomStatus(p=>({...p,[roomId]:status}));
   }
 
+  const[reportsOpen,setReportsOpen]=useState(false);
   const nav=[
     {id:'dashboard',ic:'📊',lb:t.dashboard},
     {id:'bookings',ic:'📋',lb:t.bookings},
@@ -2375,6 +3239,19 @@ function App(){
         {nav.map(n=><div key={n.id} className={`nav-item${page===n.id?' act':''}`} onClick={()=>{setPage(n.id);setMobOpen(false);}}>
           <span className="nav-ic">{n.ic}</span>{!slim&&<span>{n.lb}</span>}
         </div>)}
+        {/* Reports sub-menu */}
+        <div className={`nav-item${(page==='monthly-report'||page==='yearly-report')?' act':''}`}
+          onClick={()=>{if(!slim)setReportsOpen(o=>!o);else{setPage('monthly-report');setMobOpen(false);}}}>
+          <span className="nav-ic">📈</span>{!slim&&<><span style={{flex:1}}>Reports</span><span style={{fontSize:'0.7rem',opacity:0.7}}>{reportsOpen?'▾':'▸'}</span></>}
+        </div>
+        {!slim&&reportsOpen&&<div className="sb-sub-nav">
+          <div className={`sb-sub-item${page==='monthly-report'?' act':''}`} onClick={()=>{setPage('monthly-report');setMobOpen(false);}}>
+            📅 Monthly Earning
+          </div>
+          <div className={`sb-sub-item${page==='yearly-report'?' act':''}`} onClick={()=>{setPage('yearly-report');setMobOpen(false);}}>
+            📊 Yearly Earning
+          </div>
+        </div>}
       </nav>
       <div className="sb-foot"><button className="slim-btn" onClick={()=>setSlim(p=>!p)}>{slim?'▶':'◀ '+(slim?'':'Collapse')}</button></div>
     </div>
@@ -2422,6 +3299,8 @@ function App(){
       {page==='calendar'&&<RoomCalendar bookings={bookings} t={t} onBkClick={b=>setModal({type:'details',data:b})}/>}
       {page==='rooms'&&<RoomsPage bookings={bookings} t={t} roomStatus={roomStatus} onRsChange={updateRoomStatus} onViewBooking={b=>setModal({type:'details',data:b})}/>}
       {page==='settings'&&<SettingsPage cfg={cfg} onCfg={setCfg} bookings={bookings} t={t}/>}
+      {page==='monthly-report'&&<MonthlyReport bookings={bookings}/>}
+      {page==='yearly-report'&&<YearlyReport bookings={bookings}/>}
     </div>
 
     {/* MODALS */}
